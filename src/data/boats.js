@@ -1,0 +1,3 @@
+export const BOAT={dimensions:{lengthFt:31,beamFt:10.4},propulsion:{type:'twinSterndrive',maxSteerDeg:35,thrust:.065,reverseEfficiency:.90,reverseSteerGain:1.32,driveX:-.46,engineY:.16,steeringYawGain:1.15,flowSteerGain:.18,reverseFlowSteerGain:.70},hydrodynamics:{waterCenterX:-.21,airCenterX:.09,forwardLinearDrag:.055,forwardQuadraticDrag:.30,lateralLinearDrag:.55,lateralQuadraticDrag:.95,yawDampingBase:.18,yawDampingSpeedGain:10,yawDampingSpeedMax:.22},maneuvering:{fullPowerTurnRadiusFt:20,turnCalibrationResponse:2}};
+export const SCALE=110*1.68781;
+export const OUTLINE=[[55,0],[39,11],[14,16],[-28,16],[-50,12],[-52,0],[-50,-12],[-28,-16],[14,-16],[39,-11]].map(([x,y])=>[x*31/108,y*10.4/36]);

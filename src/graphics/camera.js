@@ -1,0 +1,2 @@
+export function resetCamera(camera,state,scale){camera.x=state.x*scale;camera.y=state.y*scale;camera.heading=state.a*Math.PI/180;}
+export function followCamera(camera,state,scale,dt){const blend=1-Math.exp(-dt/8);camera.x+=(state.x*scale-camera.x)*blend;camera.y+=(state.y*scale-camera.y)*blend;const error=Math.atan2(Math.sin(state.a*Math.PI/180-camera.heading),Math.cos(state.a*Math.PI/180-camera.heading));camera.heading+=error*blend;}
