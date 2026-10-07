@@ -1,0 +1,46 @@
+# Docking Trainer 3D — first playable
+
+A small static web app for GitHub Pages. This is the first stage of the 2D game's migration: one 31-foot twin-sterndrive cruiser, a three-sided practice berth, dock lines and fenders. It keeps the prototype's low chase camera and eight-second exponential catch-up for position and heading.
+
+## Put it on GitHub Pages
+
+1. Extract the ZIP.
+2. Upload the **contents** of `docking-trainer-3d` to a new repository. `index.html`, `styles.css`, `src` and `vendor` must sit at its root. Keep the existing 2D repository as your working game.
+3. In Settings → Pages, select Deploy from a branch, your main branch, and `/ (root)`.
+4. Open the Pages link when GitHub finishes deployment.
+
+No npm install, compilation, backend or paid hosting is required. Three.js is included locally, so the game has no runtime CDN dependency. JavaScript modules need HTTP hosting; double-clicking the index file from your filesystem will not work. For a local preview with Python installed, run `python -m http.server 8000` in this folder and visit `http://localhost:8000`.
+
+## Try it
+
+- Start with **Open approach** to practise entering the berth.
+- Select **Alongside port dock** or **Alongside starboard dock** to test lines and fenders immediately. Changing the start resets the boat and releases all lines.
+- Throttle sliders latch at their setting: left is reverse, centre is neutral, right is ahead, up to 25%. Use Both neutral to stop applying power. The hull continues to carry momentum.
+- Lines attach to a suitable fixed dock cleat within 12 feet. Forward springs lead aft; aft springs lead forward. Click the same button to release, or release all lines together.
+- Lines pull only when taut. Their visible sag changes with slack; status labels distinguish slack and taut.
+- Deploy the fenders on the docking side before contact. They cushion side contact, permit sliding and allow engine/line/fender pivots. Bow and stern contact remains unprotected.
+- Try a bow line with gentle reverse and steering to move the stern away. Try a spring line with a gentle forward pulse to compare the pivot.
+- Switching browser tabs puts both engines in neutral.
+
+## Project map
+
+`index.html` and `styles.css` provide the shell. `src/main.js` connects independent modules:
+
+| Folder | Responsibility |
+| --- | --- |
+| `src/data` | Boat parameters, hull outline, dock geometry, fixed cleats and spawns |
+| `src/simulation` | State, original motion equations, collision sweep, line tension and fender forces |
+| `src/graphics` | Procedural Three.js scene, chase camera, rope and fender appearance |
+| `src/interface` | Inputs, start selection and status labels |
+| `vendor` | Pinned Three.js 0.160.1 and its MIT licence |
+| `tests` | Node tests for handling, contact, lines and camera |
+
+Physics runs at 120 fixed steps per second; graphics run separately. Positions and speeds preserve the 2D app's simulator units. Rendering, attachment distances and contact geometry use feet; conversion is explicit. Line and fender tuning comes from version 8 of the current 2D app, adapted to this consistent coordinate system. Fixed visible dock cleats replace the 2D app's arbitrary edge attachment points. Boat side cleats follow the tapered hull.
+
+## Validation
+
+Run `npm test` if Node is installed; there are no dependencies to install. Browser checks cover rendering, all line controls, fenders, resets, a narrow phone layout, and loading from a repository-style subdirectory.
+
+## Scope of this version
+
+This is a migration foundation, not yet the full 2D game. Anchor, traffic, multiple boats, the full marina layouts, levels and scoring are still to be ported. The simplified scene keeps physics collisions at the hull's plan outline. Bobbing is cosmetic. Far shoreline scenery is decorative. Lines and fenders are tuned approximations for practice rather than an engineering model of real rope or rubber.
