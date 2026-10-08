@@ -1,0 +1,3 @@
+Extract this ZIP. In your GitHub repository, upload index.html, styles.css, README.md and the src folder to the repository root, replacing existing files. The src folder contains only the updated interface/controls.js; keep all other existing src files. Commit the update. After GitHub Pages deploys, refresh the page (Ctrl+Shift+R or Cmd+Shift+R).
+
+Hold an engine button to apply power. Release to return to neutral. Port, both engines and starboard each have 10% and 25% ahead/reverse. Independent simultaneous touch inputs are supported.

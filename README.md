@@ -15,7 +15,7 @@ No npm install, compilation, backend or paid hosting is required. Three.js is in
 
 - Start with **Open approach** to practise entering the berth.
 - Select **Alongside port dock** or **Alongside starboard dock** to test lines and fenders immediately. Changing the start resets the boat and releases all lines.
-- Throttle sliders latch at their setting: left is reverse, centre is neutral, right is ahead, up to 25%. Use Both neutral to stop applying power. The hull continues to carry momentum.
+- Hold a 10 FWD, 25 FWD, 10 REV or 25 REV button to apply power. Release to return to neutral. Port and starboard can be held independently with two fingers; the BOTH column operates both engines. Keyboard users can hold Space or Enter on a focused button. Both neutral clears all held inputs. The hull continues to carry momentum.
 - Lines attach to a suitable fixed dock cleat within 12 feet. Forward springs lead aft; aft springs lead forward. Click the same button to release, or release all lines together.
 - Lines pull only when taut. Their visible sag changes with slack; status labels distinguish slack and taut.
 - Deploy the fenders on the docking side before contact. They cushion side contact, permit sliding and allow engine/line/fender pivots. Bow and stern contact remains unprotected.
