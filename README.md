@@ -1,6 +1,6 @@
 # Docking Trainer 3D — first playable
 
-A small static web app for GitHub Pages. This is the first stage of the 2D game's migration: one 31-foot twin-sterndrive cruiser, a three-sided practice berth, dock lines and fenders. It keeps the prototype's low chase camera and eight-second exponential catch-up for position and heading.
+A small static web app for GitHub Pages. This is the first stage of the 2D game's migration: one 31-foot twin-sterndrive cruiser, the connected large marina from the latest 2D game, dock lines and fenders. It keeps the prototype's low chase camera and eight-second exponential catch-up for position and heading.
 
 ## Put it on GitHub Pages
 
@@ -13,8 +13,11 @@ No npm install, compilation, backend or paid hosting is required. Three.js is in
 
 ## Try it
 
-- Start with **Open approach** to practise entering the berth.
-- Select **Alongside port dock** or **Alongside starboard dock** to test lines and fenders immediately. Changing the start resets the boat and releases all lines.
+- Start at **F · Entrance** to navigate into the connected marina, or select another section directly.
+- The start selector offers eight locations across sections A–F and the fuel dock. Changing the start resets the boat and releases all lines.
+- Drag the scene to look around; release for a three-second exponential return. The boat chase still has an eight-second response.
+- Wind speed changes surface roughness and ripple travel speed. Wind direction is explicitly the direction the wind blows toward (0° north, 90° east). Ripple motion follows the same direction as the force on the hull. Water movement is cosmetic; the boat physics applies wind forces separately.
+- Orange buoys mark the original Med anchor guide locations. Anchor operation and paired Med stern lines are not included yet.
 - Hold a 10 FWD, 25 FWD, 10 REV or 25 REV button to apply power. Release to return to neutral. Port and starboard can be held independently with two fingers; the BOTH column operates both engines. Keyboard users can hold Space or Enter on a focused button. Both neutral clears all held inputs. The hull continues to carry momentum.
 - Lines attach to a suitable fixed dock cleat within 12 feet. Forward springs lead aft; aft springs lead forward. Click the same button to release, or release all lines together.
 - Lines pull only when taut. Their visible sag changes with slack; status labels distinguish slack and taut.
