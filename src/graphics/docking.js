@@ -1,6 +1,6 @@
-import * as THREE from '../../vendor/three.module.js';
-import {fenderBeam} from '../simulation/fenders.js';
-import {LINE_DEFS,cleatPoint} from '../simulation/lines.js';
+import * as THREE from '../../vendor/three.module.js?v=marina-5';
+import {fenderBeam} from '../simulation/fenders.js?v=marina-5';
+import {LINE_DEFS,cleatPoint} from '../simulation/lines.js?v=marina-5';
 export function createDockingGraphics(scene,vessel,sim){
  const ropes={},segments=16,sides=6,ropeMat=new THREE.MeshStandardMaterial({color:'#e2bc80',roughness:.95});
  for(const type of Object.keys(LINE_DEFS)){const positions=new Float32Array((segments+1)*sides*3),indices=[];for(let i=0;i<segments;i++)for(let j=0;j<sides;j++){const a=i*sides+j,b=i*sides+(j+1)%sides,c=b+sides,d=a+sides;indices.push(a,b,d,b,c,d);}const geometry=new THREE.BufferGeometry();geometry.setAttribute('position',new THREE.BufferAttribute(positions,3));geometry.setIndex(indices);const mesh=new THREE.Mesh(geometry,ropeMat);mesh.frustumCulled=false;mesh.visible=false;scene.add(mesh);ropes[type]=mesh;}
