@@ -25,9 +25,9 @@ No npm install, compilation, backend or paid hosting is required. Three.js is in
 - Try a bow line with gentle reverse and steering to move the stern away. Try a spring line with a gentle forward pulse to compare the pivot.
 - Switching browser tabs puts both engines in neutral.
 - Scene controls: port lines/fenders are red on the left, starboard green on the right. Labels always refer to the boat, even when looking backward. Each side has independent bow, forward spring, aft spring and stern lines. Buttons show released/slack/taut. The selected side never falls back to the opposite side.
-- View cycles Far, Medium and Helm. Helm looks forward from the helm and follows the boat immediately. All views allow drag-to-look and spring back after release. Recenter clears the look offset.
+- View cycles Far, Medium and Helm. Helm looks forward from the helm and follows the boat immediately. All views allow drag-to-look. Far/Medium spring back after release; Helm holds the look angle and reverses horizontal drag. Recenter clears the look offset.
 - The catch-up slider adjusts Far/Medium camera response from 0–16 seconds; Helm remains locked to heading. Boat reset preserves the chosen view and catch-up time.
-- The top-right mini-map stays north-up and shows boat position/heading. Tap it to enlarge or shrink it. Wind controls live under Wind & environment.
+- The top-right mini-map stays north-up and shows boat position/heading. Tap it to enlarge or shrink it. Wind and current controls live on the Practice setup screen, with circular direction dials. Setup pauses simulation and neutralizes engines.
 
 ## Project map
 
@@ -51,3 +51,11 @@ Run `npm test` if Node is installed; there are no dependencies to install. Brows
 ## Scope of this version
 
 This is a migration foundation, not yet the full 2D game. Anchor, traffic, multiple boats, levels and scoring are still to be ported. The simplified scene keeps physics collisions at the hull's plan outline. Bobbing is cosmetic. Far shoreline scenery is decorative. Lines and fenders are tuned approximations for practice rather than an engineering model of real rope or rubber.
+
+## Setup and touch update
+
+The map uses SVG, with geometry drawn immediately rather than waiting for a canvas paint. Instanced perimeter trees and shore buildings provide landmarks. The largest central rectangular dock hosts the fuel building, pumps and canopy.
+
+Current speed is adjustable from 0 to 3 kt. The existing physics applies moving-water resistance at the underwater centre, separately from wind at the air centre. Both direction dials indicate flow **toward**, not meteorological wind-from.
+
+Play areas use touch-action:none and non-passive touch/gesture cancellation. Discrete touch buttons execute independently on pointerdown; engine holds retain per-pointer IDs. Native duplicate clicks are suppressed. Page scrolling is still available outside play areas. Browser chrome and reserved operating-system gestures require actual device verification and cannot be guaranteed suppressed.
