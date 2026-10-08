@@ -1,4 +1,4 @@
-import {bodyPoint} from './collisions.js';
+import {bodyPoint} from './collisions.js?v=marina-5';
 export const LINE_DEFS={bow:{xFrac:41/108,xBody:.4,beam:2.35,label:'Bow'},fwdSpring:{xFrac:18/108,xBody:.18,beam:4.05,label:'Forward spring'},aftSpring:{xFrac:-18/108,xBody:-.18,beam:4.05,label:'Aft spring'},stern:{xFrac:-45/108,xBody:-.42,beam:3.5,label:'Stern'}};
 // Same spring/damping model as the 2D app; lengths convert feet to simulator units.
 export const LINE_TUNING={stiffness:2.8,damping:.44,maxTension:.08,attachSlack:.00015};
