@@ -3,7 +3,7 @@
 <div id="dock3d">
  <div class="viz-row"><strong>Docking Trainer · 31′ cruiser</strong><span id="readout" class="tabular-nums">0.0 kt</span></div>
  <canvas aria-label="Interactive 3D boat and finger dock" style="width:100%;height:440px;display:block;touch-action:none"></canvas>
- <div class="viz-controls"><span class="text-small">Elevated chase camera · 8 s catch-up</span><label class="form-label">Start <select class="form-select" id="spawn"><option value="approach">Open approach</option><option value="port">Alongside port dock</option><option value="stbd">Alongside starboard dock</option></select></label><button class="btn" id="reset">Reset boat</button><button class="btn" id="stop">Both neutral</button></div>
+ <div class="viz-controls"><span class="text-small">Drag scene to look around · release to return</span><label class="form-label">Start <select class="form-select" id="spawn"><option value="approach">Open approach</option><option value="port">Alongside port dock</option><option value="stbd">Alongside starboard dock</option></select></label><button class="btn" id="reset">Reset boat</button><button class="btn" id="stop">Both neutral</button></div>
  <div class="engine-controls" style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:12px">
   <div><div class="text-small">PORT · <span id="pv">N</span></div><div style="display:grid;gap:6px;margin-top:6px">
    <button type="button" class="btn engine-button" data-engine="port" data-power="25" aria-pressed="false" aria-label="Port 25 percent ahead, hold for power">25 FWD</button>
@@ -33,4 +33,4 @@
  <div id="line-status" class="text-small" style="margin-top:8px">No lines attached</div>
  <div id="contact" class="text-small" aria-live="polite">Loading 3D scene…</div>
 </div>
-<script type="module" src="src/main.js?v=momentary-2"></script></body></html>
+<script type="module" src="src/main.js?v=look-3"></script></body></html>
