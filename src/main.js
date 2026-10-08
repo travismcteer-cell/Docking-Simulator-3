@@ -1,11 +1,12 @@
 import {createSimulation} from './simulation/state.js';
 import {stepPhysics} from './simulation/physics.js';
-import {createGraphics} from './graphics/scene.js';
-import {resetCamera,followCamera} from './graphics/camera.js';
+import {createGraphics} from './graphics/scene.js?v=look-3';
+import {resetCamera,followCamera,bindCameraLook} from './graphics/camera.js?v=look-3';
 import {bindControls} from './interface/controls.js?v=momentary-2';
 const root=document.getElementById('dock3d');
 try {
  const sim=createSimulation(),camera={};resetCamera(camera,sim.state,sim.scale);
+ bindCameraLook(root.querySelector('canvas'),camera);
  const graphics=createGraphics(root.querySelector('canvas'),sim,camera),controls=bindControls(root,sim,camera);
  new ResizeObserver(()=>{graphics.resize();graphics.paint();}).observe(root.querySelector('canvas'));
  let last=performance.now(),acc=0;
