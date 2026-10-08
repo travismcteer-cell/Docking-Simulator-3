@@ -1,14 +1,14 @@
-import {bindGameTouch,bindTouchRanges,bindScrollGrip} from './interface/touch.js?v=touch-9';
+import {bindGameTouch,bindTouchRanges} from './interface/touch.js?v=layout-10';
 import {createMiniMap} from './interface/minimap.js?v=touch-9';
 import {createSimulation} from './simulation/state.js?v=touch-9';
 import {stepPhysics} from './simulation/physics.js?v=touch-9';
 import {createGraphics} from './graphics/scene.js?v=touch-9';
 import {resetCamera,followCamera,bindCameraLook} from './graphics/camera.js?v=touch-9';
-import {bindControls} from './interface/controls.js?v=touch-9';
+import {bindControls} from './interface/controls.js?v=orientation-11';
 const root=document.getElementById('dock3d');
 try {
  const sim=createSimulation(),camera={};resetCamera(camera,sim.state,sim.scale);
- bindCameraLook(root.querySelector('#game-canvas'),camera);bindGameTouch(root);bindTouchRanges(root);bindScrollGrip(root.querySelector('#scroll-grip'));
+ bindCameraLook(root.querySelector('#game-canvas'),camera);bindGameTouch(root);bindTouchRanges(root);
  const graphics=createGraphics(root.querySelector('#game-canvas'),sim,camera),controls=bindControls(root,sim,camera),map=createMiniMap(root.querySelector('#mini-map'),sim);
  new ResizeObserver(()=>{graphics.resize();graphics.paint();}).observe(root.querySelector('canvas'));
  let last=performance.now(),acc=0;
