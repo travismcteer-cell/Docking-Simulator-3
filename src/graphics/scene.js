@@ -76,7 +76,7 @@ function updateFoam(dt){for(const f of foam){if(f.life<=0)continue;f.life-=dt;f.
 }
 let elapsed=0;
 function paint(dt=0){elapsed+=dt;vessel.position.set(state.x*scale,.07*Math.sin(elapsed*1.2),state.y*scale);vessel.rotation.set(.004*Math.sin(elapsed*.9),-state.a*Math.PI/180,.003*Math.sin(elapsed*1.1));
- const h=camera.heading;viewCamera.position.set(camera.x-65*Math.cos(h),25,camera.y-65*Math.sin(h));viewCamera.lookAt(camera.x+18*Math.cos(h),1,camera.y+18*Math.sin(h));
+ const h=camera.heading,look=h+(camera.lookYaw||0),pitch=Math.atan2(24,83)+(camera.lookPitch||0),tx=camera.x+18*Math.cos(h),tz=camera.y+18*Math.sin(h);viewCamera.position.set(tx-83*Math.cos(look),1+83*Math.tan(pitch),tz-83*Math.sin(look));viewCamera.lookAt(tx,1,tz);
  waterUniforms.uTime.value=elapsed;waterUniforms.uEye.value.copy(viewCamera.position);updateFoam(dt);docking.update();renderer.render(scene,viewCamera);
 }
 
