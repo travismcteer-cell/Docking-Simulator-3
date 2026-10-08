@@ -1,9 +1,9 @@
-import {addLandmarks} from './landmarks.js?v=setup-7';
-import {cameraPose} from './camera.js?v=setup-7';
-import {DOCK_POLYGONS,LAND,ANCHOR_GUIDES,BOUNDS} from '../data/marina.js?v=setup-7';
-import {createCruiser} from './boats.js?v=setup-7';
-import * as THREE from '../../vendor/three.module.js?v=setup-7';
-import {createDockingGraphics} from './docking.js?v=setup-7';
+import {addLandmarks} from './landmarks.js?v=touch-9';
+import {cameraPose} from './camera.js?v=touch-9';
+import {DOCK_POLYGONS,LAND,ANCHOR_GUIDES,BOUNDS} from '../data/marina.js?v=touch-9';
+import {createCruiser} from './boats.js?v=touch-9';
+import * as THREE from '../../vendor/three.module.js?v=touch-9';
+import {createDockingGraphics} from './docking.js?v=touch-9';
 export function createGraphics(canvas,sim,camera){
 const {state,docks,outline,scale}=sim;
 const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:false});

@@ -1,6 +1,6 @@
-import * as THREE from '../../vendor/three.module.js?v=setup-7';
-import {fenderBeam} from '../simulation/fenders.js?v=setup-7';
-import {LINE_DEFS,cleatPoint,lineKey} from '../simulation/lines.js?v=setup-7';
+import * as THREE from '../../vendor/three.module.js?v=touch-9';
+import {fenderBeam} from '../simulation/fenders.js?v=touch-9';
+import {LINE_DEFS,cleatPoint,lineKey} from '../simulation/lines.js?v=touch-9';
 export function createDockingGraphics(scene,vessel,sim){
  const ropes={},segments=16,sides=6,ropeMat=new THREE.MeshStandardMaterial({color:'#e2bc80',roughness:.95});
  for(const side of ['port','stbd'])for(const type of Object.keys(LINE_DEFS)){const positions=new Float32Array((segments+1)*sides*3),indices=[];for(let i=0;i<segments;i++)for(let j=0;j<sides;j++){const a=i*sides+j,b=i*sides+(j+1)%sides,c=b+sides,d=a+sides;indices.push(a,b,d,b,c,d);}const geometry=new THREE.BufferGeometry();geometry.setAttribute('position',new THREE.BufferAttribute(positions,3));geometry.setIndex(indices);const mesh=new THREE.Mesh(geometry,ropeMat);mesh.frustumCulled=false;mesh.visible=false;scene.add(mesh);ropes[lineKey(type,side)]=mesh;}
