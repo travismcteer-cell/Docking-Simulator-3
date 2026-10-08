@@ -1,7 +1,7 @@
 import {createSimulation} from './simulation/state.js';
 import {stepPhysics} from './simulation/physics.js';
 import {createGraphics} from './graphics/scene.js?v=look-3';
-import {resetCamera,followCamera,bindCameraLook} from './graphics/camera.js?v=look-3';
+import {resetCamera,followCamera,bindCameraLook} from './graphics/camera.js?v=look-4';
 import {bindControls} from './interface/controls.js?v=momentary-2';
 const root=document.getElementById('dock3d');
 try {
