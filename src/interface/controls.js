@@ -1,4 +1,4 @@
-import {bindDirectionDial} from './setup.js?v=setup-7';
+import {bindDirectionDial} from './setup.js?v=repair-8';
 import {SPAWNS} from '../data/marina.js?v=setup-7';
 import {resetSimulation} from '../simulation/state.js?v=setup-7';
 import {attachLine,LINE_DEFS,lineKey} from '../simulation/lines.js?v=setup-7';
