@@ -1,7 +1,8 @@
-import {DOCK_POLYGONS,LAND,ANCHOR_GUIDES,BOUNDS} from '../data/marina.js?v=marina-5';
-import {createCruiser} from './boats.js?v=marina-5';
-import * as THREE from '../../vendor/three.module.js?v=marina-5';
-import {createDockingGraphics} from './docking.js?v=marina-5';
+import {cameraPose} from './camera.js?v=overlay-6';
+import {DOCK_POLYGONS,LAND,ANCHOR_GUIDES,BOUNDS} from '../data/marina.js?v=overlay-6';
+import {createCruiser} from './boats.js?v=overlay-6';
+import * as THREE from '../../vendor/three.module.js?v=overlay-6';
+import {createDockingGraphics} from './docking.js?v=overlay-6';
 export function createGraphics(canvas,sim,camera){
 const {state,docks,outline,scale}=sim;
 const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:false});
@@ -72,12 +73,13 @@ function updateFoam(dt){for(const f of foam){if(f.life<=0)continue;f.life-=dt;f.
 let elapsed=0;
 function paint(dt=0){elapsed+=dt;vessel.position.set(state.x*scale,.07*Math.sin(elapsed*1.2),state.y*scale);vessel.rotation.set(.004*Math.sin(elapsed*.9),-state.a*Math.PI/180,.003*Math.sin(elapsed*1.1));
  sun.position.set(camera.x-70,100,camera.y+30);sun.target.position.set(camera.x,0,camera.y);sun.target.updateMatrixWorld();
- const h=camera.heading,look=h+(camera.lookYaw||0),pitch=Math.atan2(24,83)+(camera.lookPitch||0),tx=camera.x+18*Math.cos(h),tz=camera.y+18*Math.sin(h);viewCamera.position.set(tx-83*Math.cos(look),1+83*Math.tan(pitch),tz-83*Math.sin(look));viewCamera.lookAt(tx,1,tz);
+ const pose=cameraPose(camera,state,scale);viewCamera.position.set(...pose.eye);viewCamera.lookAt(...pose.target);
+
  const windAngle=sim.environment.windDirection*Math.PI/180;waterUniforms.uWind.value=sim.environment.wind/20;waterUniforms.uDir.value.set(Math.sin(windAngle),-Math.cos(windAngle));waterUniforms.uTime.value=elapsed;waterUniforms.uEye.value.copy(viewCamera.position);updateFoam(dt);docking.update();renderer.render(scene,viewCamera);
 }
 
 const docking=createDockingGraphics(scene,vessel,sim);
 const cleatMesh=new THREE.InstancedMesh(new THREE.BoxGeometry(.9,.15,.24),chrome,sim.dockCleats.length),matrix=new THREE.Matrix4();sim.dockCleats.forEach((p,i)=>{matrix.makeTranslation(p.x,2.47,p.y);cleatMesh.setMatrixAt(i,matrix);});scene.add(cleatMesh);
-function resize(){const width=canvas.clientWidth,height=440;renderer.setSize(width,height,false);viewCamera.aspect=width/height;viewCamera.updateProjectionMatrix();}
+function resize(){const width=canvas.clientWidth,height=canvas.clientHeight;renderer.setSize(width,height,false);viewCamera.aspect=width/height;viewCamera.updateProjectionMatrix();}
 return {paint,resize,renderer};
 }

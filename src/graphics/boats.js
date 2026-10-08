@@ -1,5 +1,5 @@
-import * as THREE from '../../vendor/three.module.js?v=marina-5';
-import {LINE_DEFS} from '../simulation/lines.js?v=marina-5';
+import * as THREE from '../../vendor/three.module.js?v=overlay-6';
+import {LINE_DEFS} from '../simulation/lines.js?v=overlay-6';
 export function createCruiser(outline,helpers,materials){
 const {mesh,box,rod,surface,outlineDeck,loft,pathTube}=helpers;
 const {ivory,hullWhite,trim,chrome,cushion,teak,rubber,windowMat,mat}=materials;
