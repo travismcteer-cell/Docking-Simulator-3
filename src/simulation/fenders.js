@@ -1,4 +1,4 @@
-import {bodyPoint,nearestShape} from './collisions.js?v=setup-7';
+import {bodyPoint,nearestShape} from './collisions.js?v=touch-9';
 export const FENDER_TUNING={radiusFt:.72,stiffness:.038,damping:.030,friction:.10,maxForce:.075};
 export function fenderBeam(sim,station){const x=station*31,edge=sim.outline.filter(p=>p[1]>=0).sort((a,b)=>a[0]-b[0]);for(let i=1;i<edge.length;i++){if(x<=edge[i][0]){const [ax,ay]=edge[i-1],[bx,by]=edge[i];return ay+(by-ay)*(x-ax)/(bx-ax)+.25;}}return .25;}
 export function applyFenders(sim,dt,addForce){const {state:s,scale,docks,fenders}=sim,a=s.a*Math.PI/180,omega=s.omega*Math.PI/180;fenders.contactPort=fenders.contactStbd=0;
