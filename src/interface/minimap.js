@@ -1,4 +1,4 @@
-import {DOCKS,DOCK_POLYGONS,LAND,BOUNDS} from '../data/marina.js?v=setup-7';
+import {DOCKS,DOCK_POLYGONS,LAND,BOUNDS} from '../data/marina.js?v=touch-9';
 export function createMiniMap(svg,sim){const size=220,span=Math.max(BOUNDS.maxX-BOUNDS.minX,BOUNDS.maxY-BOUNDS.minY),scale=(size-14)/span,ox=(size-(BOUNDS.maxX-BOUNDS.minX)*scale)/2,oy=(size-(BOUNDS.maxY-BOUNDS.minY)*scale)/2,point=p=>[ox+(p.x-BOUNDS.minX)*scale,oy+(p.y-BOUNDS.minY)*scale];const ns='http://www.w3.org/2000/svg';const node=(type,attrs)=>{const n=document.createElementNS(ns,type);for(const [k,v] of Object.entries(attrs))n.setAttribute(k,v);svg.append(n);return n;};svg.replaceChildren();node('rect',{width:size,height:size,fill:'#234957'});
  for(const p of LAND)node('polygon',{points:p.points.map(point).map(p=>p.join(',')).join(' '),fill:'#6b805a'});
  for(const d of DOCKS){const [x,y]=point(d);node('rect',{x,y,width:Math.max(.7,d.w*scale),height:Math.max(.7,d.h*scale),fill:'#c0a37a'});}
