@@ -1,8 +1,8 @@
-import {createSimulation} from './simulation/state.js';
-import {stepPhysics} from './simulation/physics.js';
-import {createGraphics} from './graphics/scene.js?v=look-3';
-import {resetCamera,followCamera,bindCameraLook} from './graphics/camera.js?v=look-4';
-import {bindControls} from './interface/controls.js?v=momentary-2';
+import {createSimulation} from './simulation/state.js?v=marina-5';
+import {stepPhysics} from './simulation/physics.js?v=marina-5';
+import {createGraphics} from './graphics/scene.js?v=marina-5';
+import {resetCamera,followCamera,bindCameraLook} from './graphics/camera.js?v=marina-5';
+import {bindControls} from './interface/controls.js?v=marina-5';
 const root=document.getElementById('dock3d');
 try {
  const sim=createSimulation(),camera={};resetCamera(camera,sim.state,sim.scale);
