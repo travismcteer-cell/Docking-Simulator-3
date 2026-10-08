@@ -1,8 +1,9 @@
-import {cameraPose} from './camera.js?v=overlay-6';
-import {DOCK_POLYGONS,LAND,ANCHOR_GUIDES,BOUNDS} from '../data/marina.js?v=overlay-6';
-import {createCruiser} from './boats.js?v=overlay-6';
-import * as THREE from '../../vendor/three.module.js?v=overlay-6';
-import {createDockingGraphics} from './docking.js?v=overlay-6';
+import {addLandmarks} from './landmarks.js?v=setup-7';
+import {cameraPose} from './camera.js?v=setup-7';
+import {DOCK_POLYGONS,LAND,ANCHOR_GUIDES,BOUNDS} from '../data/marina.js?v=setup-7';
+import {createCruiser} from './boats.js?v=setup-7';
+import * as THREE from '../../vendor/three.module.js?v=setup-7';
+import {createDockingGraphics} from './docking.js?v=setup-7';
 export function createGraphics(canvas,sim,camera){
 const {state,docks,outline,scale}=sim;
 const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:false});
@@ -39,6 +40,7 @@ for(const p of LAND)solidPolygon(p,2.7,landMat);
 for(const p of ANCHOR_GUIDES){const buoy=mesh(new THREE.SphereGeometry(.7,8,6),mat('#eda850'));buoy.position.set(p.x,.55,p.y);}
 // Quiet details stay on shore; no decorative structure obstructs a fairway.
 box(-570,8,-480,32,12,22,mat('#d5c9b4'));box(-570,14,-480,35,1.2,25,mat('#475e66'));
+addLandmarks(scene);
 // Animated water normals, sky tint and sun glints. No reflection render pass.
 const waterUniforms={uTime:{value:0},uEye:{value:new THREE.Vector3()},uWind:{value:0},uDir:{value:new THREE.Vector2(1,0)}};
 const waterMat=new THREE.ShaderMaterial({uniforms:waterUniforms,vertexShader:`
