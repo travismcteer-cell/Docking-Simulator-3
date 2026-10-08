@@ -62,4 +62,8 @@ Play areas use touch-action:none and non-passive touch/gesture cancellation. Dis
 
 ## Compact touch controls
 
-Steering, camera catch-up and setup sliders handle touch dragging explicitly, including when another finger holds a control. The textured strip immediately below the scene scrolls the page independently of camera dragging. Drag upward to scroll down, or downward to scroll up. Mouse dragging and keyboard arrows also work on the strip. Routine contact and line status rows, Release all lines and Both neutral have been removed; individual line buttons still show their state. Startup errors remain visible if graphics initialization fails.
+Steering, camera catch-up and setup sliders handle touch dragging explicitly, including when another finger holds a control. The narrow textured strip below the active helm uses native touchscreen page scrolling. There is no scripted scroll loop. Throttle and steering fit together in the available viewport, with a smaller scene on short screens. Camera catch-up is now in Practice setup. Routine contact and line status rows, Release all lines and Both neutral have been removed; individual line buttons still show their state. Startup errors remain visible if graphics initialization fails.
+
+## Orientation controls
+
+Portrait keeps the existing throttle/steering panel below the scene, including BOTH engine controls. Landscape moves independent port and starboard momentary throttle buttons inside the line/fender rails and places steering at bottom centre. Landscape has no BOTH engine buttons. Rotating preserves simulation and camera state while clearing held engine inputs to neutral. Camera catch-up remains in Practice setup.

@@ -5,4 +5,54 @@
 #mini-map{display:block;width:100%;height:auto;pointer-events:none}.scene-frame,.helm-panel,.scene-button,.btn,.map-panel{touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}html,body{overscroll-behavior:none}.form-range{touch-action:none}
 .setup-screen{color:var(--ink);background:#101e30;border:1px solid var(--edge);border-radius:14px;width:min(760px,95vw);max-height:90dvh;overflow:auto;padding:20px}.setup-screen::backdrop{background:#020810c9}.setup-header{display:flex;justify-content:space-between;align-items:center}.setup-header h2{margin:0}.environment-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin:18px 0}.environment-card{border:1px solid var(--edge);border-radius:10px;padding:12px}.environment-card h3{margin:0 0 8px}.compass{position:relative;width:180px;height:180px;border:2px solid #6388a5;background:#20394d;border-radius:50%;margin:14px auto;touch-action:none;cursor:crosshair;outline-offset:4px}.compass svg{width:100%;height:100%;pointer-events:none}.compass text{fill:#eaf1f8;font:12px system-ui}.compass .dial-arrow{transform-origin:90px 90px}.direction-readout{text-align:center;font-size:13px}.setup-footer{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.setup-screen select{width:100%}@media(max-width:550px){.environment-grid{grid-template-columns:1fr}.setup-screen{padding:12px}.compass{width:160px;height:160px}}
 
-#scroll-grip{display:flex;justify-content:center;align-items:center;gap:16px;width:100%;height:36px;margin:6px 0 0;border:1px solid #5c7187;border-radius:7px;color:#dce7ef;font:12px system-ui;background:repeating-linear-gradient(135deg,#293b4e 0 3px,#1b2b3c 3px 7px);touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;cursor:ns-resize}#scroll-grip span{background:#18293bdd;border-radius:5px;padding:3px 9px}#scroll-grip.scrolling{border-color:#a9d8f2}#startup-error{font-size:12px;padding:8px;border:1px solid #b85959;border-radius:7px;margin-top:6px}
+/* Keep the active helm inside the smallest browser viewport (browser chrome open). */
+#dock3d{padding:7px}
+.viz-row{font-size:12px;margin-bottom:6px;min-height:18px}
+.scene-frame{height:clamp(300px,calc(100svh - 300px),650px)}
+.helm-panel{margin-top:6px;gap:6px;grid-template-columns:1.15fr 1fr}
+.control-card{padding:7px}
+.control-card h2{font-size:11px;margin-bottom:6px}
+.engine-controls,.engine-column{gap:4px}
+.column-title{font-size:10px}
+.column-title span{margin:2px 0;font-size:10px}
+.engine-button{min-height:44px;font-size:11px;padding:5px 2px}
+.right-controls{gap:6px}
+.steer-buttons{grid-template-columns:1fr;gap:4px}
+.steer-buttons .btn{min-height:44px}
+.form-range{min-height:36px;margin:5px 0}
+.view-tools{top:6px;left:6px;gap:4px}
+.view-tools button{min-height:32px;padding:5px 7px;font-size:11px}
+.map-panel{width:72px;top:6px;right:6px;padding:3px}
+.map-panel span{font-size:8px;padding:0 0 2px}
+.line-rail{top:86px;width:72px;gap:3px}
+.line-rail.port{left:6px}.line-rail.stbd{right:6px}
+.line-rail .scene-button{min-height:40px;font-size:11px;padding:3px 2px}
+.line-rail strong{font-size:10px}
+.scene-button small{font-size:9px;margin-top:0}
+.scene-hint{font-size:9px;bottom:4px;padding:2px 7px}
+#scroll-grip{display:flex;justify-content:center;align-items:center;height:24px;margin-top:6px;border-radius:5px;color:#bdcfe2;font:10px system-ui;background:repeating-linear-gradient(135deg,#293b4e 0 3px,#1b2b3c 3px 7px);touch-action:pan-y;user-select:none;-webkit-user-select:none}
+#startup-error{font-size:12px;padding:8px;border:1px solid #b85959;border-radius:7px;margin-top:6px}
+.setup-screen>.control-card{margin-bottom:14px}
+@media(max-height:700px){.line-rail{top:68px}.map-panel{width:64px}.map-panel span{display:none}.line-rail .scene-button{min-height:40px}}
+
+.landscape-helm{display:none}
+@media(orientation:landscape){
+ .scene-frame{height:max(300px,calc(100svh - 42px))}
+ .helm-panel{display:none}
+ .landscape-helm{display:contents}
+ .line-rail{top:80px;width:70px;gap:4px}
+ .line-rail .scene-button{min-height:44px}
+ .scene-throttle{position:absolute;top:108px;display:grid;gap:4px;width:70px;text-align:center}
+ .scene-throttle.port{left:82px}.scene-throttle.stbd{right:82px}
+ .scene-throttle strong{font-size:10px;color:#fff;text-shadow:0 1px 3px #000}
+ .scene-throttle strong span{display:block;font-size:9px;font-weight:400}
+ .scene-throttle .engine-button{min-height:44px;background:#26394b99;border-color:#d9e6f08a;font-size:11px}
+ .scene-throttle .engine-button.held{background:#3c6a94df;border-color:#fff;box-shadow:inset 0 0 0 2px #c9e9ff}
+ .scene-steering{position:absolute;bottom:6px;left:50%;transform:translateX(-50%);width:240px;padding:5px 7px;border-radius:8px;background:#15283c88;color:white;backdrop-filter:blur(4px)}
+ .scene-steering label{display:flex;justify-content:space-between;font-size:10px}
+ .scene-steering .form-range{min-height:28px;margin:0}
+ .scene-steering>div{display:grid;grid-template-columns:repeat(3,1fr);gap:4px}
+ .scene-steering .scene-button{min-height:44px;padding:5px 2px;font-size:11px}
+ .scene-hint{top:8px;bottom:auto}
+ .map-panel{width:64px}.map-panel span{display:none}
+}
