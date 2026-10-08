@@ -24,6 +24,10 @@ No npm install, compilation, backend or paid hosting is required. Three.js is in
 - Deploy the fenders on the docking side before contact. They cushion side contact, permit sliding and allow engine/line/fender pivots. Bow and stern contact remains unprotected.
 - Try a bow line with gentle reverse and steering to move the stern away. Try a spring line with a gentle forward pulse to compare the pivot.
 - Switching browser tabs puts both engines in neutral.
+- Scene controls: port lines/fenders are red on the left, starboard green on the right. Labels always refer to the boat, even when looking backward. Each side has independent bow, forward spring, aft spring and stern lines. Buttons show released/slack/taut. The selected side never falls back to the opposite side.
+- View cycles Far, Medium and Helm. Helm looks forward from the helm and follows the boat immediately. All views allow drag-to-look and spring back after release. Recenter clears the look offset.
+- The catch-up slider adjusts Far/Medium camera response from 0–16 seconds; Helm remains locked to heading. Boat reset preserves the chosen view and catch-up time.
+- The top-right mini-map stays north-up and shows boat position/heading. Tap it to enlarge or shrink it. Wind controls live under Wind & environment.
 
 ## Project map
 
@@ -46,4 +50,4 @@ Run `npm test` if Node is installed; there are no dependencies to install. Brows
 
 ## Scope of this version
 
-This is a migration foundation, not yet the full 2D game. Anchor, traffic, multiple boats, the full marina layouts, levels and scoring are still to be ported. The simplified scene keeps physics collisions at the hull's plan outline. Bobbing is cosmetic. Far shoreline scenery is decorative. Lines and fenders are tuned approximations for practice rather than an engineering model of real rope or rubber.
+This is a migration foundation, not yet the full 2D game. Anchor, traffic, multiple boats, levels and scoring are still to be ported. The simplified scene keeps physics collisions at the hull's plan outline. Bobbing is cosmetic. Far shoreline scenery is decorative. Lines and fenders are tuned approximations for practice rather than an engineering model of real rope or rubber.
