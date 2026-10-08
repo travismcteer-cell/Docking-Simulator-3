@@ -2,7 +2,7 @@ import {createSimulation} from './simulation/state.js';
 import {stepPhysics} from './simulation/physics.js';
 import {createGraphics} from './graphics/scene.js';
 import {resetCamera,followCamera} from './graphics/camera.js';
-import {bindControls} from './interface/controls.js';
+import {bindControls} from './interface/controls.js?v=momentary-2';
 const root=document.getElementById('dock3d');
 try {
  const sim=createSimulation(),camera={};resetCamera(camera,sim.state,sim.scale);
