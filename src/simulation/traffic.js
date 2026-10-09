@@ -1,4 +1,4 @@
-import {DOCKS,DOCK_POLYGONS,SPAWNS,SOLIDS,FENDER_SHAPES} from '../data/marina.js?v=touch-9';
+import {DOCKS,DOCK_POLYGONS,SPAWNS,SOLIDS,FENDER_SHAPES} from '../data/marina.js?v=basin-slips-18';
 import {FLEET} from '../data/fleet.js?v=fleet-14';
 import {hullAt,overlap,rectPoly} from './collisions.js?v=fleet-14';
 // NPC dimensions and berth weighting preserved from the supplied 2D game.
