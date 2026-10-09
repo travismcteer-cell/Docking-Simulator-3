@@ -1,7 +1,7 @@
 import {bindDirectionDial} from './setup.js?v=touch-9';
 import {SPAWNS} from '../data/marina.js?v=touch-9';
 import {resetSimulation} from '../simulation/state.js?v=touch-9';
-import {attachLine,LINE_DEFS,lineKey} from '../simulation/lines.js?v=touch-9';
+import {attachLine,LINE_DEFS,lineKey} from '../simulation/lines.js?v=express-13';
 import {resetCamera} from '../graphics/camera.js?v=touch-9';
 export function bindControls(root,sim,camera){const q=s=>root.querySelector(s);const holds=new Map();let sequence=0;
  q('#spawn').replaceChildren(...Object.entries(SPAWNS).map(([key,p])=>{const o=document.createElement('option');o.value=key;o.textContent=p.label;if(key==='f')o.selected=true;return o;}));
