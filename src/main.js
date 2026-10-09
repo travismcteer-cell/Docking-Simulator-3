@@ -4,7 +4,7 @@ import {createSimulation} from './simulation/state.js?v=other-boats-16';
 import {stepPhysics} from './simulation/physics.js?v=fleet-14';
 import {createGraphics} from './graphics/scene.js?v=other-boats-16';
 import {resetCamera,followCamera,bindCameraLook} from './graphics/camera.js?v=helm-height-15';
-import {bindControls} from './interface/controls.js?v=other-boats-16';
+import {bindControls} from './interface/controls.js?v=other-boats-select-17';
 const root=document.getElementById('dock3d');
 try {
  const sim=createSimulation(),camera={};resetCamera(camera,sim.state,sim.scale);
