@@ -67,3 +67,7 @@ Steering, camera catch-up and setup sliders handle touch dragging explicitly, in
 ## Orientation controls
 
 Portrait keeps the existing throttle/steering panel below the scene, including BOTH engine controls. Landscape moves independent port and starboard momentary throttle buttons inside the line/fender rails and places steering at bottom centre. Landscape has no BOTH engine buttons. Rotating preserves simulation and camera state while clearing held engine inputs to neutral. Camera catch-up remains in Practice setup.
+
+## Simple dayboat visual
+
+The procedural boat now uses a contemporary open dayboat silhouette inspired by VanDutch: low wraparound glass, a bow lounge, two helm seats, an aft bench and a slim swim platform. It is an approximation, not an exact VanDutch 32 model. The original 31-foot simulation outline, twin-sterndrive physics, fender positions and rope stations are retained; the visible rub rail matches that outline. No external model, texture assets or dependencies are added.
