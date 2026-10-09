@@ -3,5 +3,6 @@ export function createMiniMap(svg,sim){const size=220,span=Math.max(BOUNDS.maxX-
  for(const p of LAND)node('polygon',{points:p.points.map(point).map(p=>p.join(',')).join(' '),fill:'#6b805a'});
  for(const d of DOCKS){const [x,y]=point(d);node('rect',{x,y,width:Math.max(.7,d.w*scale),height:Math.max(.7,d.h*scale),fill:'#c0a37a'});}
  for(const p of DOCK_POLYGONS)node('polygon',{points:p.points.map(point).map(p=>p.join(',')).join(' '),fill:p.kind==='stone'?'#92988d':'#b9b19a'});
- const boat=node('path',{id:'map-boat',d:'M10 0 L-6 -5 L-3 0 L-6 5 Z',fill:'#fff4a3',stroke:'#102333','stroke-width':1.5});let last=-Infinity;function paint(now=0){if(now-last<100)return;last=now;const [x,y]=point({x:sim.state.x*sim.scale,y:sim.state.y*sim.scale});boat.setAttribute('transform',`translate(${x} ${y}) rotate(${sim.state.a})`);}paint();return {paint};
+ const traffic=node('g',{});let revision=-1;
+ const boat=node('path',{id:'map-boat',d:'M10 0 L-6 -5 L-3 0 L-6 5 Z',fill:'#fff4a3',stroke:'#102333','stroke-width':1.5});let last=-Infinity;function paint(now=0){if(now-last<100)return;last=now;if(revision!==sim.trafficRevision){traffic.replaceChildren();for(const b of sim.otherBoats||[]){const n=document.createElementNS(ns,'polygon');n.setAttribute('points',b.points.map(point).map(p=>p.join(',')).join(' '));n.setAttribute('fill','#d9e4e8');traffic.append(n);}revision=sim.trafficRevision;}const [x,y]=point({x:sim.state.x*sim.scale,y:sim.state.y*sim.scale});boat.setAttribute('transform',`translate(${x} ${y}) rotate(${sim.state.a})`);}paint();return {paint};
 }
