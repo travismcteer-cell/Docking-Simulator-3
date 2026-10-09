@@ -1,10 +1,10 @@
 import {bindGameTouch,bindTouchRanges} from './interface/touch.js?v=layout-10';
-import {createMiniMap} from './interface/minimap.js?v=touch-9';
-import {createSimulation} from './simulation/state.js?v=fleet-14';
+import {createMiniMap} from './interface/minimap.js?v=other-boats-16';
+import {createSimulation} from './simulation/state.js?v=other-boats-16';
 import {stepPhysics} from './simulation/physics.js?v=fleet-14';
-import {createGraphics} from './graphics/scene.js?v=helm-height-15';
+import {createGraphics} from './graphics/scene.js?v=other-boats-16';
 import {resetCamera,followCamera,bindCameraLook} from './graphics/camera.js?v=helm-height-15';
-import {bindControls} from './interface/controls.js?v=helm-height-15';
+import {bindControls} from './interface/controls.js?v=other-boats-16';
 const root=document.getElementById('dock3d');
 try {
  const sim=createSimulation(),camera={};resetCamera(camera,sim.state,sim.scale);
