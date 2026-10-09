@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Docking Trainer 3D</title><link rel="stylesheet" href="styles.css?v=orientation-11"></head><body>
 <main id="dock3d">
- <header class="viz-row"><strong>Docking Trainer · Twin-drive dayboat</strong><span id="readout" class="tabular-nums">0.0 kt</span></header>
+ <header class="viz-row"><strong>Docking Trainer · Express-33</strong><span id="readout" class="tabular-nums">0.0 kt</span></header>
  <div class="scene-frame">
   <canvas id="game-canvas" aria-label="3D marina; drag to look around"></canvas>
   <div class="view-tools"><button type="button" class="scene-button" id="view">View · Medium</button><button type="button" class="scene-button" id="recenter" aria-label="Return camera behind boat">Recenter</button></div>
@@ -28,4 +28,4 @@
  <section class="environment-card"><h3>Current <span id="uv">0 kt</span></h3><input class="form-range" id="current" aria-label="Current speed" type="range" min="0" max="3" step="0.1" value="0"><div class="compass" id="current-compass" role="slider" tabindex="0" aria-label="Current direction, blows or flows toward" aria-valuemin="0" aria-valuemax="359" aria-valuenow="90"><svg viewBox="0 0 180 180"><circle cx="90" cy="90" r="66" fill="none" stroke="#57748b"/><text x="90" y="20" text-anchor="middle">N</text><text x="165" y="94" text-anchor="middle">E</text><text x="90" y="167" text-anchor="middle">S</text><text x="15" y="94" text-anchor="middle">W</text><g class="dial-arrow"><path d="M90 140 V47 M77 61 L90 43 L103 61" fill="none" stroke="#88e0c0" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></g></svg></div><input id="current-direction" type="hidden" value="180"><div class="direction-readout" id="ud">S · 180°</div><p class="text-small">Water flow acts at the underwater centre of resistance.</p></section></div>
    <div class="control-card"><label for="catchup">Camera catch-up <strong id="cv">8 s</strong></label><input class="form-range" id="catchup" type="range" min="0" max="16" step="0.5" value="8"><div class="text-small" id="catchup-note">Far / Medium follow delay · 0 = immediate</div></div>
  <label>Starting location <select class="form-select" id="spawn"></select></label><p class="text-small">Changing the start resets the boat and releases its lines. Simulation pauses while setup is open.</p></dialog>
-</main><script type="module" src="src/main.js?v=dayboat-12"></script></body></html>
+</main><script type="module" src="src/main.js?v=express-13"></script></body></html>

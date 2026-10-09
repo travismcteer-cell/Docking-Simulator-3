@@ -68,6 +68,8 @@ Steering, camera catch-up and setup sliders handle touch dragging explicitly, in
 
 Portrait keeps the existing throttle/steering panel below the scene, including BOTH engine controls. Landscape moves independent port and starboard momentary throttle buttons inside the line/fender rails and places steering at bottom centre. Landscape has no BOTH engine buttons. Rotating preserves simulation and camera state while clearing held engine inputs to neutral. Camera catch-up remains in Practice setup.
 
-## Simple dayboat visual
+## Express-33 visual
 
-The procedural boat now uses a contemporary open dayboat silhouette inspired by VanDutch: low wraparound glass, a bow lounge, two helm seats, an aft bench and a slim swim platform. It is an approximation, not an exact VanDutch 32 model. The original 31-foot simulation outline, twin-sterndrive physics, fender positions and rope stations are retained; the visible rub rail matches that outline. No external model, texture assets or dependencies are added.
+The boat uses the supplied configurator geometry and Express-33 definition, with a 31.5-foot hull, 11-foot beam and 2-foot swim platform (33.5 feet overall). Added fittings include rub rails, bow rails, cleats, cockpit seats, a wheel and instruments. Windscreen opacity defaults to 0.35 in src/graphics/boats.js. Geometry generators and the boat definition are separate modules; no external model files or extra dependencies are needed.
+
+The convex docking collision perimeter follows the hull rail and includes the swim platform. Rope attachment positions match the visible cleats; fenders follow the new hull outline. Existing 31-foot twin-sterndrive handling calibration is retained rather than inferred from visual dimensions. All marina starts clear the enlarged outline. The berth test fixture was moved 0.2 feet inward to keep its starting position clear of the wider hull.
