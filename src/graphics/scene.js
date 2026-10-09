@@ -1,7 +1,7 @@
 import {addLandmarks} from './landmarks.js?v=touch-9';
 import {cameraPose} from './camera.js?v=touch-9';
 import {DOCK_POLYGONS,LAND,ANCHOR_GUIDES,BOUNDS} from '../data/marina.js?v=touch-9';
-import {createCruiser} from './boats.js?v=touch-9';
+import {createCruiser} from './boats.js?v=dayboat-12';
 import * as THREE from '../../vendor/three.module.js?v=touch-9';
 import {createDockingGraphics} from './docking.js?v=touch-9';
 export function createGraphics(canvas,sim,camera){
