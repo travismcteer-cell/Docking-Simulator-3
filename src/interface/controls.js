@@ -1,8 +1,8 @@
-import {setOtherBoats} from '../simulation/traffic.js?v=other-boats-16';
+import {setOtherBoats} from '../simulation/traffic.js?v=basin-slips-18';
 import {FLEET} from '../data/fleet.js?v=fleet-14';
 import {bindDirectionDial} from './setup.js?v=touch-9';
-import {SPAWNS} from '../data/marina.js?v=touch-9';
-import {resetSimulation,selectBoat} from '../simulation/state.js?v=other-boats-16';
+import {SPAWNS} from '../data/marina.js?v=basin-slips-18';
+import {resetSimulation,selectBoat} from '../simulation/state.js?v=basin-slips-18';
 import {attachLine,LINE_DEFS,lineKey} from '../simulation/lines.js?v=fleet-14';
 import {resetCamera} from '../graphics/camera.js?v=helm-height-15';
 export function bindControls(root,sim,camera){const q=s=>root.querySelector(s);const holds=new Map();let sequence=0;
