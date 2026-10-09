@@ -1,14 +1,15 @@
-import {bodyPoint} from './collisions.js?v=touch-9';
+import {bodyPoint} from './collisions.js?v=fleet-14';
 export const LINE_DEFS={bow:{xFrac:41/108,xBody:.4,beam:2.3212,height:4.2917,label:'Bow'},fwdSpring:{xFrac:18/108,xBody:.18,beam:4.5645,height:4.2917,label:'Forward spring'},aftSpring:{xFrac:-18/108,xBody:-.18,beam:5.0017,height:4.2917,label:'Aft spring'},stern:{xFrac:-45/108,xBody:-.42,beam:4.6248,height:3.1500,label:'Stern'}};
 // Same spring/damping model as the 2D app; lengths convert feet to simulator units.
 export const LINE_TUNING={stiffness:2.8,damping:.44,maxTension:.08,attachSlack:.00015};
-export function cleatPoint(sim,type,side){const d=LINE_DEFS[type];return bodyPoint(sim.state,d.xFrac*31,side*d.beam,sim.scale);}
+export function cleatPoint(sim,type,side){const d=(sim.lineDefs||LINE_DEFS)[type];return bodyPoint(sim.state,d.xFrac*(sim.geometryLength||31),side*d.beam,sim.scale);}
 export function lineKey(type,side){return side?side+':'+type:type;}
-export function attachLine(sim,type,sideName){const key=lineKey(type,sideName),label=(sideName==='port'?'Port ':sideName==='stbd'?'Starboard ':'')+LINE_DEFS[type].label;if(sim.lines[key]){delete sim.lines[key];return `${label} released`;}
+export function attachLine(sim,type,sideName){const key=lineKey(type,sideName),label=(sideName==='port'?'Port ':sideName==='stbd'?'Starboard ':'')+(sim.lineDefs||LINE_DEFS)[type].label;if(sim.lines[key]){delete sim.lines[key];return `${label} released`;}
  const a=sim.state.a*Math.PI/180;let best=null;const sides=sideName?[sideName==='port'?-1:1]:[-1,1];
  // Springs need longitudinal reach between spaced cleats; keep the dock within 12 ft sideways.
  for(const side of sides){const cleat=cleatPoint(sim,type,side);for(const target of sim.dockCleats){const dx=target.x-cleat.x,dy=target.y-cleat.y,dist=Math.hypot(dx,dy);const isSpring=type==='fwdSpring'||type==='aftSpring';if(dist>(isSpring?24:12))continue;const along=dx*Math.cos(a)+dy*Math.sin(a),outward=side*(-dx*Math.sin(a)+dy*Math.cos(a));if(sideName&&outward<-.1)continue;if(isSpring&&Math.abs(outward)>12)continue;if(type==='fwdSpring'&&along>-4)continue;if(type==='aftSpring'&&along<4)continue;if(!best||dist<best.score)best={type,sideName,side,target,score:dist,lengthN:dist/sim.scale+LINE_TUNING.attachSlack,tension:0};}}
  if(!best)return `Move closer to a suitable dock cleat for the ${label.toLowerCase()}`;sim.lines[key]=best;return `${label} attached`;
 }
-export function applyLines(sim,dt,addForce){const s=sim.state,omega=s.omega*Math.PI/180;for(const [type,line] of Object.entries(sim.lines)){const def=LINE_DEFS[line.type||type],p=cleatPoint(sim,line.type||type,line.side),dx=(line.target.x-p.x)/sim.scale,dy=(line.target.y-p.y)/sim.scale,dist=Math.hypot(dx,dy),stretch=dist-line.lengthN;line.tension=0;if(stretch<=0||dist<1e-8)continue;const ux=dx/dist,uy=dy/dist,rx=p.x/sim.scale-s.x,ry=p.y/sim.scale-s.y;const vx=s.vx-omega*ry,vy=s.vy+omega*rx,outward=-(vx*ux+vy*uy);line.tension=Math.min(LINE_TUNING.maxTension,Math.max(0,LINE_TUNING.stiffness*stretch+LINE_TUNING.damping*Math.max(0,outward)));addForce(ux*line.tension,uy*line.tension,def.xBody,line.side*def.beam/31);}}
+export function applyLines(sim,dt,addForce){const s=sim.state,omega=s.omega*Math.PI/180;for(const [type,line] of Object.entries(sim.lines)){const def=(sim.lineDefs||LINE_DEFS)[line.type||type],p=cleatPoint(sim,line.type||type,line.side),dx=(line.target.x-p.x)/sim.scale,dy=(line.target.y-p.y)/sim.scale,dist=Math.hypot(dx,dy),stretch=dist-line.lengthN;line.tension=0;if(stretch<=0||dist<1e-8)continue;const ux=dx/dist,uy=dy/dist,rx=p.x/sim.scale-s.x,ry=p.y/sim.scale-s.y;const vx=s.vx-omega*ry,vy=s.vy+omega*rx,outward=-(vx*ux+vy*uy);line.tension=Math.min(LINE_TUNING.maxTension,Math.max(0,LINE_TUNING.stiffness*stretch+LINE_TUNING.damping*Math.max(0,outward)));addForce(ux*line.tension,uy*line.tension,def.xBody,line.side*def.beam/(sim.geometryLength||31));}}
+
 

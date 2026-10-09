@@ -1,12 +1,12 @@
-import {integrate} from './collisions.js?v=touch-9';
-import {applyLines} from './lines.js?v=express-13';
-import {applyFenders} from './fenders.js?v=touch-9';
+import {integrate} from './collisions.js?v=fleet-14';
+import {applyLines} from './lines.js?v=fleet-14';
+import {applyFenders} from './fenders.js?v=fleet-14';
   export function stepPhysics(sim,dt){
 
 
     const {state,environment}=sim;
     const activeBoat=()=>sim.boat;
-    const bowThrusterInput=0;
+    const bowThrusterInput=state.bowThruster||0;
     const ang=state.a*Math.PI/180;
     const steerRad=state.steer*Math.PI/180;
 
@@ -93,7 +93,8 @@ import {applyFenders} from './fenders.js?v=touch-9';
       state.omega += (-extraLever * lateralThrust) * yawScale * dt;
     }
 
-    if(propulsion.type==='singleSterndrive'){
+    const singleEngine=propulsion.type==='singleSterndrive'||propulsion.type==='singleOutboard';
+    if(singleEngine){
       engineForce(state.port,0);
     } else {
       engineForce(state.port,-1);
@@ -124,7 +125,7 @@ import {applyFenders} from './fenders.js?v=touch-9';
         const directionGain=vf>=0 ? 1 : (propulsion.reverseFlowRudderGain ?? 0.45);
         const flowLateral=-Math.abs(vf)*vf*steerSin*propulsion.flowRudderGain*directionGain;
         addForce(rightx*flowLateral,righty*flowLateral,propulsion.rudderX,0);
-      } else if(propulsion.type==='twinSterndrive' || propulsion.type==='singleSterndrive'){
+      } else if(propulsion.type==='twinSterndrive' || propulsion.type==='singleSterndrive' || propulsion.type==='singleOutboard'){
         // Turned sterndrive gearcases/lower units also act like small foils
         // while coasting, but with less authority than dedicated rudders.
         const directionGain=vf>=0 ? 1 : (propulsion.reverseFlowSteerGain ?? 0.7);
@@ -152,7 +153,7 @@ import {applyFenders} from './fenders.js?v=touch-9';
       const hullSpeedKt=1.34*Math.sqrt(boat.dimensions.lengthFt*0.90);
       const ratio=(v*110)/hullSpeedKt;
       if(ratio<=0.60) return resistance;
-      const engines=propulsion.type==='singleSterndrive' ? 1 : 2;
+      const engines=singleEngine ? 1 : 2;
       const dockModeMaxThrust=propulsion.thrust*0.25*engines;
       const t=Math.min(1,(ratio-0.60)/0.25);
       const smooth=t*t*(3-2*t);
@@ -237,7 +238,7 @@ import {applyFenders} from './fenders.js?v=touch-9';
     // the calibration represents the resulting steady low-speed curvature rather
     // than being immediately cancelled by the hydrodynamic resistance model.
     const speedKt=Math.hypot(state.vx,state.vy)*110;
-    const bothAhead=state.port>0.02 && state.stbd>0.02;
+    const bothAhead=state.port>0.02 && (singleEngine||state.stbd>0.02);
     const steerFrac=Math.min(1,Math.abs(state.steer)/activeBoat().propulsion.maxSteerDeg);
 
     if(bothAhead && steerFrac>0.35 && speedKt>0.10){
@@ -270,3 +271,4 @@ import {applyFenders} from './fenders.js?v=touch-9';
 
     integrate(sim,dt);
   }
+
