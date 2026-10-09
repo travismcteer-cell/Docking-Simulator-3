@@ -1,13 +1,15 @@
+import {FLEET} from '../data/fleet.js?v=fleet-14';
 import {bindDirectionDial} from './setup.js?v=touch-9';
 import {SPAWNS} from '../data/marina.js?v=touch-9';
-import {resetSimulation} from '../simulation/state.js?v=touch-9';
-import {attachLine,LINE_DEFS,lineKey} from '../simulation/lines.js?v=express-13';
-import {resetCamera} from '../graphics/camera.js?v=touch-9';
+import {resetSimulation,selectBoat} from '../simulation/state.js?v=fleet-14';
+import {attachLine,LINE_DEFS,lineKey} from '../simulation/lines.js?v=fleet-14';
+import {resetCamera} from '../graphics/camera.js?v=fleet-14';
 export function bindControls(root,sim,camera){const q=s=>root.querySelector(s);const holds=new Map();let sequence=0;
  q('#spawn').replaceChildren(...Object.entries(SPAWNS).map(([key,p])=>{const o=document.createElement('option');o.value=key;o.textContent=p.label;if(key==='f')o.selected=true;return o;}));
+ q('#boat-select').replaceChildren(...Object.values(FLEET).map(entry=>{const o=document.createElement('option');o.value=entry.id;o.textContent=entry.name;return o;}));
  const windDial=bindDirectionDial(root,'wind'),currentDial=bindDirectionDial(root,'current');
  const buttons=[...root.querySelectorAll('.engine-button[data-engine]')];
- function applyHolds(){for(const side of ['port','stbd']){const active=[...holds.values()].filter(h=>h.engine===side||h.engine==='both').sort((a,b)=>b.order-a.order)[0];sim.state[side]=active?active.power:0;}for(const button of buttons){const held=[...holds.values()].some(h=>h.button===button);button.classList.toggle('held',held);button.setAttribute('aria-pressed',String(held));}update();}
+ function applyHolds(){for(const side of ['port','stbd']){const active=[...holds.values()].filter(h=>h.engine===side||h.engine==='both').sort((a,b)=>b.order-a.order)[0];sim.state[side]=active?active.power:0;}if(sim.boat.propulsion.type==='singleOutboard')sim.state.stbd=0;const thruster=[...holds.values()].filter(h=>h.engine==='thruster').sort((a,b)=>b.order-a.order)[0];sim.state.bowThruster=sim.boat.propulsion.bowThruster&&thruster?thruster.power:0;for(const button of buttons){const held=[...holds.values()].some(h=>h.button===button);button.classList.toggle('held',held);button.setAttribute('aria-pressed',String(held));}update();}
  function begin(token,button){holds.set(token,{button,engine:button.dataset.engine,power:+button.dataset.power/100,order:++sequence});applyHolds();}
  function end(token){if(holds.delete(token))applyHolds();}
  const neutral=()=>{holds.clear();applyHolds();};
@@ -28,6 +30,8 @@ export function bindControls(root,sim,camera){const q=s=>root.querySelector(s);c
  q('#map-toggle').onclick=()=>{const b=q('#map-toggle'),expanded=b.classList.toggle('expanded');b.setAttribute('aria-expanded',String(expanded));};
  for(const b of root.querySelectorAll('[data-steer]'))b.onclick=()=>{q('#steer').value=b.dataset.steer;sync();};
  function reset(){neutral();resetSimulation(sim,q('#spawn').value);resetCamera(camera,sim.state,sim.scale);q('#steer').value=0;update();}
+ function updateBoatControls(){q('header strong').textContent='Docking Trainer · '+sim.model.definition.name;const single=sim.boat.propulsion.type==='singleOutboard';for(const column of root.querySelectorAll('.engine-column')){const engine=column.querySelector('[data-engine]')?.dataset.engine;column.style.display=single&&engine!=='port'?'none':'';}q('.engine-controls').style.gridTemplateColumns=single?'1fr':'';q('.scene-throttle.stbd').style.display=single?'none':'';q('.engine-column .column-title').firstChild.nodeValue=single?'ENGINE ':'PORT ';q('.scene-throttle.port strong').firstChild.nodeValue=single?'ENGINE':'PORT';for(const button of root.querySelectorAll('[data-engine=port]'))button.setAttribute('aria-label',(single?'Engine':'Port engine')+' '+Math.abs(+button.dataset.power)+' percent '+(+button.dataset.power>0?'ahead':'reverse')+', hold for power');for(const el of root.querySelectorAll('[data-thruster-controls]'))el.hidden=!sim.boat.propulsion.bowThruster;q('#boat-note').textContent=single?'21-foot bowrider · one steerable outboard':sim.model.id==='Express-33'?'33.5 feet overall · existing twin-sterndrive handling':sim.model.id==='sportfisher-30'?'30-foot hull · old 30-foot twin-inboard handling':'49.5-foot hull · old 55-foot yacht handling · bow thruster';}
+ q('#boat-select').onchange=()=>{neutral();selectBoat(sim,q('#boat-select').value,q('#spawn').value);resetCamera(camera,sim.state,sim.scale);q('#steer').value=0;updateBoatControls();update();};updateBoatControls();
  q('#reset').onclick=reset;q('#spawn').onchange=reset;
  for(const side of ['port','stbd'])for(const type of Object.keys(LINE_DEFS))q('#line-'+side+'-'+type).onclick=()=>{const notice=attachLine(sim,type,side);const button=q('#line-'+side+'-'+type);button.title=notice;update();};
  for(const side of ['port','stbd'])q('#fender-'+side).onclick=()=>{sim.fenders[side]=!sim.fenders[side];update();};
@@ -36,3 +40,4 @@ export function bindControls(root,sim,camera){const q=s=>root.querySelector(s);c
  window.addEventListener('blur',neutral);document.addEventListener('visibilitychange',()=>{if(document.hidden)neutral();});
  update();return {update,reset};
 }
+
