@@ -1,10 +1,10 @@
 import {bindGameTouch,bindTouchRanges} from './interface/touch.js?v=layout-10';
-import {createMiniMap} from './interface/minimap.js?v=other-boats-16';
-import {createSimulation} from './simulation/state.js?v=other-boats-16';
+import {createMiniMap} from './interface/minimap.js?v=basin-slips-18';
+import {createSimulation} from './simulation/state.js?v=basin-slips-18';
 import {stepPhysics} from './simulation/physics.js?v=fleet-14';
-import {createGraphics} from './graphics/scene.js?v=other-boats-16';
+import {createGraphics} from './graphics/scene.js?v=basin-slips-18';
 import {resetCamera,followCamera,bindCameraLook} from './graphics/camera.js?v=helm-height-15';
-import {bindControls} from './interface/controls.js?v=other-boats-select-17';
+import {bindControls} from './interface/controls.js?v=basin-slips-18';
 const root=document.getElementById('dock3d');
 try {
  const sim=createSimulation(),camera={};resetCamera(camera,sim.state,sim.scale);
