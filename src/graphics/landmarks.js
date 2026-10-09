@@ -1,5 +1,5 @@
 import * as THREE from '../../vendor/three.module.js?v=touch-9';
-import {DOCKS,LAND} from '../data/marina.js?v=touch-9';
+import {DOCKS,LAND} from '../data/marina.js?v=basin-slips-18';
 export function addLandmarks(scene){const material=color=>new THREE.MeshStandardMaterial({color,roughness:.86}),trunkMat=material('#725340'),leafMat=material('#416446'),wall=material('#dfd5bc'),roof=material('#384d5a'),red=material('#b83232'),white=material('#e8e9e1'),black=material('#162732');
  const inside=(x,y,p)=>{let hit=false;for(let i=0,j=p.length-1;i<p.length;j=i++){const a=p[j],b=p[i];if((a.y>y)!==(b.y>y)&&x<(b.x-a.x)*(y-a.y)/(b.y-a.y)+a.x)hit=!hit;}return hit;};const trees=[];for(let x=-630;x<710;x+=43)for(let z=-503;z<515;z+=43){const px=x+Math.sin(x*3+z)*7,pz=z+Math.cos(z*2-x)*7;if(LAND.some(p=>inside(px,pz,p.points)))trees.push([px,pz]);}
  const instances=(geo,mat,position)=>{const m=new THREE.InstancedMesh(geo,mat,trees.length),matrix=new THREE.Matrix4();trees.forEach(([x,z],i)=>{const [y,s]=position(i);matrix.compose(new THREE.Vector3(x,y,z),new THREE.Quaternion(),new THREE.Vector3(s,s,s));m.setMatrixAt(i,matrix);});m.castShadow=true;m.receiveShadow=true;scene.add(m);};instances(new THREE.CylinderGeometry(.65,.9,11,6),trunkMat,()=>[8,1]);instances(new THREE.IcosahedronGeometry(7,0),leafMat,i=>[18,1+(i%4)*.1]);

@@ -1,7 +1,7 @@
-import {createOtherBoatGraphics} from './traffic.js?v=other-boats-16';
-import {addLandmarks} from './landmarks.js?v=touch-9';
+import {createOtherBoatGraphics} from './traffic.js?v=basin-slips-18';
+import {addLandmarks} from './landmarks.js?v=basin-slips-18';
 import {cameraPose} from './camera.js?v=helm-height-15';
-import {DOCK_POLYGONS,LAND,ANCHOR_GUIDES,BOUNDS} from '../data/marina.js?v=touch-9';
+import {DOCK_POLYGONS,LAND,ANCHOR_GUIDES,BOUNDS} from '../data/marina.js?v=basin-slips-18';
 import {createCruiser} from './boats.js?v=fleet-14';
 import * as THREE from '../../vendor/three.module.js?v=touch-9';
 import {createDockingGraphics} from './docking.js?v=fleet-14';
