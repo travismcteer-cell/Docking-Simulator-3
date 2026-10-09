@@ -1,5 +1,5 @@
 import {addLandmarks} from './landmarks.js?v=touch-9';
-import {cameraPose} from './camera.js?v=fleet-14';
+import {cameraPose} from './camera.js?v=helm-height-15';
 import {DOCK_POLYGONS,LAND,ANCHOR_GUIDES,BOUNDS} from '../data/marina.js?v=touch-9';
 import {createCruiser} from './boats.js?v=fleet-14';
 import * as THREE from '../../vendor/three.module.js?v=touch-9';
@@ -85,4 +85,5 @@ const cleatMesh=new THREE.InstancedMesh(new THREE.BoxGeometry(.9,.15,.24),chrome
 function resize(){const width=canvas.clientWidth,height=canvas.clientHeight;renderer.setSize(width,height,false);viewCamera.aspect=width/height;viewCamera.updateProjectionMatrix();}
 return {paint,resize,renderer};
 }
+
 

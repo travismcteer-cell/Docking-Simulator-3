@@ -33,8 +33,12 @@ for(let i=0;i<3;i++)box(.008+i*.08,floorY+.79,.55,.045,.045,.008,steel);
  const floorY=Math.min(deckAt((p.cockpitOffset-p.aft)*FT)[1],deckAt((p.cockpitOffset+p.cockpit-p.aft)*FT)[1])-p.cockpitDepth*FT;
  const aftSeatX=(p.cockpitOffset-p.aft)*FT+.48;
  if(isBow){
-  box(aftSeatX,floorY+.34,0,.60,.52,sternWidth*.65,mats.deck);box(aftSeatX,floorY+.64,0,.62,.13,sternWidth*.68,cushion);box(aftSeatX-.23,floorY+.90,0,.14,.5,sternWidth*.68,cushion);
-  for(const sign of [-1,1]){const x=(p.forward-5)*FT,d=deckAt(x),z=sign*d[2]*.53;box(x,floorY+.50,z,1.0,.16,.42,cushion);box(x,floorY+.72,sign*(Math.abs(z)+.16),1.05,.42,.12,cushion);}
+  // Low cushions sit just above the cockpit sole, without raised box bases.
+  box(aftSeatX,floorY+.10,0,.62,.13,sternWidth*.68,cushion);box(aftSeatX-.23,floorY+.36,0,.14,.5,sternWidth*.68,cushion);
+  // A full-width bulkhead supports the forward windscreen down to the cockpit floor.
+  const screenX=(p.enclosureOffset+p.enclosureLength-p.aft)*FT,screenDeck=deckAt(screenX),screenBase=screenDeck[1]+p.enclosureLift*FT;
+  box(screenX,(floorY+screenBase)/2,0,.10,Math.max(.02,screenBase-floorY),screenDeck[2]*2*p.enclosureWidth/100,mats.cabin);
+  box(screenX,screenBase+.012,0,.12,.024,screenDeck[2]*2*p.enclosureWidth/100,rubber);
  }else{
   box(aftSeatX,floorY+.30,0,.65,.5,sternWidth*.60,mats.deck);box(aftSeatX,floorY+.58,0,.67,.14,sternWidth*.62,cushion);
   // Teak steps and stainless grab rails into the flybridge.
@@ -49,7 +53,8 @@ for(let i=0;i<3;i++)box(.008+i*.08,floorY+.79,.55,.045,.045,.008,steel);
  const hx=(entry.helm.forward+entry.originShift)*FT,hz=entry.helm.side*FT,hy=entry.helmFloor,helmScale=Math.min(size,(entry.helm.height*FT-hy-.12)/.80);
  box(hx+.24,hy+.58*helmScale,hz,.47*size,.30*size,.50*size,rubber);
  const wheel=new THREE.Mesh(new THREE.TorusGeometry(.14*size,.018,6,24),steel);wheel.rotation.y=Math.PI/2;wheel.position.set(hx,hy+.80*helmScale,hz);boat.add(wheel);
- box(hx-.63*size,hy+.35*helmScale,hz,.5*size,.55*size,.48*size,mats.deck);box(hx-.63*size,hy+.64*helmScale,hz,.55*size,.13,.54*size,cushion);box(hx-.85*size,hy+.75*helmScale,hz,.13,.47*size,.54*size,cushion);
+ if(isBow){box(hx-.63,floorY+.10,hz,.55,.13,.54,cushion);box(hx-.85,floorY+.34,hz,.13,.47,.54,cushion);}
+ else{box(hx-.63*size,hy+.35*helmScale,hz,.5*size,.55*size,.48*size,mats.deck);box(hx-.63*size,hy+.64*helmScale,hz,.55*size,.13,.54*size,cushion);box(hx-.85*size,hy+.75*helmScale,hz,.13,.47*size,.54*size,cushion);}
  for(let i=0;i<3;i++){const gauge=new THREE.Mesh(new THREE.CylinderGeometry(.045*size,.045*size,.012,12),steel);gauge.rotation.z=Math.PI/2;gauge.position.set(hx+.001,hy+.63*helmScale,hz+(i-1)*.12*size);boat.add(gauge);}
  if(!isBow){const mountX=(p.enclosureOffset-p.aft+p.enclosureLength*p.accessoryPosition/100)*FT,ax=mountX-p.accessoryHeight*FT*.18,ay=deckAt(mountX)[1]+p.accessoryHeight*FT;box(ax,ay+.13,0,.45,.24,.55,mats.arch);box(ax,ay+.29,0,.9*size,.08,.14,steel);tube([[ax,ay,0],[ax,ay+1.0*size,0]],.013,steel);}
  // Red port and green starboard sidelights, mounted on the sheer.
@@ -75,4 +80,5 @@ for(let i=0;i<3;i++)box(.008+i*.08,floorY+.79,.55,.045,.045,.008,steel);
 
 return vessel;
 }
+
 
