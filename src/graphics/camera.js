@@ -9,7 +9,8 @@ export function bindCameraLook(canvas,camera){let pointer=null,x=0,y=0;
  canvas.addEventListener('contextmenu',e=>e.preventDefault());canvas.style.cursor='grab';
 }
 
-export function cameraPose(camera,state,scale){const h=camera.mode==='helm'?state.a*Math.PI/180:camera.heading,yaw=camera.lookYaw||0,pitch=camera.lookPitch||0;
- if(camera.mode==='helm'){const x=state.x*scale-4.7*Math.cos(h)+1.8*Math.sin(h),z=state.y*scale-4.7*Math.sin(h)-1.8*Math.cos(h);return {eye:[x,6.15,z],target:[x+40*Math.cos(h+yaw),6.15+40*Math.tan(pitch),z+40*Math.sin(h+yaw)]};}
+export function cameraPose(camera,state,scale,helm){const h=camera.mode==='helm'?state.a*Math.PI/180:camera.heading,yaw=camera.lookYaw||0,pitch=camera.lookPitch||0;
+ if(camera.mode==='helm'){const forward=helm?.forward??.05/.3048,side=helm?.side??.65/.3048,height=helm?.height??1.9086576/.3048;const x=state.x*scale+forward*Math.cos(h)-side*Math.sin(h),z=state.y*scale+forward*Math.sin(h)+side*Math.cos(h);return {eye:[x,height,z],target:[x+40*Math.cos(h+yaw),height+40*Math.tan(pitch),z+40*Math.sin(h+yaw)]};}
  const far=camera.mode==='far',distance=far?135:83,height=far?54:24,ahead=far?20:18,tx=camera.x+ahead*Math.cos(h),tz=camera.y+ahead*Math.sin(h);return {eye:[tx-distance*Math.cos(h+yaw),1+distance*Math.tan(Math.atan2(height,distance)+pitch),tz-distance*Math.sin(h+yaw)],target:[tx,1,tz]};
 }
+

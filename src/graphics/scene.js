@@ -1,9 +1,9 @@
 import {addLandmarks} from './landmarks.js?v=touch-9';
-import {cameraPose} from './camera.js?v=touch-9';
+import {cameraPose} from './camera.js?v=fleet-14';
 import {DOCK_POLYGONS,LAND,ANCHOR_GUIDES,BOUNDS} from '../data/marina.js?v=touch-9';
-import {createCruiser} from './boats.js?v=express-13';
+import {createCruiser} from './boats.js?v=fleet-14';
 import * as THREE from '../../vendor/three.module.js?v=touch-9';
-import {createDockingGraphics} from './docking.js?v=express-13';
+import {createDockingGraphics} from './docking.js?v=fleet-14';
 export function createGraphics(canvas,sim,camera){
 const {state,docks,outline,scale}=sim;
 const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:false});
@@ -24,7 +24,7 @@ function surface(points,material,parent){const g=new THREE.BufferGeometry();cons
 function outlineDeck(poly,y,material,parent){const shape=new THREE.Shape();poly.forEach(([x,z],i)=>i?shape.lineTo(x,-z):shape.moveTo(x,-z));shape.closePath();const g=new THREE.ShapeGeometry(shape);g.rotateX(-Math.PI/2);g.translate(0,y,0);return mesh(g,material,parent);}
 function loft(poly,rings,material,parent){const v=[],indices=[],n=poly.length;for(const [y,sx,sz] of rings)for(const [x,z] of poly)v.push(x*sx,y,z*sz);for(let j=0;j<rings.length-1;j++)for(let i=0;i<n;i++){const a=j*n+i,b=j*n+(i+1)%n,c=b+n,d=a+n;indices.push(a,d,b,b,d,c);}const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(v,3));g.setIndex(indices);g.computeVertexNormals();const m=mesh(g,material,parent);m.material.side=THREE.DoubleSide;return m;}
 function pathTube(points,r,material,parent,closed=false){const c=new THREE.CatmullRomCurve3(points.map(p=>new THREE.Vector3(...p)),closed,'centripetal');return mesh(new THREE.TubeGeometry(c,Math.max(20,points.length*5),r,6,closed),material,parent);}
-const vessel=createCruiser(outline,{mesh,box,rod,surface,outlineDeck,loft,pathTube},{ivory,hullWhite,trim,chrome,cushion,teak,rubber,windowMat,mat});scene.add(vessel);
+let vessel=createCruiser(sim.model),modelId=sim.model.id;scene.add(vessel);
 // Procedural wood texture: no image downloads.
 const texCanvas=document.createElement('canvas');texCanvas.width=128;texCanvas.height=256;const tc=texCanvas.getContext('2d');tc.fillStyle='#a28c6a';tc.fillRect(0,0,128,256);
 let seed=71;function random(){seed=(seed*1664525+1013904223)>>>0;return seed/4294967296;}
@@ -70,18 +70,19 @@ const foamCanvas=document.createElement('canvas');foamCanvas.width=foamCanvas.he
 const foamTex=new THREE.CanvasTexture(foamCanvas),foam=[];for(let i=0;i<120;i++){const m=new THREE.SpriteMaterial({map:foamTex,transparent:true,depthWrite:false,opacity:0});const s=new THREE.Sprite(m);s.position.y=.22;scene.add(s);foam.push({sprite:s,life:0,vx:0,vz:0});}let foamIndex=0,foamClock=0;
 function updateFoam(dt){for(const f of foam){if(f.life<=0)continue;f.life-=dt;f.sprite.position.x+=f.vx*dt;f.sprite.position.z+=f.vz*dt;f.sprite.material.opacity=Math.max(0,f.life/5)*.7;const size=1.1+(5-f.life)*.4;f.sprite.scale.set(size,size,1);}
  foamClock+=dt;const power=Math.abs(state.port)+Math.abs(state.stbd),speed=Math.hypot(state.vx,state.vy)*110;
- if(foamClock>.05&&(power>.02||speed>.15)){foamClock=0;const a=state.a*Math.PI/180,c=Math.cos(a),s=Math.sin(a);for(const side of [-1,1]){const f=foam[foamIndex++%foam.length],u=-14.5,v=side*2.5+(random()-.5);f.life=5;f.sprite.position.set(state.x*scale+u*c-v*s,.23,state.y*scale+u*s+v*c);const engine=side<0?state.port:state.stbd;f.vx=-c*engine*7+(random()-.5)*.3;f.vz=-s*engine*7+(random()-.5)*.3;}}
+ if(foamClock>.05&&(power>.02||speed>.15)){foamClock=0;const a=state.a*Math.PI/180,c=Math.cos(a),s=Math.sin(a);for(const side of (sim.boat.propulsion.type==='singleOutboard'?[0]:[-1,1])){const f=foam[foamIndex++%foam.length],u=-(sim.geometryLength||31)/2,v=side*2.5+(random()-.5);f.life=5;f.sprite.position.set(state.x*scale+u*c-v*s,.23,state.y*scale+u*s+v*c);const engine=side<=0?state.port:state.stbd;f.vx=-c*engine*7+(random()-.5)*.3;f.vz=-s*engine*7+(random()-.5)*.3;}}
 }
 let elapsed=0;
-function paint(dt=0){elapsed+=dt;vessel.position.set(state.x*scale,.07*Math.sin(elapsed*1.2),state.y*scale);vessel.rotation.set(.004*Math.sin(elapsed*.9),-state.a*Math.PI/180,.003*Math.sin(elapsed*1.1));
+function paint(dt=0){if(modelId!==sim.model.id){docking.dispose();vessel.removeFromParent();const materials=new Set();vessel.traverse(o=>{o.geometry?.dispose();if(o.material)materials.add(o.material);});for(const m of materials)m.dispose();vessel=createCruiser(sim.model);scene.add(vessel);docking=createDockingGraphics(scene,vessel,sim);modelId=sim.model.id;}vessel.userData.updateSteering?.(state.steer);elapsed+=dt;vessel.position.set(state.x*scale,.07*Math.sin(elapsed*1.2),state.y*scale);vessel.rotation.set(.004*Math.sin(elapsed*.9),-state.a*Math.PI/180,.003*Math.sin(elapsed*1.1));
  sun.position.set(camera.x-70,100,camera.y+30);sun.target.position.set(camera.x,0,camera.y);sun.target.updateMatrixWorld();
- const pose=cameraPose(camera,state,scale);viewCamera.position.set(...pose.eye);viewCamera.lookAt(...pose.target);
+ const pose=cameraPose(camera,state,scale,sim.helm);viewCamera.position.set(...pose.eye);viewCamera.lookAt(...pose.target);
 
  const windAngle=sim.environment.windDirection*Math.PI/180;waterUniforms.uWind.value=sim.environment.wind/20;waterUniforms.uDir.value.set(Math.sin(windAngle),-Math.cos(windAngle));waterUniforms.uTime.value=elapsed;waterUniforms.uEye.value.copy(viewCamera.position);updateFoam(dt);docking.update();renderer.render(scene,viewCamera);
 }
 
-const docking=createDockingGraphics(scene,vessel,sim);
+let docking=createDockingGraphics(scene,vessel,sim);
 const cleatMesh=new THREE.InstancedMesh(new THREE.BoxGeometry(.9,.15,.24),chrome,sim.dockCleats.length),matrix=new THREE.Matrix4();sim.dockCleats.forEach((p,i)=>{matrix.makeTranslation(p.x,2.47,p.y);cleatMesh.setMatrixAt(i,matrix);});scene.add(cleatMesh);
 function resize(){const width=canvas.clientWidth,height=canvas.clientHeight;renderer.setSize(width,height,false);viewCamera.aspect=width/height;viewCamera.updateProjectionMatrix();}
 return {paint,resize,renderer};
 }
+
