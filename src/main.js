@@ -1,12 +1,12 @@
-import {stepContacts} from './simulation/contacts.js?v=navigation-handling-30';
-import {stepLevel,stepLevelTraffic} from './simulation/levels.js?v=navigation-handling-30';
+import {stepContacts} from './simulation/contacts.js?v=workboat-throttle-31';
+import {stepLevel,stepLevelTraffic} from './simulation/levels.js?v=workboat-throttle-31';
 import {bindGameTouch,bindTouchRanges} from './interface/touch.js?v=racing-basin-27';
 import {createMiniMap} from './interface/minimap.js?v=racing-basin-27';
-import {createSimulation} from './simulation/state.js?v=navigation-handling-30';
+import {createSimulation} from './simulation/state.js?v=workboat-throttle-31';
 import {stepPhysics} from './simulation/physics.js?v=navigation-handling-30';
-import {createGraphics} from './graphics/scene.js?v=navigation-handling-30';
+import {createGraphics} from './graphics/scene.js?v=workboat-throttle-31';
 import {resetCamera,followCamera,bindCameraLook} from './graphics/camera.js?v=camera-lock-26';
-import {bindControls} from './interface/controls.js?v=navigation-handling-30';
+import {bindControls} from './interface/controls.js?v=workboat-throttle-31';
 const root=document.getElementById('dock3d');
 try {
  const sim=createSimulation(),camera={};resetCamera(camera,sim.state,sim.scale);
