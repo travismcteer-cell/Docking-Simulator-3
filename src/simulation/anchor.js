@@ -1,4 +1,4 @@
-import {bodyPoint} from './collisions.js?v=fleet-14';
+import {bodyPoint} from './collisions.js?v=navigation-handling-30';
 export const ANCHOR_TUNING={payoutRateFtPerSec:3,workingPreloadFt:.45,stiffness:.012,damping:.0055,maxTension:.038,retrieveRateFtPerSec:1.35,retrieveMaxTension:.050,autoReleaseFt:2,maxLengthFt:300};
 export function anchorBowX(sim){return Math.max(...sim.outline.map(p=>p[0]))-.6;}
 export function anchorBowPoint(sim){return bodyPoint(sim.state,anchorBowX(sim),0,sim.scale);}

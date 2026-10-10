@@ -1,7 +1,7 @@
-import {integrate} from './collisions.js?v=levels-23';
-import {applyLines} from './lines.js?v=racing-basin-27';
-import {applyAnchor} from './anchor.js?v=anchor-scenery-21';
-import {applyFenders} from './fenders.js?v=fleet-14';
+import {integrate} from './collisions.js?v=navigation-handling-30';
+import {applyLines} from './lines.js?v=navigation-handling-30';
+import {applyAnchor} from './anchor.js?v=navigation-handling-30';
+import {applyFenders} from './fenders.js?v=navigation-handling-30';
 export const smoothstep=(lo,hi,x)=>{const t=Math.max(0,Math.min(1,(x-lo)/(hi-lo)));return t*t*(3-2*t);};
 export function workboatMotion(sim){const a=sim.state.a*Math.PI/180,c=sim.environment.currentDirection*Math.PI/180,u=sim.environment.current*.0065;const forward=(sim.state.vx-Math.sin(c)*u)*Math.cos(a)+(sim.state.vy+Math.cos(c)*u)*Math.sin(a);return {forward,knots:Math.abs(forward)*110,plane:smoothstep(10,19,forward*110)};}
 // Fixed shaft, one large rudder. Astern wash does not rotate with the rudder:
@@ -13,8 +13,10 @@ export function stepWorkboat(sim,dt){
  function addForce(x,y,bx=0,by=0){s.vx+=x*dt;s.vy+=y*dt;s.omega+=((bx*fx+by*rx)*y-(bx*fy+by*ry)*x)*1100*dt;}
  const setting=Math.max(-1,Math.min(1,s.port)),power=Math.sign(setting)*Math.pow(Math.abs(setting),1.6),thrust=p.thrust*power*(setting<0?p.reverseEfficiency:1);
  addForce(fx*thrust,fy*thrust,p.driveX,0);
- const wash=Math.max(0,thrust)*1.15;
- const flow=Math.abs(vf)*vf*(vf<0?2.4:.75);
+ const lowSpeed=1-plane;
+ const wash=Math.max(0,thrust)*1.15*(1+lowSpeed*.35);
+ // Large rudder responds to water flow in neutral and astern as well as propwash.
+ const flow=Math.abs(vf)*vf*(vf<0?4.2:.75*(1+lowSpeed*1.8));
  // On plane, the fine bow grips while the flatter stern can break sideways.
  // Blend out below planing speed so docking and reverse keep their old tune.
  const turnGain=1+plane*4;

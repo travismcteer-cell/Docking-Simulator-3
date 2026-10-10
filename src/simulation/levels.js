@@ -1,10 +1,10 @@
-import {selectBoat} from './state.js?v=workboat-28';
-import {setOtherBoats,npcShape,buildBerthSlots} from './traffic.js?v=workboat-28';
+import {selectBoat} from './state.js?v=navigation-handling-30';
+import {setOtherBoats,npcShape,buildBerthSlots} from './traffic.js?v=navigation-handling-30';
 import {SOLIDS,FENDER_SHAPES,DOCK_POLYGONS} from '../data/marina.js?v=racing-basin-27';
-import {hullAt,overlap,rectPoly} from './collisions.js?v=levels-23';
-import {anchorBowPoint} from './anchor.js?v=anchor-scenery-21';
+import {hullAt,overlap,rectPoly} from './collisions.js?v=navigation-handling-30';
+import {anchorBowPoint} from './anchor.js?v=navigation-handling-30';
 import {FLEET} from '../data/fleet.js?v=workboat-28';
-import {attachLine} from './lines.js?v=racing-basin-27';
+import {attachLine} from './lines.js?v=navigation-handling-30';
 const feet=(x,y,a)=>({x:x*180-650,y:y*120-525,a});
 const box=(x,y,w,h,label)=>({x:x*180-650,y:y*120-525,w:w*180,h:h*120,label});
 const centered=(x,y,w,h,label,rotation=0)=>({x:x-w/2,y:y-h/2,w,h,label,rotation});

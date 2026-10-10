@@ -1,8 +1,8 @@
-import {stepWorkboat} from './workboat.js?v=workboat-steering-29';
-import {applyAnchor} from './anchor.js?v=anchor-scenery-21';
-import {integrate} from './collisions.js?v=levels-23';
-import {applyLines} from './lines.js?v=racing-basin-27';
-import {applyFenders} from './fenders.js?v=fleet-14';
+import {stepWorkboat} from './workboat.js?v=navigation-handling-30';
+import {applyAnchor} from './anchor.js?v=navigation-handling-30';
+import {integrate} from './collisions.js?v=navigation-handling-30';
+import {applyLines} from './lines.js?v=navigation-handling-30';
+import {applyFenders} from './fenders.js?v=navigation-handling-30';
   export function stepPhysics(sim,dt){
     if(sim.boat.propulsion.type==='singleInboardRudder'){stepWorkboat(sim,dt);return;}
 
