@@ -1,8 +1,8 @@
-import {createLevelGraphics} from './levels.js?v=levels-23';
+import {createLevelGraphics} from './levels.js?v=all-levels-25';
 import {createAnchorGraphics} from './anchor.js?v=anchor-scenery-21';
-import {createOtherBoatGraphics} from './traffic.js?v=anchor-scenery-21';
+import {createOtherBoatGraphics,createMovingBoatGraphics} from './traffic.js?v=all-levels-25';
 import {addLandmarks} from './landmarks.js?v=anchor-scenery-21';
-import {cameraPose} from './camera.js?v=anchor-scenery-21';
+import {cameraPose,releaseCameraLockIfHidden} from './camera.js?v=camera-lock-26';
 import {DOCK_POLYGONS,LAND,ANCHOR_GUIDES,BOUNDS} from '../data/marina.js?v=basin-slips-18';
 import {createCruiser} from './boats.js?v=anchor-scenery-21';
 import * as THREE from '../../vendor/three.module.js?v=touch-9';
@@ -14,7 +14,7 @@ renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.75));
 renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
 renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.05;
 const scene=new THREE.Scene();scene.background=new THREE.Color('#b8d3dd');scene.fog=new THREE.Fog('#b8d3dd',300,1200);
-const viewCamera=new THREE.PerspectiveCamera(50,1,.3,2200);
+const viewCamera=new THREE.PerspectiveCamera(50,1,.3,2200),lockFrustum=new THREE.Frustum(),lockMatrix=new THREE.Matrix4(),lockBounds=new THREE.Box3();
 scene.add(new THREE.HemisphereLight('#dceeff','#526d64',2.1));
 const sun=new THREE.DirectionalLight('#fff1d6',3.1);sun.position.set(-70,100,30);sun.castShadow=true;
 sun.shadow.mapSize.set(1024,1024);Object.assign(sun.shadow.camera,{left:-95,right:95,top:95,bottom:-95,near:1,far:260});sun.shadow.bias=-.0004;sun.shadow.normalBias=.08;scene.add(sun);
@@ -79,11 +79,13 @@ function updateFoam(dt){for(const f of foam){if(f.life<=0)continue;f.life-=dt;f.
 }
 const levelGraphics=createLevelGraphics(scene,sim);
 const anchorGraphics=createAnchorGraphics(scene,sim);
-const otherBoats=createOtherBoatGraphics(scene,sim);
+const otherBoats=createOtherBoatGraphics(scene,sim),movingBoats=createMovingBoatGraphics(scene,sim);
 let elapsed=0;
-function paint(dt=0){levelGraphics.update();otherBoats.update();anchorGraphics.update();if(modelId!==sim.model.id){docking.dispose();vessel.removeFromParent();const materials=new Set();vessel.traverse(o=>{o.geometry?.dispose();if(o.material)materials.add(o.material);});for(const m of materials)m.dispose();vessel=createCruiser(sim.model);scene.add(vessel);docking=createDockingGraphics(scene,vessel,sim);modelId=sim.model.id;}vessel.userData.updateSteering?.(state.steer);elapsed+=dt;vessel.position.set(state.x*scale,.07*Math.sin(elapsed*1.2),state.y*scale);vessel.rotation.set(.004*Math.sin(elapsed*.9),-state.a*Math.PI/180,.003*Math.sin(elapsed*1.1));
+function paint(dt=0){levelGraphics.update();otherBoats.update();movingBoats.update();anchorGraphics.update();if(modelId!==sim.model.id){docking.dispose();vessel.removeFromParent();const materials=new Set();vessel.traverse(o=>{o.geometry?.dispose();if(o.material)materials.add(o.material);});for(const m of materials)m.dispose();vessel=createCruiser(sim.model);scene.add(vessel);docking=createDockingGraphics(scene,vessel,sim);modelId=sim.model.id;}vessel.userData.updateSteering?.(state.steer);elapsed+=dt;vessel.position.set(state.x*scale,.07*Math.sin(elapsed*1.2),state.y*scale);vessel.rotation.set(.004*Math.sin(elapsed*.9),-state.a*Math.PI/180,.003*Math.sin(elapsed*1.1));
  sun.position.set(camera.x-70,100,camera.y+30);sun.target.position.set(camera.x,0,camera.y);sun.target.updateMatrixWorld();
- const pose=cameraPose(camera,state,scale,sim.helm);viewCamera.position.set(...pose.eye);viewCamera.lookAt(...pose.target);
+ let pose=cameraPose(camera,state,scale,sim.helm);viewCamera.position.set(...pose.eye);viewCamera.lookAt(...pose.target);
+ if(camera.lockedPose){viewCamera.updateMatrixWorld(true);lockMatrix.multiplyMatrices(viewCamera.projectionMatrix,viewCamera.matrixWorldInverse);lockFrustum.setFromProjectionMatrix(lockMatrix);vessel.updateMatrixWorld(true);lockBounds.setFromObject(vessel);if(releaseCameraLockIfHidden(camera,lockFrustum.intersectsBox(lockBounds),state,scale)){pose=cameraPose(camera,state,scale,sim.helm);viewCamera.position.set(...pose.eye);viewCamera.lookAt(...pose.target);}}
+
 
  const windAngle=sim.environment.windDirection*Math.PI/180;waterUniforms.uWind.value=sim.environment.wind/20;waterUniforms.uDir.value.set(Math.sin(windAngle),-Math.cos(windAngle));waterUniforms.uTime.value=elapsed;waterUniforms.uEye.value.copy(viewCamera.position);updateFoam(dt);docking.update();renderer.render(scene,viewCamera);
 }
