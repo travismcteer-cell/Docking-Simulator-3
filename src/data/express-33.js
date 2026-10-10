@@ -1,5 +1,6 @@
-import {buildBoat} from "./boat-generator.js?v=express-13";
+import {buildBoat} from "./boat-generator.js?v=fleet-npcs-20";
 export const definition={"schema":"docking-sim.boat.v1","id":"Express-33","name":"33 express cruiser","handlingProfile":"twin-sterndrive","units":"feet","hull":{"aft":15,"forward":16.5,"beam":11,"depth":4.2,"rise":1.5,"sheerStart":-2,"sheerLength":11.6,"rake":3.5,"flare":0.24,"flareCurve":0.5,"stern":0.89},"components":{"cockpit":{"cockpitOffset":0.5,"cockpit":15.5,"cockpitWidth":70,"cockpitDepth":2},"cabin":{"cabinOffset":8,"cabinLength":11,"cabinWidth":82,"cabinHeight":0,"windshieldRake":25,"roofOverhang":0.55},"enclosure":{"enclosureOffset":6,"enclosureLength":14.5,"enclosureWidth":75,"enclosureHeight":2.2,"enclosureLift":0,"enclosureRake":49,"enclosureAftRake":72,"glassPercent":73,"mount":"deck"},"accessory":{"accessoryWidth":72,"accessoryHeight":4.75,"accessoryPosition":25,"mount":"deck","type":"arch"}},"colors":{"upperHull":"#ffffff","lowerHull":"#010609","deck":"#f8f8f7","superstructure":"#e4e6e5","windows":"#83b7dd","cockpit":"#8b9694","accessory":"#344653"}};
 const p={...definition.hull};for(const c of Object.values(definition.components))Object.assign(p,c);p.enclosure=1;p.enclosureMount=definition.components.enclosure.mount;p.accessory=definition.components.accessory.type;p.accessoryMount=definition.components.accessory.mount;
 export const model=buildBoat(p);
 export {p};
+

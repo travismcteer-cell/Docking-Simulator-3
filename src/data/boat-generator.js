@@ -58,6 +58,7 @@ function buildBoat(p){
  const cross=(a,b,c)=>{const u=b.map((v,i)=>v-a[i]),v=c.map((v,i)=>v-a[i]);return[u[1]*v[2]-u[2]*v[1],u[2]*v[0]-u[0]*v[2],u[0]*v[1]-u[1]*v[0]];};
  // Tessellated panels render correctly with the lightweight depth-sorted preview.
  function panel(a,b,c,d,group,normal,steps=5){
+  steps=Math.min(steps,p.panelSteps??steps);
   if(cross(a,b,c).reduce((s,v,i)=>s+v*normal[i],0)<0)[b,d]=[d,b];
   const ids=[];for(let i=0;i<=steps;i++){const row=[];for(let j=0;j<=steps;j++){const u=i/steps,v=j/steps;row.push(V.length);V.push(lerp(lerp(a,b,u),lerp(d,c,u),v));}ids.push(row);}
   for(let i=0;i<steps;i++)for(let j=0;j<steps;j++){F.push([ids[i][j],ids[i+1][j],ids[i+1][j+1]],[ids[i][j],ids[i+1][j+1],ids[i][j+1]]);G.push(group,group);}
@@ -102,6 +103,34 @@ function buildBoat(p){
  const ov=p.roofOverhang*FT,rx0=rt-ov,rx1=ft+ov,rw0=twb+ov,rw1=twf+ov;
  function slab(x0,x1,y,w0,w1,thick,group){const a=[x0,y,-w0],b=[x1,y,-w1],c=[x1,y,w1],d=[x0,y,w0],up=v=>[v[0],y+thick,v[2]];panel(up(a),up(b),up(c),up(d),group,[0,1,0],8);panel(a,b,up(b),up(a),group,[0,0,-1],5);panel(d,c,up(c),up(d),group,[0,0,1],5);panel(b,c,up(c),up(b),group,[1,0,0],3);panel(d,a,up(a),up(d),group,[-1,0,0],3);panel(a,b,c,d,group,[0,-1,0],4);}
  if(p.cabinHeight>0&&p.cabinLength>0&&p.cabinWidth>0)slab(rx0,rx1,roofY,rw0,rw1,.10,'roof');
+ // Extra cabin boxes have independent footprints and lifts measured from the local deck.
+ function cabinWindow(a,b,c,d,u0,u1,v0,v1,normal){
+  // Frame the opening instead of hiding an opaque wall behind the glass.
+  sub(a,b,c,d,0,1,0,v0,'cabin',normal);sub(a,b,c,d,0,1,v1,1,'cabin',normal);
+  sub(a,b,c,d,0,u0,v0,v1,'cabin',normal);sub(a,b,c,d,u1,1,v0,v1,'cabin',normal);
+  sub(a,b,c,d,u0,u1,v0,v1,'glass',normal);
+ }
+ function addCabinBox(prefix){
+  const height=p[prefix+'Height'],length=p[prefix+'Length'],widthPct=p[prefix+'Width'];
+  if(!(height>0&&length>0&&widthPct>0))return;
+  const x0=(p[prefix+'Offset']-p.aft)*FT,x1=x0+length*FT;
+  const w0=deck(x0)[2]*widthPct/100,w1=deck(x1)[2]*widthPct/100;
+  const y0=deck(x0)[1]+p[prefix+'Lift']*FT,y1=deck(x1)[1]+p[prefix+'Lift']*FT;
+  const top=Math.max(y0,y1)+height*FT;
+  const topBack=x0+height*FT*Math.tan(p[prefix+'AftRake']*Math.PI/180);
+  const topFront=x1-height*FT*Math.tan(p[prefix+'Rake']*Math.PI/180),tw0=w0*.94,tw1=w1*.9;
+  for(const sign of [-1,1]){
+   const a=[x0,y0,sign*w0],b=[x1,y1,sign*w1],c=[topFront,top,sign*tw1],d=[topBack,top,sign*tw0];
+   cabinWindow(a,b,c,d,.1,.9,.38,.78,[0,0,sign]);
+  }
+  const fa=[x1,y1,-w1],fb=[x1,y1,w1],fc=[topFront,top,tw1],fd=[topFront,top,-tw1];
+  cabinWindow(fa,fb,fc,fd,.08,.92,.35,.86,[1,0,0]);
+  const ba=[x0,y0,w0],bb=[x0,y0,-w0],bc=[topBack,top,-tw0],bd=[topBack,top,tw0];
+  panel(ba,bb,bc,bd,'cabin',[-1,0,0],8);
+  const overhang=p[prefix+'RoofOverhang']*FT;
+  slab(topBack-overhang,topFront+overhang,top,tw0+overhang,tw1+overhang,.08,'roof');
+ }
+ addCabinBox('aftCabin');addCabinBox('pilotHouse');
  // Independent enclosure: no automatic resizing or connection to cabin length.
  if(p.enclosure&&p.enclosureLength>0&&p.enclosureWidth>0){
   const x0=(p.enclosureOffset-p.aft)*FT,x1=x0+p.enclosureLength*FT;
