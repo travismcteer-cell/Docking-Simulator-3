@@ -1,7 +1,7 @@
 import {stowAnchor} from './anchor.js?v=anchor-scenery-21';
-import {setOtherBoats} from './traffic.js?v=anchor-scenery-21';
+import {setOtherBoats} from './traffic.js?v=racing-basin-27';
 import {BOAT,SCALE,OUTLINE} from '../data/boats.js?v=anchor-scenery-21';
-import {DOCKS,DOCK_CLEATS,SPAWNS,SOLIDS,FENDER_SHAPES,BOUNDS} from '../data/marina.js?v=basin-slips-18';
+import {DOCKS,DOCK_CLEATS,SPAWNS,SOLIDS,FENDER_SHAPES,BOUNDS} from '../data/marina.js?v=racing-basin-27';
 import {FLEET} from '../data/fleet.js?v=anchor-scenery-21';
 import {hullAt,overlap,rectPoly} from './collisions.js?v=fleet-14';
 export function createSimulation(){const sim={boat:BOAT,scale:SCALE,outline:OUTLINE,docks:DOCKS,solids:SOLIDS,fenderShapes:FENDER_SHAPES,bounds:BOUNDS,dockCleats:DOCK_CLEATS,environment:{wind:0,current:0,windDirection:90,currentDirection:180},state:{},lines:{},fenders:{port:false,stbd:false,contactPort:0,contactStbd:0},contact:false,otherBoatsDensity:'medium'};selectBoat(sim,'Express-33');return sim;}
