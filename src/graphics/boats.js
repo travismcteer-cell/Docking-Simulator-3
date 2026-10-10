@@ -1,10 +1,10 @@
 import * as THREE from '../../vendor/three.module.js?v=touch-9';
-import {deckAt as sampleDeck,FLEET} from '../data/fleet.js?v=fleet-npcs-20';
+import {deckAt as sampleDeck,FLEET} from '../data/fleet.js?v=anchor-scenery-21';
 export function createCruiser(entry=FLEET['Express-33'],details=true){
 const {model:data,definition:def,p}=entry;
 const vessel=new THREE.Group(),boat=new THREE.Group();boat.scale.setScalar(1/.3048);vessel.add(boat);
 boat.position.x=-entry.originShift;
-const mats={};const colors={side:def.colors.upperHull,bottom:def.colors.lowerHull,transom:def.colors.upperHull,deck:def.colors.deck,cabin:def.colors.superstructure,roof:def.colors.superstructure,bridge:def.colors.superstructure,'bridge-floor':def.colors.deck,door:def.colors.superstructure,'cockpit-wall':def.colors.superstructure,'cockpit-floor':entry.id==='Express-33'?'#b4a28a':def.colors.cockpit,arch:def.colors.accessory,mast:def.colors.accessory};
+const mats={};const colors={side:def.colors.upperHull,bottom:def.colors.lowerHull,transom:def.colors.upperHull,deck:def.colors.deck,cabin:def.colors.superstructure,roof:def.colors.superstructure,bridge:def.colors.superstructure,'bridge-floor':def.colors.deck,door:def.colors.superstructure,'cockpit-wall':def.colors.superstructure,'cockpit-floor':entry.id==='Express-33'?'#b4a28a':def.colors.cockpit,arch:def.colors.accessory,mast:def.colors.accessory,'aft-glass':def.colors.windows};
 for(const [g,c] of Object.entries(colors))mats[g]=new THREE.MeshStandardMaterial({color:c,roughness:g==='bottom'?.3:.48,metalness:.08,side:THREE.DoubleSide});
 mats.glass=new THREE.MeshPhysicalMaterial({color:def.colors.windows,transparent:true,opacity:.35,roughness:.12,metalness:.1,depthWrite:false,side:entry.id==='Motoryacht-60'?THREE.DoubleSide:THREE.FrontSide});
 const groups={};data.faces.forEach((f,i)=>{const g=data.groups[i];(groups[g]??=[]).push(...f.flatMap(j=>data.vertices[j]));});
@@ -47,8 +47,11 @@ for(let i=0;i<3;i++)box(.008+i*.08,floorY+.79,.55,.045,.045,.008,steel);
   box(aftSeatX,floorY+.30,0,.65,.5,sternWidth*.60,mats.deck);box(aftSeatX,floorY+.58,0,.67,.14,sternWidth*.62,cushion);
   // Teak steps and stainless grab rails into the flybridge.
   const ladderX=((large?p.aftCabinOffset:p.cabinOffset)-p.aft)*FT-.14,z=-p.beam*FT*.30,top=large?Math.max(deckAt((p.aftCabinOffset-p.aft)*FT)[1],deckAt((p.aftCabinOffset+p.aftCabinLength-p.aft)*FT)[1])+(p.aftCabinLift+p.aftCabinHeight)*FT:entry.helmFloor;
-  for(const dz of [-.20,.20])tube([[ladderX,floorY+.2,z+dz],[ladderX,top+.42,z+dz]],.022,steel);
-  for(let y=floorY+.3;y<top;y+=.27)box(ladderX,y,z,.16,.035,.4,teak);
+  const roofEdgeX=large?(p.aftCabinOffset-p.aft+p.aftCabinHeight*Math.tan(p.aftCabinAftRake*Math.PI/180)-p.aftCabinRoofOverhang)*FT+.30:ladderX;
+  const ladderTop=large?top+.08:top;
+  for(const dz of [-.20,.20])tube([[ladderX,floorY+.2,z+dz],[roofEdgeX,ladderTop+.42,z+dz]],.022,steel);
+  for(let y=floorY+.3;y<ladderTop;y+=.27){const t=(y-floorY-.2)/(ladderTop+.42-floorY-.2);box(ladderX+(roofEdgeX-ladderX)*t,y,z,.20,.035,.4,teak);}
+
   // Paired rod holders on the aft gunwales, with short fishing rods.
   if(['sportfisher-30','CC-38','adventure-29'].includes(entry.id))for(const sign of [-1,1]){const x=stern+.65,d=deckAt(x),z=sign*(d[2]-.12);tube([[x,d[1]-.12,z],[x-.10,d[1]+.18,z]],.035,steel);tube([[x-.1,d[1]+.12,z],[x-.65,d[1]+1.25,z+sign*.15]],.012,rubber);}
  }

@@ -1,8 +1,9 @@
-import {createOtherBoatGraphics} from './traffic.js?v=fleet-npcs-20';
-import {addLandmarks} from './landmarks.js?v=basin-slips-18';
-import {cameraPose} from './camera.js?v=helm-height-15';
+import {createAnchorGraphics} from './anchor.js?v=anchor-scenery-21';
+import {createOtherBoatGraphics} from './traffic.js?v=anchor-scenery-21';
+import {addLandmarks} from './landmarks.js?v=anchor-scenery-21';
+import {cameraPose} from './camera.js?v=anchor-scenery-21';
 import {DOCK_POLYGONS,LAND,ANCHOR_GUIDES,BOUNDS} from '../data/marina.js?v=basin-slips-18';
-import {createCruiser} from './boats.js?v=fleet-npcs-20';
+import {createCruiser} from './boats.js?v=anchor-scenery-21';
 import * as THREE from '../../vendor/three.module.js?v=touch-9';
 import {createDockingGraphics} from './docking.js?v=fleet-14';
 export function createGraphics(canvas,sim,camera){
@@ -33,7 +34,9 @@ for(let i=0;i<750;i++){tc.strokeStyle=`rgba(55,37,20,${random()*.18})`;tc.beginP
 for(let x=0;x<128;x+=32){tc.fillStyle='rgba(39,29,19,.45)';tc.fillRect(x,0,1,256);}
 const woodTexture=new THREE.CanvasTexture(texCanvas);woodTexture.colorSpace=THREE.SRGBColorSpace;woodTexture.wrapS=woodTexture.wrapT=THREE.RepeatWrapping;woodTexture.repeat.set(2,5);woodTexture.anisotropy=4;
 const dockWood=new THREE.MeshStandardMaterial({map:woodTexture,color:'#e0c19c',roughness:.9}),dockSides=mat('#756d5b',.95),postMat=mat('#74654e',.9);
-for(const d of docks){const x=d.x+d.w/2,z=d.y+d.h/2;box(x,1.3,z,d.w,1.8,d.h,dockSides);box(x,2.25,z,d.w,.13,d.h,dockWood);}
+const concreteCanvas=document.createElement('canvas');concreteCanvas.width=concreteCanvas.height=128;const cc=concreteCanvas.getContext('2d');cc.fillStyle='#a5aaa4';cc.fillRect(0,0,128,128);for(let i=0;i<5500;i++){const v=130+Math.floor(random()*65);cc.fillStyle=`rgba(${v},${v},${v},.35)`;cc.fillRect(random()*128,random()*128,1+random()*2,1+random()*2);}cc.strokeStyle='rgba(65,72,69,.18)';cc.lineWidth=1;cc.strokeRect(.5,.5,127,127);const concreteTexture=new THREE.CanvasTexture(concreteCanvas);concreteTexture.colorSpace=THREE.SRGBColorSpace;concreteTexture.wrapS=concreteTexture.wrapT=THREE.RepeatWrapping;const concreteTop=new THREE.MeshStandardMaterial({map:concreteTexture,color:'#d8ded6',roughness:.96}),concreteSides=mat('#8c958f',.98);
+for(const d of docks){const x=d.x+d.w/2,z=d.y+d.h/2,isConcrete=['dock134','dock135'].includes(d.id);box(x,1.3,z,d.w,1.8,d.h,isConcrete?concreteSides:dockSides);if(isConcrete){const texture=concreteTexture.clone();texture.needsUpdate=true;texture.repeat.set(d.w/14,d.h/14);box(x,2.25,z,d.w,.13,d.h,new THREE.MeshStandardMaterial({map:texture,color:'#d8ded6',roughness:.96}));}else box(x,2.25,z,d.w,.13,d.h,dockWood);}
+
 function solidPolygon(p,height,material){const shape=new THREE.Shape();p.points.forEach((v,i)=>i?shape.lineTo(v.x,-v.y):shape.moveTo(v.x,-v.y));shape.closePath();const g=new THREE.ExtrudeGeometry(shape,{depth:height,bevelEnabled:false,steps:1});g.rotateX(-Math.PI/2);const m=mesh(g,material);m.position.y=.05;return m;}
 const stoneMat=mat('#777d77',.95),landMat=mat('#71845e',.96),quayMat=mat('#b1aa94',.91);
 for(const p of DOCK_POLYGONS){if(p.kind==='piling'){const x=p.points.reduce((a,v)=>a+v.x,0)/p.points.length,z=p.points.reduce((a,v)=>a+v.y,0)/p.points.length;const post=mesh(new THREE.CylinderGeometry(.75,.8,5.5,8),postMat);post.position.set(x,2.5,z);}else solidPolygon(p,p.kind==='stone'?3.5:2.3,p.kind==='stone'?stoneMat:quayMat);}
@@ -73,9 +76,10 @@ function updateFoam(dt){for(const f of foam){if(f.life<=0)continue;f.life-=dt;f.
  foamClock+=dt;const power=Math.abs(state.port)+Math.abs(state.stbd),speed=Math.hypot(state.vx,state.vy)*110;
  if(foamClock>.05&&(power>.02||speed>.15)){foamClock=0;const a=state.a*Math.PI/180,c=Math.cos(a),s=Math.sin(a);for(const side of (sim.boat.propulsion.type==='singleOutboard'?[0]:[-1,1])){const f=foam[foamIndex++%foam.length],u=-(sim.geometryLength||31)/2,v=side*2.5+(random()-.5);f.life=5;f.sprite.position.set(state.x*scale+u*c-v*s,.23,state.y*scale+u*s+v*c);const engine=side<=0?state.port:state.stbd;f.vx=-c*engine*7+(random()-.5)*.3;f.vz=-s*engine*7+(random()-.5)*.3;}}
 }
+const anchorGraphics=createAnchorGraphics(scene,sim);
 const otherBoats=createOtherBoatGraphics(scene,sim);
 let elapsed=0;
-function paint(dt=0){otherBoats.update();if(modelId!==sim.model.id){docking.dispose();vessel.removeFromParent();const materials=new Set();vessel.traverse(o=>{o.geometry?.dispose();if(o.material)materials.add(o.material);});for(const m of materials)m.dispose();vessel=createCruiser(sim.model);scene.add(vessel);docking=createDockingGraphics(scene,vessel,sim);modelId=sim.model.id;}vessel.userData.updateSteering?.(state.steer);elapsed+=dt;vessel.position.set(state.x*scale,.07*Math.sin(elapsed*1.2),state.y*scale);vessel.rotation.set(.004*Math.sin(elapsed*.9),-state.a*Math.PI/180,.003*Math.sin(elapsed*1.1));
+function paint(dt=0){otherBoats.update();anchorGraphics.update();if(modelId!==sim.model.id){docking.dispose();vessel.removeFromParent();const materials=new Set();vessel.traverse(o=>{o.geometry?.dispose();if(o.material)materials.add(o.material);});for(const m of materials)m.dispose();vessel=createCruiser(sim.model);scene.add(vessel);docking=createDockingGraphics(scene,vessel,sim);modelId=sim.model.id;}vessel.userData.updateSteering?.(state.steer);elapsed+=dt;vessel.position.set(state.x*scale,.07*Math.sin(elapsed*1.2),state.y*scale);vessel.rotation.set(.004*Math.sin(elapsed*.9),-state.a*Math.PI/180,.003*Math.sin(elapsed*1.1));
  sun.position.set(camera.x-70,100,camera.y+30);sun.target.position.set(camera.x,0,camera.y);sun.target.updateMatrixWorld();
  const pose=cameraPose(camera,state,scale,sim.helm);viewCamera.position.set(...pose.eye);viewCamera.lookAt(...pose.target);
 
