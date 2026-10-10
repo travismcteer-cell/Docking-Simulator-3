@@ -1,4 +1,4 @@
-import {stepWorkboat} from './workboat.js?v=workboat-28';
+import {stepWorkboat} from './workboat.js?v=workboat-steering-29';
 import {applyAnchor} from './anchor.js?v=anchor-scenery-21';
 import {integrate} from './collisions.js?v=levels-23';
 import {applyLines} from './lines.js?v=racing-basin-27';
