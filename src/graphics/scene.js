@@ -1,3 +1,4 @@
+import {createLevelGraphics} from './levels.js?v=levels-23';
 import {createAnchorGraphics} from './anchor.js?v=anchor-scenery-21';
 import {createOtherBoatGraphics} from './traffic.js?v=anchor-scenery-21';
 import {addLandmarks} from './landmarks.js?v=anchor-scenery-21';
@@ -76,10 +77,11 @@ function updateFoam(dt){for(const f of foam){if(f.life<=0)continue;f.life-=dt;f.
  foamClock+=dt;const power=Math.abs(state.port)+Math.abs(state.stbd),speed=Math.hypot(state.vx,state.vy)*110;
  if(foamClock>.05&&(power>.02||speed>.15)){foamClock=0;const a=state.a*Math.PI/180,c=Math.cos(a),s=Math.sin(a);for(const side of (sim.boat.propulsion.type==='singleOutboard'?[0]:[-1,1])){const f=foam[foamIndex++%foam.length],u=-(sim.geometryLength||31)/2,v=side*2.5+(random()-.5);f.life=5;f.sprite.position.set(state.x*scale+u*c-v*s,.23,state.y*scale+u*s+v*c);const engine=side<=0?state.port:state.stbd;f.vx=-c*engine*7+(random()-.5)*.3;f.vz=-s*engine*7+(random()-.5)*.3;}}
 }
+const levelGraphics=createLevelGraphics(scene,sim);
 const anchorGraphics=createAnchorGraphics(scene,sim);
 const otherBoats=createOtherBoatGraphics(scene,sim);
 let elapsed=0;
-function paint(dt=0){otherBoats.update();anchorGraphics.update();if(modelId!==sim.model.id){docking.dispose();vessel.removeFromParent();const materials=new Set();vessel.traverse(o=>{o.geometry?.dispose();if(o.material)materials.add(o.material);});for(const m of materials)m.dispose();vessel=createCruiser(sim.model);scene.add(vessel);docking=createDockingGraphics(scene,vessel,sim);modelId=sim.model.id;}vessel.userData.updateSteering?.(state.steer);elapsed+=dt;vessel.position.set(state.x*scale,.07*Math.sin(elapsed*1.2),state.y*scale);vessel.rotation.set(.004*Math.sin(elapsed*.9),-state.a*Math.PI/180,.003*Math.sin(elapsed*1.1));
+function paint(dt=0){levelGraphics.update();otherBoats.update();anchorGraphics.update();if(modelId!==sim.model.id){docking.dispose();vessel.removeFromParent();const materials=new Set();vessel.traverse(o=>{o.geometry?.dispose();if(o.material)materials.add(o.material);});for(const m of materials)m.dispose();vessel=createCruiser(sim.model);scene.add(vessel);docking=createDockingGraphics(scene,vessel,sim);modelId=sim.model.id;}vessel.userData.updateSteering?.(state.steer);elapsed+=dt;vessel.position.set(state.x*scale,.07*Math.sin(elapsed*1.2),state.y*scale);vessel.rotation.set(.004*Math.sin(elapsed*.9),-state.a*Math.PI/180,.003*Math.sin(elapsed*1.1));
  sun.position.set(camera.x-70,100,camera.y+30);sun.target.position.set(camera.x,0,camera.y);sun.target.updateMatrixWorld();
  const pose=cameraPose(camera,state,scale,sim.helm);viewCamera.position.set(...pose.eye);viewCamera.lookAt(...pose.target);
 
