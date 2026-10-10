@@ -5,7 +5,7 @@ import {hullAt} from './collisions.js?v=levels-23';
 import {attachLine} from './lines.js?v=fleet-14';
 export const LEVELS=[
  {id:'gas-arrival',number:1,name:'Gas Dock Arrival',boat:'Express-33',density:'medium',spawn:{x:169,y:135,a:270},target:{x:133,y:39,w:72,h:9,label:'GAS DOCK'},description:'In calm water, approach the south face of the fuel pier. Settle alongside and secure with two lines.',objective:'Inside the gold zone, parallel to the pier, below 0.75 kt with two lines attached. Hold for 3 seconds.'},
- {id:'gas-departure',number:2,name:'Crowded Gas Dock Departure',boat:'sportfisher-30',density:'high',spawn:{x:168.1,y:43.5,a:0},target:{x:88,y:111,w:162,h:48,label:'OPEN BASIN'},description:'Cast off from the fuel pier between boats ahead and astern. Use the twin engines to reach the open basin. Port bow/stern lines and fenders start deployed.',objective:'Release every line, retrieve any anchor, and reach the gold zone below 0.75 kt. Hold for 3 seconds.'}
+ {id:'gas-departure',number:2,name:'Crowded Gas Dock Departure',boat:'sportfisher-30',density:'high',spawn:{x:168.1,y:43.5,a:0},target:{x:88,y:111,w:162,h:48,label:'OPEN BASIN'},description:'Cast off from the fuel pier between boats ahead and astern. Use the twin engines to reach the open basin. Port bow/stern lines and fenders start deployed.',objective:'Release every line, retrieve any anchor, and enter the gold exit zone. No speed limit or waiting period.'}
 ];
 export const IMPACT_PENALTIES={gentle:2,firm:10,hard:30,crash:60};
 export function classifyImpact(knots){return knots<.3?'gentle':knots<.8?'firm':knots<1.5?'hard':'crash';}
@@ -23,6 +23,7 @@ export function enterPractice(sim){const saved=sim.practiceSettings;sim.mode='pr
 export function stepLevel(sim,dt){const run=sim.levelRun;if(sim.mode!=='levels'||!run||run.complete)return;run.elapsed+=dt;
  const impact=sim.collision;if(impact){const key=impact.kind+':'+impact.id,last=run.contactTimes.get(key);if(last===undefined||run.elapsed-last>.7){const severity=classifyImpact(impact.knots),seconds=IMPACT_PENALTIES[severity];run.impacts.push({...impact,severity,seconds,at:run.elapsed});run.penalty+=seconds;}run.contactTimes.set(key,run.elapsed);}
  const s=sim.state,t=run.definition.target,x=s.x*sim.scale,y=s.y*sim.scale,inside=x>=t.x&&x<=t.x+t.w&&y>=t.y&&y<=t.y+t.h,speed=Math.hypot(s.vx,s.vy)*110,lines=Object.keys(sim.lines).length,parallel=Math.abs(Math.sin(s.a*Math.PI/180))<=Math.sin(10*Math.PI/180);
- const secured=run.definition.number===1?lines>=2&&parallel:lines===0&&sim.anchor.mode==='stowed';run.hold=inside&&speed<=.75&&secured?run.hold+dt:0;
- if(run.hold+1e-9>=3){run.complete=true;run.total=run.elapsed+run.penalty;s.port=0;s.stbd=0;s.bowThruster=0;}
+ const departure=run.definition.number===2,secured=departure?lines===0&&sim.anchor.mode==='stowed':lines>=2&&parallel;run.hold=!departure&&inside&&speed<=.75&&secured?run.hold+dt:0;
+ run.status=!inside?(departure?'Enter the gold exit zone':'Enter the gold docking zone'):departure?(lines>0?'Release every line':sim.anchor.mode!=='stowed'?'Retrieve the anchor':'Exit reached'):lines<2?'Attach two lines':!parallel?'Align parallel to the pier':speed>.75?'Slow below 0.75 kt':'Hold '+run.hold.toFixed(1)+' / 3s';
+ if((departure&&inside&&secured)||(!departure&&run.hold+1e-9>=3)){run.complete=true;run.total=run.elapsed+run.penalty;s.port=0;s.stbd=0;s.bowThruster=0;}
 }
