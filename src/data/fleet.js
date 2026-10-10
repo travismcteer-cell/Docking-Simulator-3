@@ -1,4 +1,4 @@
-import {workboatDefinition,workboatHandling} from './workboat.js?v=workboat-28';
+import {workboatDefinition,workboatHandling} from './workboat.js?v=workboat-throttle-31';
 import {definitions} from './fleet-definitions.js?v=fleet-npcs-20';
 import {buildBoat} from './boat-generator.js?v=anchor-scenery-21';
 import {model,definition,p} from './express-33.js?v=anchor-scenery-21';
