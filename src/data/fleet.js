@@ -1,3 +1,4 @@
+import {workboatDefinition,workboatHandling} from './workboat.js?v=workboat-28';
 import {definitions} from './fleet-definitions.js?v=fleet-npcs-20';
 import {buildBoat} from './boat-generator.js?v=anchor-scenery-21';
 import {model,definition,p} from './express-33.js?v=anchor-scenery-21';
@@ -13,9 +14,9 @@ export function deckAt(data,p,x){const t=Math.max(0,Math.min(64,(x+p.aft*FT)/((p
 function convexHull(points){const sorted=points.slice().sort((a,b)=>a[0]-b[0]||a[1]-b[1]);const cross=(o,a,b)=>(a[0]-o[0])*(b[1]-o[1])-(a[1]-o[1])*(b[0]-o[0]);const chain=ps=>{const h=[];for(const q of ps){while(h.length>1&&cross(h[h.length-2],h[h.length-1],q)<=0)h.pop();h.push(q);}h.pop();return h;};return [...chain(sorted),...chain(sorted.slice().reverse())];}
 const expressLines={bow:{xFrac:41/108,xBody:.4,beam:2.3212,height:4.2917,label:'Bow'},fwdSpring:{xFrac:18/108,xBody:.18,beam:4.5645,height:4.2917,label:'Forward spring'},aftSpring:{xFrac:-18/108,xBody:-.18,beam:5.0017,height:4.2917,label:'Aft spring'},stern:{xFrac:-45/108,xBody:-.42,beam:4.6248,height:3.15,label:'Stern'}};
 export const FLEET={'Express-33':{id:'Express-33',name:'Express-33 · Twin sterndrive',definition,model,p,handling:BOAT,outline:OUTLINE,geometryLength:31,originShift:0,lineDefs:expressLines,helm:{forward:.05/FT,side:.65/FT,height:1.9086576/FT},platformLength:2}};
-for(const def of definitions){
+for(const def of [...definitions,workboatDefinition]){
  const p={...def.hull};for(const c of Object.values(def.components))Object.assign(p,c);p.enclosure=1;p.enclosureMount=def.components.enclosure.mount;p.accessory=def.components.accessory.type;p.accessoryMount=def.components.accessory.mount;
- const model=buildBoat(p),length=p.aft+p.forward,shift=(p.forward-p.aft)/2,platform=def.id==='bowrider'||def.handlingProfile==='twin-outboard'?0:2;
+ const model=buildBoat(p),length=p.aft+p.forward,shift=(p.forward-p.aft)/2,platform=def.id==='deadrise-40'||def.id==='bowrider'||def.handlingProfile==='twin-outboard'?0:2;
  const points=model.rail.flatMap(r=>r.map(i=>{const v=model.vertices[i];return [v[0]/FT-shift,v[2]/FT];}));
  if(platform)for(const sign of [-1,1])points.push([-p.aft-shift-platform,sign*p.beam*p.stern*.46]);
  // Include the outboard's swept footprint in the plan-view collision envelope.
@@ -30,5 +31,5 @@ for(const def of definitions){
  let helmFloor=hasRoof?mount:cockpitFloor;
  // The motor yacht is driven from inside its independent pilot house.
  if(p.pilotHouseHeight>1){const a=(p.pilotHouseOffset-p.aft)*FT,b=a+p.pilotHouseLength*FT,baseA=deckAt(model,p,a)[1]+p.pilotHouseLift*FT,baseB=deckAt(model,p,b)[1]+p.pilotHouseLift*FT,eye=Math.max(baseA,baseB)+p.pilotHouseHeight*FT,hx=b-p.pilotHouseHeight*FT*Math.tan(p.pilotHouseRake*Math.PI/180)-.38;helmFloor=baseA+(baseB-baseA)*(hx-a)/(b-a);helm={forward:hx/FT-shift,side:deckAt(model,p,hx)[2]*p.pilotHouseWidth/100*.55/FT,height:(baseB+(eye-baseB)*.86)/FT};}
- FLEET[def.id]={id:def.id,name:def.name+(def.id==='bowrider'?' · Single outboard':def.handlingProfile==='twin-outboard'?' · Twin outboard':def.handlingProfile==='twin-sterndrive'?' · Twin sterndrive':def.handlingProfile==='unspecified'?'':' · Twin inboard'),definition:def,model,p,npcOnly:!!def.npcOnly,handling:profiles[def.id]||null,geometryLength:length,originShift:shift,outline:convexHull(points),lineDefs,helm,helmFloor,platformLength:platform};
+ FLEET[def.id]={id:def.id,name:def.name+(def.id==='deadrise-40'?' · Single inboard':def.id==='bowrider'?' · Single outboard':def.handlingProfile==='twin-outboard'?' · Twin outboard':def.handlingProfile==='twin-sterndrive'?' · Twin sterndrive':def.handlingProfile==='unspecified'?'':' · Twin inboard'),definition:def,model,p,npcOnly:!!def.npcOnly,handling:def.id==='deadrise-40'?workboatHandling:profiles[def.id]||null,geometryLength:length,originShift:shift,outline:convexHull(points),lineDefs,helm,helmFloor,platformLength:platform};
 }
