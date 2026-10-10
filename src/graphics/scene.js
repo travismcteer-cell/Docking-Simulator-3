@@ -1,14 +1,14 @@
-import {createWorkboatWake,workboatVisualPose} from './workboat.js?v=workboat-steering-29';
+import {createWorkboatWake,workboatVisualPose} from './workboat.js?v=navigation-handling-30';
 import {addRacingBasinDetails} from './racing-basin.js?v=racing-basin-27';
 import {createLevelGraphics} from './levels.js?v=all-levels-25';
-import {createAnchorGraphics} from './anchor.js?v=workboat-28';
-import {createOtherBoatGraphics,createMovingBoatGraphics} from './traffic.js?v=workboat-steering-29';
+import {createAnchorGraphics} from './anchor.js?v=navigation-handling-30';
+import {createOtherBoatGraphics,createMovingBoatGraphics} from './traffic.js?v=navigation-handling-30';
 import {addLandmarks} from './landmarks.js?v=racing-basin-27';
 import {cameraPose,releaseCameraLockIfHidden} from './camera.js?v=camera-lock-26';
 import {DOCK_POLYGONS,LAND,ANCHOR_GUIDES,BOUNDS} from '../data/marina.js?v=racing-basin-27';
-import {createCruiser} from './boats.js?v=workboat-steering-29';
+import {createCruiser} from './boats.js?v=navigation-handling-30';
 import * as THREE from '../../vendor/three.module.js?v=touch-9';
-import {createDockingGraphics} from './docking.js?v=workboat-28';
+import {createDockingGraphics} from './docking.js?v=navigation-handling-30';
 export function createGraphics(canvas,sim,camera){
 const {state,docks,outline,scale}=sim;
 const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:false});
