@@ -83,3 +83,6 @@
  .scene-steering{left:auto;right:6px;transform:none;width:min(240px,calc(50% - 12px))}
  .scene-steering>div:not([data-thruster-controls]){grid-template-columns:1fr}
 }
+
+/* Level status stays outside the thumb controls. */
+#level-hud{font-size:11px;color:#ffe092;white-space:pre-line;text-align:right;line-height:1.35;flex:1}#dock3d>header{align-items:center}#level-setup[hidden],#level-lock-note[hidden],#level-hud[hidden]{display:none}#level-setup{margin:12px 0}#level-result p{line-height:1.5}.compass[aria-disabled=true]{pointer-events:none;opacity:.5}select:disabled,input:disabled{opacity:.5}@media(max-width:500px){#dock3d>header strong{max-width:35%;font-size:10px}#level-hud{font-size:10px}}

@@ -1,7 +1,7 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Docking Trainer 3D</title><link rel="stylesheet" href="styles.css?v=anchor-layout-22"></head><body>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Docking Trainer 3D</title><link rel="stylesheet" href="styles.css?v=levels-23"></head><body>
 <main id="dock3d">
- <header class="viz-row"><strong>Docking Trainer · Express-33</strong><span id="readout" class="tabular-nums">0.0 kt</span></header>
+ <header class="viz-row"><strong>Docking Trainer · Express-33</strong><span id="level-hud" hidden></span><span id="readout" class="tabular-nums">0.0 kt</span></header>
  <div class="scene-frame">
   <canvas id="game-canvas" aria-label="3D marina; drag to look around"></canvas>
   
@@ -24,8 +24,11 @@
  <div id="scroll-grip">↕ Swipe here to scroll ↕</div>
  <div id="startup-error" role="alert" hidden></div>
  
- <div class="start-bar"><button class="btn" id="setup-open">Practice setup</button><button class="btn" id="reset">Reset boat</button><span class="text-small" id="environment-status"></span></div>
- <dialog class="setup-screen" id="setup-screen"><div class="setup-header"><h2>Practice setup</h2><button class="btn" id="setup-close">Back to game</button></div>
+ <div class="start-bar"><button class="btn" id="setup-open">Setup / Levels</button><button class="btn" id="reset">Reset boat</button><span class="text-small" id="environment-status"></span></div>
+ <dialog class="setup-screen" id="setup-screen"><div class="setup-header"><h2>Setup / Levels</h2><button class="btn" id="setup-close">Back to game</button></div>
+ <label>Game mode <select class="form-select" id="game-mode"><option value="practice">Practice</option><option value="levels">Levels</option></select></label>
+ <section id="level-setup" class="control-card" hidden><label>Level <select class="form-select" id="level-select"></select></label><p id="level-briefing"></p><p id="level-objective" class="text-small"></p><p class="text-small">Score = time + contact penalties: gentle +2s, firm +10s, hard +30s, crash +60s. Fenders reduce impact severity. The timer pauses while setup is open.</p><button class="btn" id="level-start">Start level</button></section>
+ <p id="level-lock-note" class="text-small" hidden>Levels fix the boat, starting location, other boats and calm conditions. Camera settings remain adjustable.</p>
  <p class="text-small">Directions show where wind blows and current flows toward. Drag the arrows or use arrow keys.</p>
  <div class="environment-grid"><section class="environment-card"><h3>Wind <span id="wv">0 kt</span></h3><input class="form-range" id="wind" aria-label="Wind speed" type="range" min="0" max="20" value="0"><div class="compass" id="wind-compass" role="slider" tabindex="0" aria-label="Wind direction, blows or flows toward" aria-valuemin="0" aria-valuemax="359" aria-valuenow="90"><svg viewBox="0 0 180 180"><circle cx="90" cy="90" r="66" fill="none" stroke="#57748b"/><text x="90" y="20" text-anchor="middle">N</text><text x="165" y="94" text-anchor="middle">E</text><text x="90" y="167" text-anchor="middle">S</text><text x="15" y="94" text-anchor="middle">W</text><g class="dial-arrow"><path d="M90 140 V47 M77 61 L90 43 L103 61" fill="none" stroke="#aad7ec" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></g></svg></div><input id="wind-direction" type="hidden" value="90"><div class="direction-readout" id="dv">E · 90°</div><div class="text-small" id="wind-arrow">Waves travel downwind</div></section>
  <section class="environment-card"><h3>Current <span id="uv">0 kt</span></h3><input class="form-range" id="current" aria-label="Current speed" type="range" min="0" max="3" step="0.1" value="0"><div class="compass" id="current-compass" role="slider" tabindex="0" aria-label="Current direction, blows or flows toward" aria-valuemin="0" aria-valuemax="359" aria-valuenow="90"><svg viewBox="0 0 180 180"><circle cx="90" cy="90" r="66" fill="none" stroke="#57748b"/><text x="90" y="20" text-anchor="middle">N</text><text x="165" y="94" text-anchor="middle">E</text><text x="90" y="167" text-anchor="middle">S</text><text x="15" y="94" text-anchor="middle">W</text><g class="dial-arrow"><path d="M90 140 V47 M77 61 L90 43 L103 61" fill="none" stroke="#88e0c0" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></g></svg></div><input id="current-direction" type="hidden" value="180"><div class="direction-readout" id="ud">S · 180°</div><p class="text-small">Water flow acts at the underwater centre of resistance.</p></section></div>
@@ -34,6 +37,7 @@
  <label>Other boats <select class="form-select" id="other-boats"><option value="none">None</option><option value="low">Low</option><option value="medium" selected>Medium</option><option value="high">High</option></select></label><p class="text-small" id="other-boats-note">Parked boats in marina berths.</p>
  <label>Boat <select class="form-select" id="boat-select"></select></label><p class="text-small" id="boat-note"></p>
  <label>Starting location <select class="form-select" id="spawn"></select></label><p class="text-small">Changing the start resets the boat and releases its lines. Simulation pauses while setup is open.</p></dialog>
-</main><script type="module" src="src/main.js?v=anchor-layout-22"></script></body></html>
+<dialog class="setup-screen" id="level-result" aria-labelledby="level-result-title"><h2 id="level-result-title">Level complete</h2><p id="level-result-summary"></p><p id="level-result-contacts" class="text-small"></p><div class="setup-footer"><button class="btn" id="level-restart">Restart level</button><button class="btn" id="level-next">Next level</button><button class="btn" id="level-practice">Return to Practice</button></div></dialog>
+</main><script type="module" src="src/main.js?v=levels-23"></script></body></html>
 
 
