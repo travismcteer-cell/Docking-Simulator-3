@@ -104,11 +104,11 @@ function buildBoat(p){
  function slab(x0,x1,y,w0,w1,thick,group){const a=[x0,y,-w0],b=[x1,y,-w1],c=[x1,y,w1],d=[x0,y,w0],up=v=>[v[0],y+thick,v[2]];panel(up(a),up(b),up(c),up(d),group,[0,1,0],8);panel(a,b,up(b),up(a),group,[0,0,-1],5);panel(d,c,up(c),up(d),group,[0,0,1],5);panel(b,c,up(c),up(b),group,[1,0,0],3);panel(d,a,up(a),up(d),group,[-1,0,0],3);panel(a,b,c,d,group,[0,-1,0],4);}
  if(p.cabinHeight>0&&p.cabinLength>0&&p.cabinWidth>0)slab(rx0,rx1,roofY,rw0,rw1,.10,'roof');
  // Extra cabin boxes have independent footprints and lifts measured from the local deck.
- function cabinWindow(a,b,c,d,u0,u1,v0,v1,normal){
+ function cabinWindow(a,b,c,d,u0,u1,v0,v1,normal,glassGroup='glass'){
   // Frame the opening instead of hiding an opaque wall behind the glass.
   sub(a,b,c,d,0,1,0,v0,'cabin',normal);sub(a,b,c,d,0,1,v1,1,'cabin',normal);
   sub(a,b,c,d,0,u0,v0,v1,'cabin',normal);sub(a,b,c,d,u1,1,v0,v1,'cabin',normal);
-  sub(a,b,c,d,u0,u1,v0,v1,'glass',normal);
+  sub(a,b,c,d,u0,u1,v0,v1,glassGroup,normal);
  }
  function addCabinBox(prefix){
   const height=p[prefix+'Height'],length=p[prefix+'Length'],widthPct=p[prefix+'Width'];
@@ -121,10 +121,10 @@ function buildBoat(p){
   const topFront=x1-height*FT*Math.tan(p[prefix+'Rake']*Math.PI/180),tw0=w0*.94,tw1=w1*.9;
   for(const sign of [-1,1]){
    const a=[x0,y0,sign*w0],b=[x1,y1,sign*w1],c=[topFront,top,sign*tw1],d=[topBack,top,sign*tw0];
-   cabinWindow(a,b,c,d,.1,.9,.38,.78,[0,0,sign]);
+   cabinWindow(a,b,c,d,.1,.9,.38,.78,[0,0,sign],prefix==='aftCabin'?'aft-glass':'glass');
   }
   const fa=[x1,y1,-w1],fb=[x1,y1,w1],fc=[topFront,top,tw1],fd=[topFront,top,-tw1];
-  cabinWindow(fa,fb,fc,fd,.08,.92,.35,.86,[1,0,0]);
+  cabinWindow(fa,fb,fc,fd,.08,.92,.35,.86,[1,0,0],prefix==='aftCabin'?'aft-glass':'glass');
   const ba=[x0,y0,w0],bb=[x0,y0,-w0],bc=[topBack,top,-tw0],bd=[topBack,top,tw0];
   panel(ba,bb,bc,bd,'cabin',[-1,0,0],8);
   const overhang=p[prefix+'RoofOverhang']*FT;

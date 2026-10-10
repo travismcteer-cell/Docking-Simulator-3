@@ -1,7 +1,7 @@
 import {definitions} from './fleet-definitions.js?v=fleet-npcs-20';
-import {buildBoat} from './boat-generator.js?v=fleet-npcs-20';
-import {model,definition,p} from './express-33.js?v=express-13';
-import {BOAT,OUTLINE} from './boats.js?v=fleet-npcs-20';
+import {buildBoat} from './boat-generator.js?v=anchor-scenery-21';
+import {model,definition,p} from './express-33.js?v=anchor-scenery-21';
+import {BOAT,OUTLINE} from './boats.js?v=anchor-scenery-21';
 const FT=.3048;
 // Handling calibration copied from the old 2D game's named boat profiles.
 const profiles={
