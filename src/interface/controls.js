@@ -26,7 +26,7 @@ export function bindControls(root,sim,camera){const q=s=>root.querySelector(s);c
  q('#anchor-down').onclick=()=>{anchorDown(sim);update();};q('#anchor-hold').onclick=()=>{anchorHold(sim);update();};q('#anchor-up').onclick=()=>{anchorUp(sim);update();};
  q('#setup-open').onclick=()=>{neutral();q('#setup-screen').showModal();};q('#setup-close').onclick=()=>q('#setup-screen').close();
  q('#steer-scene').oninput=()=>{q('#steer').value=q('#steer-scene').value;sync();};
- const orientation=matchMedia('(orientation: landscape)');let landscape=orientation.matches;const checkOrientation=()=>{if(orientation.matches!==landscape){landscape=orientation.matches;neutral();}};orientation.addEventListener('change',checkOrientation);window.addEventListener('resize',checkOrientation);window.addEventListener('orientationchange',neutral);
+ const orientation=matchMedia('(orientation: landscape)');let landscape=orientation.matches;const checkOrientation=()=>{if(orientation.matches!==landscape){landscape=orientation.matches;neutral();}};orientation.addEventListener('change',checkOrientation);const anchorTools=q('.anchor-tools');function placeAnchorControls(){q(orientation.matches?'#anchor-landscape':'#anchor-portrait').append(anchorTools);}orientation.addEventListener('change',placeAnchorControls);placeAnchorControls();window.addEventListener('resize',checkOrientation);window.addEventListener('orientationchange',neutral);
  q('#helm-height').oninput=()=>{camera.helmHeightOffset=+q('#helm-height').value;update();};
  q('#catchup').oninput=()=>{camera.catchup=+q('#catchup').value;update();};
  q('#view').onclick=()=>{const modes=['far','medium','helm'];camera.mode=modes[(modes.indexOf(camera.mode)+1)%3];resetCamera(camera,sim.state,sim.scale);update();};
