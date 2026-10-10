@@ -1,8 +1,11 @@
 import {DOCKS,DOCK_POLYGONS,SPAWNS,SOLIDS,FENDER_SHAPES} from '../data/marina.js?v=basin-slips-18';
-import {FLEET} from '../data/fleet.js?v=fleet-14';
+import {FLEET} from '../data/fleet.js?v=fleet-npcs-20';
 import {hullAt,overlap,rectPoly} from './collisions.js?v=fleet-14';
 // NPC dimensions and berth weighting preserved from the supplied 2D game.
-export const NPC_BOATS={bowrider21:{model:'bowrider',length:21,beam:8.5},inboard30:{model:'sportfisher-30',length:30,beam:10.5},cruiser31:{model:'Express-33',length:31,beam:10.4},motorYacht42:{model:'sportfisher-50',length:55,beam:17.7},runabout18:{model:'bowrider',length:18,beam:7.3}};
+export const NPC_BOATS={bowrider21:{model:'bowrider',length:21,beam:8.5},inboard30:{model:'sportfisher-30',length:30,beam:10.5},cruiser31:{model:'Express-33',length:31,beam:10.4},motorYacht42:{model:'Motoryacht-60',length:62,beam:16,berthLength:60},runabout18:{model:'bowrider',length:18,beam:7.3}};
+// New designs keep their real overall footprint and are eligible only for
+// berths with enough length and beam. They are not in the playable selector.
+for(const entry of Object.values(FLEET).filter(e=>e.npcOnly)){const xs=entry.outline.map(p=>p[0]),ys=entry.outline.map(p=>p[1]);NPC_BOATS[entry.id]={model:entry.id,length:Math.max(...xs)-Math.min(...xs),beam:Math.max(...ys)-Math.min(...ys),berthLength:entry.geometryLength};}
 export function npcShape(key){const spec=NPC_BOATS[key],entry=FLEET[spec.model],xs=entry.outline.map(p=>p[0]),ys=entry.outline.map(p=>p[1]),cx=(Math.min(...xs)+Math.max(...xs))/2,cy=(Math.min(...ys)+Math.max(...ys))/2,sx=spec.length/(Math.max(...xs)-Math.min(...xs)),sz=spec.beam/(Math.max(...ys)-Math.min(...ys));return {entry,cx,cy,sx,sz,outline:entry.outline.map(([x,y])=>[(x-cx)*sx,(y-cy)*sz])};}
   export function buildBerthSlots(){
     const m={docks:DOCKS,world:{widthFt:1,heightFt:1},dockPolygons:DOCK_POLYGONS.map(p=>({...p,points:p.points.map(q=>[q.x,q.y])}))};
@@ -157,7 +160,7 @@ export function npcShape(key){const spec=NPC_BOATS[key],entry=FLEET[spec.model],
 
 
 function shuffled(items,random){const a=items.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
-export function boatForBerth(slot,random=Math.random){if(slot.preferredBoatKey)return slot.preferredBoatKey;const weighted=['D','E'].includes(slot.section)?['motorYacht42','motorYacht42','motorYacht42','motorYacht42','motorYacht42','cruiser31','cruiser31','cruiser31','inboard30','bowrider21']:['bowrider21','bowrider21','inboard30','inboard30','cruiser31','cruiser31','motorYacht42'];let choices=weighted.filter(k=>NPC_BOATS[k].length<=slot.maxLengthFt+1.5&&NPC_BOATS[k].beam<=slot.maxBeamFt-.5);if(!choices.length)choices=['bowrider21'];return choices[Math.floor(random()*choices.length)];}
+export function boatForBerth(slot,random=Math.random){if(slot.preferredBoatKey)return slot.preferredBoatKey;const weighted=['D','E'].includes(slot.section)?['motorYacht42','motorYacht42','motorYacht42','motorYacht42','motorYacht42','cruiser31','cruiser31','cruiser31','inboard30','bowrider21','adventure-29','CC-38','GoFast-38']:['adventure-29','CC-38','cuddy','cuddy','GoFast-38','bowrider21','bowrider21','inboard30','inboard30','cruiser31','cruiser31','motorYacht42'];let choices=weighted.filter(k=>(NPC_BOATS[k].berthLength??NPC_BOATS[k].length)<=slot.maxLengthFt+1.5&&NPC_BOATS[k].beam<=slot.maxBeamFt-.5);if(!choices.length)choices=['bowrider21'];return choices[Math.floor(random()*choices.length)];}
 export function plannedSlots(spawnId,density,random=Math.random){if(!['low','medium','high'].includes(density))return [];const spawn=SPAWNS[spawnId]||SPAWNS.f,fraction={low:.3,medium:.6,high:1}[density],target={low:28,medium:58,high:95}[density],candidates=buildBerthSlots().filter(p=>Math.hypot(p.x-spawn.x,p.y-spawn.y)>16),selected=[];for(const section of new Set(candidates.map(s=>s.section))){const slots=shuffled(candidates.filter(s=>s.section===section),random),count=Math.min(slots.length,['A','B'].includes(section)?target:Math.round(slots.length*fraction));selected.push(...slots.slice(0,count));}return selected.map(s=>({...s,boatKey:boatForBerth(s,random)}));}
 function shapeBounds(points){const x=Math.min(...points.map(p=>p.x)),y=Math.min(...points.map(p=>p.y));return {x,y,w:Math.max(...points.map(p=>p.x))-x,h:Math.max(...points.map(p=>p.y))-y,points};}
 function intersects(a,b){return a.x+a.w>b.x&&a.x<b.x+b.w&&a.y+a.h>b.y&&a.y<b.y+b.h&&overlap(a.points,b.points||rectPoly(b));}
