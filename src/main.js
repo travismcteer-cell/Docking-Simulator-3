@@ -1,12 +1,12 @@
-import {stepContacts} from './simulation/contacts.js?v=all-levels-25';
-import {stepLevel,stepLevelTraffic} from './simulation/levels.js?v=all-levels-25';
-import {bindGameTouch,bindTouchRanges} from './interface/touch.js?v=layout-10';
-import {createMiniMap} from './interface/minimap.js?v=all-levels-25';
-import {createSimulation} from './simulation/state.js?v=anchor-scenery-21';
-import {stepPhysics} from './simulation/physics.js?v=levels-23';
-import {createGraphics} from './graphics/scene.js?v=camera-lock-26';
+import {stepContacts} from './simulation/contacts.js?v=racing-basin-27';
+import {stepLevel,stepLevelTraffic} from './simulation/levels.js?v=racing-basin-27';
+import {bindGameTouch,bindTouchRanges} from './interface/touch.js?v=racing-basin-27';
+import {createMiniMap} from './interface/minimap.js?v=racing-basin-27';
+import {createSimulation} from './simulation/state.js?v=racing-basin-27';
+import {stepPhysics} from './simulation/physics.js?v=racing-basin-27';
+import {createGraphics} from './graphics/scene.js?v=racing-basin-27';
 import {resetCamera,followCamera,bindCameraLook} from './graphics/camera.js?v=camera-lock-26';
-import {bindControls} from './interface/controls.js?v=camera-lock-26';
+import {bindControls} from './interface/controls.js?v=racing-basin-27';
 const root=document.getElementById('dock3d');
 try {
  const sim=createSimulation(),camera={};resetCamera(camera,sim.state,sim.scale);
