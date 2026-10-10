@@ -1,12 +1,13 @@
+import {addRacingBasinDetails} from './racing-basin.js?v=racing-basin-27';
 import {createLevelGraphics} from './levels.js?v=all-levels-25';
 import {createAnchorGraphics} from './anchor.js?v=anchor-scenery-21';
-import {createOtherBoatGraphics,createMovingBoatGraphics} from './traffic.js?v=all-levels-25';
-import {addLandmarks} from './landmarks.js?v=anchor-scenery-21';
+import {createOtherBoatGraphics,createMovingBoatGraphics} from './traffic.js?v=racing-basin-27';
+import {addLandmarks} from './landmarks.js?v=racing-basin-27';
 import {cameraPose,releaseCameraLockIfHidden} from './camera.js?v=camera-lock-26';
-import {DOCK_POLYGONS,LAND,ANCHOR_GUIDES,BOUNDS} from '../data/marina.js?v=basin-slips-18';
+import {DOCK_POLYGONS,LAND,ANCHOR_GUIDES,BOUNDS} from '../data/marina.js?v=racing-basin-27';
 import {createCruiser} from './boats.js?v=anchor-scenery-21';
 import * as THREE from '../../vendor/three.module.js?v=touch-9';
-import {createDockingGraphics} from './docking.js?v=fleet-14';
+import {createDockingGraphics} from './docking.js?v=racing-basin-27';
 export function createGraphics(canvas,sim,camera){
 const {state,docks,outline,scale}=sim;
 const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:false});
@@ -36,12 +37,13 @@ for(let x=0;x<128;x+=32){tc.fillStyle='rgba(39,29,19,.45)';tc.fillRect(x,0,1,256
 const woodTexture=new THREE.CanvasTexture(texCanvas);woodTexture.colorSpace=THREE.SRGBColorSpace;woodTexture.wrapS=woodTexture.wrapT=THREE.RepeatWrapping;woodTexture.repeat.set(2,5);woodTexture.anisotropy=4;
 const dockWood=new THREE.MeshStandardMaterial({map:woodTexture,color:'#e0c19c',roughness:.9}),dockSides=mat('#756d5b',.95),postMat=mat('#74654e',.9);
 const concreteCanvas=document.createElement('canvas');concreteCanvas.width=concreteCanvas.height=128;const cc=concreteCanvas.getContext('2d');cc.fillStyle='#a5aaa4';cc.fillRect(0,0,128,128);for(let i=0;i<5500;i++){const v=130+Math.floor(random()*65);cc.fillStyle=`rgba(${v},${v},${v},.35)`;cc.fillRect(random()*128,random()*128,1+random()*2,1+random()*2);}cc.strokeStyle='rgba(65,72,69,.18)';cc.lineWidth=1;cc.strokeRect(.5,.5,127,127);const concreteTexture=new THREE.CanvasTexture(concreteCanvas);concreteTexture.colorSpace=THREE.SRGBColorSpace;concreteTexture.wrapS=concreteTexture.wrapT=THREE.RepeatWrapping;const concreteTop=new THREE.MeshStandardMaterial({map:concreteTexture,color:'#d8ded6',roughness:.96}),concreteSides=mat('#8c958f',.98);
-for(const d of docks){const x=d.x+d.w/2,z=d.y+d.h/2,isConcrete=['dock134','dock135'].includes(d.id);box(x,1.3,z,d.w,1.8,d.h,isConcrete?concreteSides:dockSides);if(isConcrete){const texture=concreteTexture.clone();texture.needsUpdate=true;texture.repeat.set(d.w/14,d.h/14);box(x,2.25,z,d.w,.13,d.h,new THREE.MeshStandardMaterial({map:texture,color:'#d8ded6',roughness:.96}));}else box(x,2.25,z,d.w,.13,d.h,dockWood);}
+for(const d of docks){const x=d.x+d.w/2,z=d.y+d.h/2,isConcrete=d.surface==='concrete'||['dock134','dock135'].includes(d.id);box(x,1.3,z,d.w,1.8,d.h,isConcrete?concreteSides:dockSides);if(isConcrete){const texture=concreteTexture.clone();texture.needsUpdate=true;texture.repeat.set(d.w/14,d.h/14);box(x,2.25,z,d.w,.13,d.h,new THREE.MeshStandardMaterial({map:texture,color:'#d8ded6',roughness:.96}));}else box(x,2.25,z,d.w,.13,d.h,dockWood);}
 
 function solidPolygon(p,height,material){const shape=new THREE.Shape();p.points.forEach((v,i)=>i?shape.lineTo(v.x,-v.y):shape.moveTo(v.x,-v.y));shape.closePath();const g=new THREE.ExtrudeGeometry(shape,{depth:height,bevelEnabled:false,steps:1});g.rotateX(-Math.PI/2);const m=mesh(g,material);m.position.y=.05;return m;}
 const stoneMat=mat('#777d77',.95),landMat=mat('#71845e',.96),quayMat=mat('#b1aa94',.91);
 for(const p of DOCK_POLYGONS){if(p.kind==='piling'){const x=p.points.reduce((a,v)=>a+v.x,0)/p.points.length,z=p.points.reduce((a,v)=>a+v.y,0)/p.points.length;const post=mesh(new THREE.CylinderGeometry(.75,.8,5.5,8),postMat);post.position.set(x,2.5,z);}else solidPolygon(p,p.kind==='stone'?3.5:2.3,p.kind==='stone'?stoneMat:quayMat);}
 for(const p of LAND)solidPolygon(p,2.7,landMat);
+addRacingBasinDetails(scene);
 for(const p of ANCHOR_GUIDES){const buoy=mesh(new THREE.SphereGeometry(.7,8,6),mat('#eda850'));buoy.position.set(p.x,.55,p.y);}
 // Quiet details stay on shore; no decorative structure obstructs a fairway.
 box(-570,8,-480,32,12,22,mat('#d5c9b4'));box(-570,14,-480,35,1.2,25,mat('#475e66'));
@@ -91,7 +93,7 @@ function paint(dt=0){levelGraphics.update();otherBoats.update();movingBoats.upda
 }
 
 let docking=createDockingGraphics(scene,vessel,sim);
-const cleatMesh=new THREE.InstancedMesh(new THREE.BoxGeometry(.9,.15,.24),chrome,sim.dockCleats.length),matrix=new THREE.Matrix4();sim.dockCleats.forEach((p,i)=>{matrix.makeTranslation(p.x,2.47,p.y);cleatMesh.setMatrixAt(i,matrix);});scene.add(cleatMesh);
+const cleatMesh=new THREE.InstancedMesh(new THREE.BoxGeometry(.9,.15,.24),chrome,sim.dockCleats.length),matrix=new THREE.Matrix4();sim.dockCleats.forEach((p,i)=>{matrix.makeTranslation(p.x,p.height??2.47,p.y);cleatMesh.setMatrixAt(i,matrix);});scene.add(cleatMesh);
 function resize(){const width=canvas.clientWidth,height=canvas.clientHeight;renderer.setSize(width,height,false);viewCamera.aspect=width/height;viewCamera.updateProjectionMatrix();}
 return {paint,resize,renderer};
 }

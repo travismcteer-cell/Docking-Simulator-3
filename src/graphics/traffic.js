@@ -1,7 +1,7 @@
 import {buildBoat} from '../data/boat-generator.js?v=anchor-scenery-21';
 import * as THREE from '../../vendor/three.module.js?v=touch-9';
 import {createCruiser} from './boats.js?v=anchor-scenery-21';
-import {npcShape} from '../simulation/traffic.js?v=anchor-scenery-21';
+import {npcShape} from '../simulation/traffic.js?v=racing-basin-27';
 // Shared geometry and GPU instances keep a crowded marina inexpensive. Full
 // cosmetics appear nearby; distant boats use their matching hull silhouette.
 function bakedParts(vessel){vessel.updateMatrixWorld(true);const groups=new Map();vessel.traverse(o=>{if(!o.isMesh)return;const key=o.material.uuid;if(!groups.has(key))groups.set(key,{material:o.material,positions:[],normals:[]});const part=groups.get(key),g=(o.geometry.index?o.geometry.toNonIndexed():o.geometry.clone());g.applyMatrix4(o.matrixWorld);part.positions.push(...g.attributes.position.array);part.normals.push(...g.attributes.normal.array);g.dispose();});const parts=[...groups.values()].map(p=>{const geometry=new THREE.BufferGeometry();geometry.setAttribute('position',new THREE.Float32BufferAttribute(p.positions,3));geometry.setAttribute('normal',new THREE.Float32BufferAttribute(p.normals,3));return {geometry,material:p.material};});const geometries=new Set();vessel.traverse(o=>{if(o.geometry)geometries.add(o.geometry);});for(const g of geometries)g.dispose();return parts;}
