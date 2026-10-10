@@ -1,4 +1,4 @@
-import {addWorkboatDetails} from './workboat.js?v=workboat-28';
+import {addWorkboatDetails} from './workboat.js?v=workboat-steering-29';
 import * as THREE from '../../vendor/three.module.js?v=touch-9';
 import {deckAt as sampleDeck,FLEET} from '../data/fleet.js?v=workboat-28';
 export function createCruiser(entry=FLEET['Express-33'],details=true){

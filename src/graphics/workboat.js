@@ -1,6 +1,6 @@
 import * as THREE from '../../vendor/three.module.js?v=touch-9';
 import {deckAt} from '../data/fleet.js?v=workboat-28';
-import {workboatMotion} from '../simulation/workboat.js?v=workboat-28';
+import {workboatMotion} from '../simulation/workboat.js?v=workboat-steering-29';
 export function addWorkboatDetails(boat,entry,mats){
  const FT=.3048,p=entry.p,deck=x=>deckAt(entry.model,p,x),stern=-p.aft*FT;
  const steel=new THREE.MeshStandardMaterial({color:'#aeb9b9',metalness:.75,roughness:.3}),dark=new THREE.MeshStandardMaterial({color:'#30393a',roughness:.7}),bronze=new THREE.MeshStandardMaterial({color:'#a68b51',metalness:.7,roughness:.4});
