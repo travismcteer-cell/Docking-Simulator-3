@@ -1,6 +1,6 @@
-import {addWorkboatDetails} from './workboat.js?v=navigation-handling-30';
+import {addWorkboatDetails} from './workboat.js?v=workboat-throttle-31';
 import * as THREE from '../../vendor/three.module.js?v=touch-9';
-import {deckAt as sampleDeck,FLEET} from '../data/fleet.js?v=workboat-28';
+import {deckAt as sampleDeck,FLEET} from '../data/fleet.js?v=workboat-throttle-31';
 export function createCruiser(entry=FLEET['Express-33'],details=true){
 const {model:data,definition:def,p}=entry;
 const vessel=new THREE.Group(),boat=new THREE.Group();boat.scale.setScalar(1/.3048);vessel.add(boat);
