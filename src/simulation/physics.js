@@ -1,3 +1,4 @@
+import {applyAnchor} from './anchor.js?v=anchor-scenery-21';
 import {integrate} from './collisions.js?v=fleet-14';
 import {applyLines} from './lines.js?v=fleet-14';
 import {applyFenders} from './fenders.js?v=fleet-14';
@@ -228,6 +229,7 @@ import {applyFenders} from './fenders.js?v=fleet-14';
 
 
     applyLines(sim,dt,addForce);
+    applyAnchor(sim,dt,addForce);
     applyFenders(sim,dt,addForce);
 
     // REAL-WORLD TURNING-RADIUS CALIBRATION
