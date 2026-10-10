@@ -1,8 +1,8 @@
 // Steering owns its pointer independently of the momentary throttle buttons.
-export function bindMomentarySteering(inputs,onChange){
+export function bindMomentarySteering(inputs,onChange,shouldSpring=()=>true){
  let owner=null;
  const set=value=>{for(const input of inputs)input.value=value;onChange(value);};
- const reset=()=>{const old=owner;owner=null;if(old&&old.input.hasPointerCapture?.(old.id))old.input.releasePointerCapture(old.id);set(0);};
+ const reset=(force=false)=>{const old=owner;owner=null;if(old&&old.input.hasPointerCapture?.(old.id))old.input.releasePointerCapture(old.id);if(force===true||shouldSpring())set(0);};
  const move=(input,e)=>{const r=input.getBoundingClientRect(),min=Number(input.min),max=Number(input.max),step=Number(input.step)||1,pad=Math.min(10,r.width/4),t=Math.max(0,Math.min(1,(e.clientX-r.left-pad)/Math.max(1,r.width-2*pad)));set(Math.max(min,Math.min(max,min+Math.round(t*(max-min)/step)*step)));};
  for(const input of inputs){
   input.addEventListener('pointerdown',e=>{if(owner||(e.pointerType==='mouse'&&e.button!==0))return;e.preventDefault();owner={input,id:e.pointerId};input.setPointerCapture(e.pointerId);move(input,e);});
