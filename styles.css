@@ -61,3 +61,5 @@
 /* Boat-specific controls retain native hidden behavior in both layouts. */
 [data-thruster-controls][hidden]{display:none!important}
 .scene-steering>[data-thruster-controls]{grid-template-columns:repeat(2,1fr);margin-bottom:4px}
+
+.anchor-tools{position:absolute;top:45px;left:50%;transform:translateX(-50%);width:min(260px,calc(100% - 170px));padding:5px;border-radius:8px;background:#142638a8;color:white;text-align:center;backdrop-filter:blur(5px)}.anchor-tools strong{display:block;font-size:10px;margin-bottom:3px}.anchor-tools>div{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:3px}.anchor-tools .scene-button{padding:4px 2px;font-size:11px;min-height:44px}.anchor-tools [aria-pressed=true]{background:#49677de6;border-color:#f0d69e}.anchor-tools button:disabled{opacity:.5;cursor:default}.anchor-tools span{display:block;font-size:9px;margin-top:4px;min-height:13px}
