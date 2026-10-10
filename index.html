@@ -1,8 +1,9 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Docking Trainer 3D</title><link rel="stylesheet" href="styles.css?v=levels-23"></head><body>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Docking Trainer 3D</title><link rel="stylesheet" href="styles.css?v=contacts-24"></head><body>
 <main id="dock3d">
  <header class="viz-row"><strong>Docking Trainer · Express-33</strong><span id="level-hud" hidden></span><span id="readout" class="tabular-nums">0.0 kt</span></header>
  <div class="scene-frame">
+  <div id="contact-feedback" role="status" aria-live="polite" aria-atomic="true" hidden><strong id="contact-label"></strong><span id="contact-detail"></span></div>
   <canvas id="game-canvas" aria-label="3D marina; drag to look around"></canvas>
   
  <div class="view-tools"><button type="button" class="scene-button" id="view">View · Medium</button><button type="button" class="scene-button" id="recenter" aria-label="Return camera behind boat">Recenter</button></div>
@@ -38,6 +39,6 @@
  <label>Boat <select class="form-select" id="boat-select"></select></label><p class="text-small" id="boat-note"></p>
  <label>Starting location <select class="form-select" id="spawn"></select></label><p class="text-small">Changing the start resets the boat and releases its lines. Simulation pauses while setup is open.</p></dialog>
 <dialog class="setup-screen" id="level-result" aria-labelledby="level-result-title"><h2 id="level-result-title">Level complete</h2><p id="level-result-summary"></p><p id="level-result-contacts" class="text-small"></p><div class="setup-footer"><button class="btn" id="level-restart">Restart level</button><button class="btn" id="level-next">Next level</button><button class="btn" id="level-practice">Return to Practice</button></div></dialog>
-</main><script type="module" src="src/main.js?v=levels-23"></script></body></html>
+</main><script type="module" src="src/main.js?v=contacts-24"></script></body></html>
 
 
