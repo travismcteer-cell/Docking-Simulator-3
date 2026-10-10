@@ -4,7 +4,7 @@ import {createSimulation} from './simulation/state.js?v=anchor-scenery-21';
 import {stepPhysics} from './simulation/physics.js?v=anchor-scenery-21';
 import {createGraphics} from './graphics/scene.js?v=anchor-scenery-21';
 import {resetCamera,followCamera,bindCameraLook} from './graphics/camera.js?v=anchor-scenery-21';
-import {bindControls} from './interface/controls.js?v=anchor-scenery-21';
+import {bindControls} from './interface/controls.js?v=anchor-layout-22';
 const root=document.getElementById('dock3d');
 try {
  const sim=createSimulation(),camera={};resetCamera(camera,sim.state,sim.scale);
