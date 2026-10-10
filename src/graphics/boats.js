@@ -1,10 +1,11 @@
+import {addWorkboatDetails} from './workboat.js?v=workboat-28';
 import * as THREE from '../../vendor/three.module.js?v=touch-9';
-import {deckAt as sampleDeck,FLEET} from '../data/fleet.js?v=anchor-scenery-21';
+import {deckAt as sampleDeck,FLEET} from '../data/fleet.js?v=workboat-28';
 export function createCruiser(entry=FLEET['Express-33'],details=true){
 const {model:data,definition:def,p}=entry;
 const vessel=new THREE.Group(),boat=new THREE.Group();boat.scale.setScalar(1/.3048);vessel.add(boat);
 boat.position.x=-entry.originShift;
-const mats={};const colors={side:def.colors.upperHull,bottom:def.colors.lowerHull,transom:def.colors.upperHull,deck:def.colors.deck,cabin:def.colors.superstructure,roof:def.colors.superstructure,bridge:def.colors.superstructure,'bridge-floor':def.colors.deck,door:def.colors.superstructure,'cockpit-wall':def.colors.superstructure,'cockpit-floor':entry.id==='Express-33'?'#b4a28a':def.colors.cockpit,arch:def.colors.accessory,mast:def.colors.accessory,'aft-glass':def.colors.windows};
+const mats={};const colors={side:def.colors.upperHull,bottom:def.colors.lowerHull,transom:def.colors.upperHull,deck:def.colors.deck,cabin:def.colors.superstructure,roof:def.colors.superstructure,bridge:def.colors.superstructure,'bridge-floor':def.colors.deck,door:def.colors.superstructure,'cockpit-wall':def.colors.superstructure,'cockpit-floor':entry.id==='Express-33'?'#b4a28a':def.colors.cockpit,arch:def.colors.accessory,mast:def.colors.accessory,'aft-glass':entry.id==='deadrise-40'?def.colors.superstructure:def.colors.windows};
 for(const [g,c] of Object.entries(colors))mats[g]=new THREE.MeshStandardMaterial({color:c,roughness:g==='bottom'?.3:.48,metalness:.08,side:THREE.DoubleSide});
 mats.glass=new THREE.MeshPhysicalMaterial({color:def.colors.windows,transparent:true,opacity:.35,roughness:.12,metalness:.1,depthWrite:false,side:entry.id==='Motoryacht-60'?THREE.DoubleSide:THREE.FrontSide});
 const groups={};data.faces.forEach((f,i)=>{const g=data.groups[i];(groups[g]??=[]).push(...f.flatMap(j=>data.vertices[j]));});
@@ -32,6 +33,7 @@ box(-.4,floorY+.25,.65,.62,.5,.53,mats.deck);box(-.4,floorY+.53,.65,.64,.14,.56,
 box(.3,floorY+.67,.65,.55,.22,.5,rubber);
 const wheel=new THREE.Mesh(new THREE.TorusGeometry(.14,.018,6,24),steel);wheel.rotation.y=Math.PI/2;wheel.position.set(.05,floorY+.86,.65);boat.add(wheel);
 for(let i=0;i<3;i++)box(.008+i*.08,floorY+.79,.55,.045,.045,.008,steel);
+}else if(entry.id==='deadrise-40'){vessel.userData.updateSteering=addWorkboatDetails(boat,entry,mats);
 }else{
  const FT=.3048,large=entry.id==='Motoryacht-60',isBow=entry.id==='bowrider',twinOutboard=entry.definition.handlingProfile==='twin-outboard',hasOutboard=isBow||twinOutboard,size=large?1.3:1;
  const floorY=Math.min(deckAt((p.cockpitOffset-p.aft)*FT)[1],deckAt((p.cockpitOffset+p.cockpit-p.aft)*FT)[1])-p.cockpitDepth*FT;

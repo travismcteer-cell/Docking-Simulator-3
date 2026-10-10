@@ -1,13 +1,14 @@
+import {createWorkboatWake,workboatVisualPose} from './workboat.js?v=workboat-28';
 import {addRacingBasinDetails} from './racing-basin.js?v=racing-basin-27';
 import {createLevelGraphics} from './levels.js?v=all-levels-25';
-import {createAnchorGraphics} from './anchor.js?v=anchor-scenery-21';
-import {createOtherBoatGraphics,createMovingBoatGraphics} from './traffic.js?v=racing-basin-27';
+import {createAnchorGraphics} from './anchor.js?v=workboat-28';
+import {createOtherBoatGraphics,createMovingBoatGraphics} from './traffic.js?v=workboat-28';
 import {addLandmarks} from './landmarks.js?v=racing-basin-27';
 import {cameraPose,releaseCameraLockIfHidden} from './camera.js?v=camera-lock-26';
 import {DOCK_POLYGONS,LAND,ANCHOR_GUIDES,BOUNDS} from '../data/marina.js?v=racing-basin-27';
-import {createCruiser} from './boats.js?v=anchor-scenery-21';
+import {createCruiser} from './boats.js?v=workboat-28';
 import * as THREE from '../../vendor/three.module.js?v=touch-9';
-import {createDockingGraphics} from './docking.js?v=racing-basin-27';
+import {createDockingGraphics} from './docking.js?v=workboat-28';
 export function createGraphics(canvas,sim,camera){
 const {state,docks,outline,scale}=sim;
 const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:false});
@@ -79,17 +80,18 @@ function updateFoam(dt){for(const f of foam){if(f.life<=0)continue;f.life-=dt;f.
  foamClock+=dt;const power=Math.abs(state.port)+Math.abs(state.stbd),speed=Math.hypot(state.vx,state.vy)*110;
  if(foamClock>.05&&(power>.02||speed>.15)){foamClock=0;const a=state.a*Math.PI/180,c=Math.cos(a),s=Math.sin(a);for(const side of (sim.boat.propulsion.type==='singleOutboard'?[0]:[-1,1])){const f=foam[foamIndex++%foam.length],u=-(sim.geometryLength||31)/2,v=side*2.5+(random()-.5);f.life=5;f.sprite.position.set(state.x*scale+u*c-v*s,.23,state.y*scale+u*s+v*c);const engine=side<=0?state.port:state.stbd;f.vx=-c*engine*7+(random()-.5)*.3;f.vz=-s*engine*7+(random()-.5)*.3;}}
 }
+const workboatWake=createWorkboatWake(scene,foamTex);
 const levelGraphics=createLevelGraphics(scene,sim);
 const anchorGraphics=createAnchorGraphics(scene,sim);
 const otherBoats=createOtherBoatGraphics(scene,sim),movingBoats=createMovingBoatGraphics(scene,sim);
 let elapsed=0;
-function paint(dt=0){levelGraphics.update();otherBoats.update();movingBoats.update();anchorGraphics.update();if(modelId!==sim.model.id){docking.dispose();vessel.removeFromParent();const materials=new Set();vessel.traverse(o=>{o.geometry?.dispose();if(o.material)materials.add(o.material);});for(const m of materials)m.dispose();vessel=createCruiser(sim.model);scene.add(vessel);docking=createDockingGraphics(scene,vessel,sim);modelId=sim.model.id;}vessel.userData.updateSteering?.(state.steer);elapsed+=dt;vessel.position.set(state.x*scale,.07*Math.sin(elapsed*1.2),state.y*scale);vessel.rotation.set(.004*Math.sin(elapsed*.9),-state.a*Math.PI/180,.003*Math.sin(elapsed*1.1));
+function paint(dt=0){levelGraphics.update();otherBoats.update();movingBoats.update();anchorGraphics.update();if(modelId!==sim.model.id){workboatWake.clear();for(const f of foam){f.life=0;f.sprite.material.opacity=0;}docking.dispose();vessel.removeFromParent();const materials=new Set();vessel.traverse(o=>{o.geometry?.dispose();if(o.material)materials.add(o.material);});for(const m of materials)m.dispose();vessel=createCruiser(sim.model);scene.add(vessel);docking=createDockingGraphics(scene,vessel,sim);modelId=sim.model.id;}vessel.userData.updateSteering?.(state.steer);elapsed+=dt;vessel.position.set(state.x*scale,.07*Math.sin(elapsed*1.2),state.y*scale);vessel.rotation.set(.004*Math.sin(elapsed*.9),-state.a*Math.PI/180,.003*Math.sin(elapsed*1.1));if(sim.model.id==='deadrise-40'){const motion=workboatVisualPose(sim,elapsed);vessel.position.y=motion.heave;vessel.rotation.set(0,-state.a*Math.PI/180,0);vessel.rotateZ(motion.pitch);vessel.rotateX(motion.roll);}
  sun.position.set(camera.x-70,100,camera.y+30);sun.target.position.set(camera.x,0,camera.y);sun.target.updateMatrixWorld();
  let pose=cameraPose(camera,state,scale,sim.helm);viewCamera.position.set(...pose.eye);viewCamera.lookAt(...pose.target);
  if(camera.lockedPose){viewCamera.updateMatrixWorld(true);lockMatrix.multiplyMatrices(viewCamera.projectionMatrix,viewCamera.matrixWorldInverse);lockFrustum.setFromProjectionMatrix(lockMatrix);vessel.updateMatrixWorld(true);lockBounds.setFromObject(vessel);if(releaseCameraLockIfHidden(camera,lockFrustum.intersectsBox(lockBounds),state,scale)){pose=cameraPose(camera,state,scale,sim.helm);viewCamera.position.set(...pose.eye);viewCamera.lookAt(...pose.target);}}
 
 
- const windAngle=sim.environment.windDirection*Math.PI/180;waterUniforms.uWind.value=sim.environment.wind/20;waterUniforms.uDir.value.set(Math.sin(windAngle),-Math.cos(windAngle));waterUniforms.uTime.value=elapsed;waterUniforms.uEye.value.copy(viewCamera.position);updateFoam(dt);docking.update();renderer.render(scene,viewCamera);
+ const windAngle=sim.environment.windDirection*Math.PI/180;waterUniforms.uWind.value=sim.environment.wind/20;waterUniforms.uDir.value.set(Math.sin(windAngle),-Math.cos(windAngle));waterUniforms.uTime.value=elapsed;waterUniforms.uEye.value.copy(viewCamera.position);if(sim.model.id==='deadrise-40')workboatWake.update(sim,dt);else updateFoam(dt);docking.update();renderer.render(scene,viewCamera);
 }
 
 let docking=createDockingGraphics(scene,vessel,sim);
