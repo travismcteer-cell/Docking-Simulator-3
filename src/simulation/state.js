@@ -1,10 +1,10 @@
 import {attachLine} from './lines.js?v=navigation-handling-30';
 import {fenderBeam,FENDER_TUNING} from './fenders.js?v=navigation-handling-30';
-import {setPracticeTraffic} from './moving-traffic.js?v=gas-helm-cockpit-39';
+import {setPracticeTraffic} from './moving-traffic.js?v=races-40';
 import {stowAnchor} from './anchor.js?v=navigation-handling-30';
-import {setOtherBoats} from './traffic.js?v=gas-helm-cockpit-39';
+import {setOtherBoats} from './traffic.js?v=races-40';
 import {BOAT,SCALE,OUTLINE} from '../data/boats.js?v=anchor-scenery-21';
-import {DOCKS,DOCK_CLEATS,SPAWNS,SOLIDS,FENDER_SHAPES,BOUNDS} from '../data/marina.js?v=traffic-helm-38';
+import {DOCKS,DOCK_CLEATS,SPAWNS,SOLIDS,FENDER_SHAPES,BOUNDS} from '../data/marina.js?v=races-40';
 import {FLEET} from '../data/fleet.js?v=gas-helm-cockpit-39';
 import {hullAt,overlap,rectPoly} from './collisions.js?v=navigation-handling-30';
 export function createSimulation(){const sim={boat:BOAT,scale:SCALE,outline:OUTLINE,docks:DOCKS,solids:SOLIDS,fenderShapes:FENDER_SHAPES,bounds:BOUNDS,dockCleats:DOCK_CLEATS,environment:{wind:0,current:0,windDirection:90,currentDirection:180},state:{},lines:{},fenders:{port:false,stbd:false,contactPort:0,contactStbd:0},contact:false,otherBoatsDensity:'medium',trafficDensity:'none'};selectBoat(sim,'Express-33');return sim;}

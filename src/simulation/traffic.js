@@ -1,5 +1,5 @@
-import {TRAFFIC_BERTH_IDS,GAS_TRAFFIC_BERTHS,trafficBerthEnvelope} from '../data/traffic-routes.js?v=traffic-helm-38';
-import {DOCKS,DOCK_POLYGONS,SPAWNS,SOLIDS,FENDER_SHAPES} from '../data/marina.js?v=traffic-helm-38';
+import {TRAFFIC_BERTH_IDS,GAS_TRAFFIC_BERTHS,trafficBerthEnvelope} from '../data/traffic-routes.js?v=races-40';
+import {DOCKS,DOCK_POLYGONS,SPAWNS,SOLIDS,FENDER_SHAPES} from '../data/marina.js?v=races-40';
 import {FLEET} from '../data/fleet.js?v=gas-helm-cockpit-39';
 import {hullAt,overlap,rectPoly} from './collisions.js?v=navigation-handling-30';
 // NPC dimensions and berth weighting preserved from the supplied 2D game.

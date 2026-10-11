@@ -1,6 +1,6 @@
-import {SOLIDS,FENDER_SHAPES} from '../data/marina.js?v=traffic-helm-38';
-import {buildTrafficRoutes,trafficBerthEnvelope} from '../data/traffic-routes.js?v=traffic-helm-38';
-import {buildBerthSlots,npcShape} from './traffic.js?v=gas-helm-cockpit-39';
+import {SOLIDS,FENDER_SHAPES} from '../data/marina.js?v=races-40';
+import {buildTrafficRoutes,trafficBerthEnvelope} from '../data/traffic-routes.js?v=races-40';
+import {buildBerthSlots,npcShape} from './traffic.js?v=races-40';
 import {hullAt,overlap,rectPoly} from './collisions.js?v=navigation-handling-30';
 export const TRAFFIC_ROUTES=buildTrafficRoutes(buildBerthSlots());
 const angleTo=(a,b)=>Math.atan2(b.y-a.y,b.x-a.x)*180/Math.PI;
