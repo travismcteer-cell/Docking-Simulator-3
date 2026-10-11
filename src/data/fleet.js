@@ -32,16 +32,18 @@ for(const def of [...definitions,workboatDefinition]){
  let helmFloor=hasRoof?mount:cockpitFloor;
  // Independent pilot-house helm for cabin boats; the playable yacht uses its flybridge.
  if(p.pilotHouseHeight>1){const a=(p.pilotHouseOffset-p.aft)*FT,b=a+p.pilotHouseLength*FT,baseA=deckAt(model,p,a)[1]+p.pilotHouseLift*FT,baseB=deckAt(model,p,b)[1]+p.pilotHouseLift*FT,eye=Math.max(baseA,baseB)+p.pilotHouseHeight*FT,hx=b-p.pilotHouseHeight*FT*Math.tan(p.pilotHouseRake*Math.PI/180)-.38;helmFloor=baseA+(baseB-baseA)*(hx-a)/(b-a);helm={forward:hx/FT-shift,side:deckAt(model,p,hx)[2]*p.pilotHouseWidth/100*.55/FT,height:(baseB+(eye-baseB)*.86)/FT};}
- // Place the yacht's camera and helm furniture on the roof above the pilot house.
+ // Place the yacht's camera and helm furniture above the raised aft cabin.
  if(def.id==='Motoryacht-60'){
-  const a=(p.pilotHouseOffset-p.aft)*FT,b=a+p.pilotHouseLength*FT;
-  helmFloor=Math.max(deckAt(model,p,a)[1],deckAt(model,p,b)[1])+(p.pilotHouseLift+p.pilotHouseHeight)*FT+.11;
-  helm={forward:(a+(b-a)*.65)/FT-shift,side:p.beam*.20,height:helmFloor/FT+4.6};
+  const a=(p.aftCabinOffset-p.aft)*FT,b=a+p.aftCabinLength*FT,h=p.aftCabinHeight*FT;
+  const back=a+h*Math.tan(p.aftCabinAftRake*Math.PI/180),front=b-h*Math.tan(p.aftCabinRake*Math.PI/180);
+  helmFloor=Math.max(deckAt(model,p,a)[1],deckAt(model,p,b)[1])+p.aftCabinLift*FT+h+.11;
+  helm={forward:(back+(front-back)*.65)/FT-shift,side:p.beam*.20,height:helmFloor/FT+4.6};
  }
  if(def.id==='deadrise-40'){
   const x=(-p.aft+length*.25)*FT;
   helmFloor=cockpitFloor;
   helm={forward:x/FT-shift,side:deckAt(model,p,x)[2]*.72/FT,height:helmFloor/FT+5.5};
  }
- FLEET[def.id]={id:def.id,name:def.name+(def.id==='deadrise-40'?' · Single inboard':def.id==='bowrider'?' · Single outboard':def.handlingProfile==='twin-outboard'?' · Twin outboard':def.handlingProfile==='twin-sterndrive'?' · Twin sterndrive':def.handlingProfile==='unspecified'?'':' · Twin inboard'),definition:def,model,p,npcOnly:!!def.npcOnly,handling:def.id==='deadrise-40'?workboatHandling:profiles[def.id]||null,geometryLength:length,originShift:shift,outline:convexHull(points),lineDefs,helm,helmFloor,platformLength:platform};
+ const cockpitFloorPoints=def.id==='deadrise-40'?[...new Set(model.faces.flatMap((f,i)=>model.groups[i]==='cockpit-floor'?f:[]))].map(i=>{const v=model.vertices[i];return [v[0]/FT-shift,v[1]/FT,v[2]/FT];}):null;
+ FLEET[def.id]={id:def.id,name:def.name+(def.id==='deadrise-40'?' · Single inboard':def.id==='bowrider'?' · Single outboard':def.handlingProfile==='twin-outboard'?' · Twin outboard':def.handlingProfile==='twin-sterndrive'?' · Twin sterndrive':def.handlingProfile==='unspecified'?'':' · Twin inboard'),definition:def,model,p,npcOnly:!!def.npcOnly,handling:def.id==='deadrise-40'?workboatHandling:profiles[def.id]||null,geometryLength:length,originShift:shift,outline:convexHull(points),lineDefs,helm,helmFloor,cockpitFloorPoints,platformLength:platform};
 }
