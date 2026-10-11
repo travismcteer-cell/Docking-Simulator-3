@@ -1,5 +1,5 @@
 import * as THREE from '../../vendor/three.module.js?v=touch-9';
-import {deckAt} from '../data/fleet.js?v=workboat-race-36';
+import {deckAt} from '../data/fleet.js?v=traffic-helm-38';
 import {workboatMotion} from '../simulation/workboat.js?v=workboat-npc-34';
 export function addWorkboatDetails(boat,entry,mats){
  const FT=.3048,p=entry.p,deck=x=>deckAt(entry.model,p,x),stern=-p.aft*FT;
