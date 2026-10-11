@@ -1,6 +1,6 @@
 import {TRAFFIC_BERTH_IDS,GAS_TRAFFIC_BERTHS,trafficBerthEnvelope} from '../data/traffic-routes.js?v=traffic-helm-38';
 import {DOCKS,DOCK_POLYGONS,SPAWNS,SOLIDS,FENDER_SHAPES} from '../data/marina.js?v=traffic-helm-38';
-import {FLEET} from '../data/fleet.js?v=traffic-helm-38';
+import {FLEET} from '../data/fleet.js?v=gas-helm-cockpit-39';
 import {hullAt,overlap,rectPoly} from './collisions.js?v=navigation-handling-30';
 // NPC dimensions and berth weighting preserved from the supplied 2D game.
 export const NPC_BOATS={bowrider21:{model:'bowrider',length:21,beam:8.5},inboard30:{model:'sportfisher-30',length:30,beam:10.5},cruiser31:{model:'Express-33',length:31,beam:10.4},motorYacht42:{model:'Motoryacht-60',length:62,beam:16,berthLength:60},runabout18:{model:'bowrider',length:18,beam:7.3}};
