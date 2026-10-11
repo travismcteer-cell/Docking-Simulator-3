@@ -98,3 +98,19 @@
 #settings-screen .control-card{margin-top:18px}
 .setup-header{gap:12px;flex-wrap:wrap}
 @media(max-width:650px){.home-mode-grid{grid-template-columns:1fr}}
+
+/* Compact indicators point toward the map compass direction, independent of camera. */
+.environment-indicators{position:absolute;top:6px;left:50%;transform:translateX(-50%);display:flex;gap:5px;z-index:2;pointer-events:none}
+.environment-indicators>span{display:flex;align-items:center;gap:4px;padding:4px 6px;border-radius:6px;background:#142638c9;color:#fff;font-size:10px;white-space:nowrap}
+.environment-indicators b{display:inline-block;color:#9fd6ec;font-size:16px;line-height:1}
+#current-indicator b{color:#88e0c0}
+@media(orientation:landscape){.scene-throttle.both{left:156px}.scene-hint{top:40px}#contact-feedback{top:64px}}
+@media(orientation:portrait){
+ .environment-indicators{flex-direction:column;gap:3px}
+ #level-result{position:fixed;inset:auto 0 0;margin:0 auto;width:min(760px,100vw);max-height:var(--result-height,300px);border-radius:14px 14px 0 0;padding:12px;overflow:auto}
+ #level-result::backdrop{background:transparent}
+ #level-result h2{font-size:17px;margin:0 0 8px}
+ #level-result p{font-size:12px;margin:6px 0}
+ #level-result .setup-footer{gap:6px}
+ #level-result .btn{font-size:12px;padding:7px}
+}
