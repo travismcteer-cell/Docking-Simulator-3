@@ -23,5 +23,7 @@ export function buildRacingBasin({DOCKS,DOCK_POLYGONS,DOCK_CLEATS,SOLIDS,FENDER_
  const eastStart=berths.find(b=>b.id==='race-east-2'),southStart=berths.find(b=>b.id==='race-south-east-2');
  SPAWNS.racing={x:eastStart.x-1.5,y:eastStart.y,a:180,label:'R1 · Racing basin · east wall · stern-in'};
  SPAWNS.racingSouth={x:southStart.x,y:southStart.y-1.5,a:270,label:'R2 · Racing basin · south-east slips · stern-in'};
+ const r3=berths.find(b=>b.id==='race-south-east-1');
+ SPAWNS.racingBow={x:r3.x,y:r3.y-1.5,a:90,label:'R3 · Racing basin · near beer tent · bow-in'};
  return {basin:{x,y,w:width,h:depth,openRunFt:width-80,spectator,pilings},berths};
 }

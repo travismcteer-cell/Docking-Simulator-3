@@ -1,4 +1,4 @@
-import {DOCKS,BOUNDS,RACING_BERTHS} from './marina.js?v=traffic-helm-38';
+import {DOCKS,BOUNDS,RACING_BERTHS} from './marina.js?v=races-40';
 // Permanent reservations: never parked NPC berths or challenge targets.
 export const TRAFFIC_BERTH_IDS=new Set(['B-269-7','B-327-7','A-138-7-L','A-138-6-L','D-med-1','D-med-2','E-north-6','race-west-1']);
 const fuel=DOCKS.find(d=>d.id==='dock135');
