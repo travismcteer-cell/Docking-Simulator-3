@@ -1,4 +1,4 @@
-import {stepWorkboat} from './workboat.js?v=navigation-handling-30';
+import {stepWorkboat} from './workboat.js?v=workboat-npc-34';
 import {applyAnchor} from './anchor.js?v=navigation-handling-30';
 import {integrate} from './collisions.js?v=navigation-handling-30';
 import {applyLines} from './lines.js?v=navigation-handling-30';
@@ -152,9 +152,9 @@ import {applyFenders} from './fenders.js?v=navigation-handling-30';
     // harder so the sim behaves more like a real boat in dock mode.
     function forwardHullResistance(v){
       let resistance=forwardLinearDrag*v + forwardQuadraticDrag*v*Math.abs(v);
-      if(v<=0) return resistance;
+      // Wave-making resistance opposes water-relative motion in either direction.
       const hullSpeedKt=1.34*Math.sqrt(boat.dimensions.lengthFt*0.90);
-      const ratio=(v*110)/hullSpeedKt;
+      const ratio=(Math.abs(v)*110)/hullSpeedKt;
       if(ratio<=0.60) return resistance;
       const engines=singleEngine ? 1 : 2;
       const dockModeMaxThrust=propulsion.thrust*0.25*engines;
@@ -165,7 +165,7 @@ import {applyFenders} from './fenders.js?v=navigation-handling-30';
         const over=ratio-0.90;
         wave+=dockModeMaxThrust*(2.8*over+8.5*over*over);
       }
-      return resistance+wave;
+      return resistance+Math.sign(v)*wave;
     }
 
     const forwardResistance=forwardHullResistance(vf);

@@ -1,5 +1,5 @@
-import {selectBoat} from './state.js?v=npc-fleet-spawns-33';
-import {setOtherBoats,npcShape,buildBerthSlots} from './traffic.js?v=npc-fleet-spawns-33';
+import {selectBoat} from './state.js?v=workboat-npc-34';
+import {setOtherBoats,npcShape,buildBerthSlots} from './traffic.js?v=workboat-npc-34';
 import {SOLIDS,FENDER_SHAPES,DOCK_POLYGONS} from '../data/marina.js?v=npc-fleet-spawns-33';
 import {hullAt,overlap,rectPoly} from './collisions.js?v=navigation-handling-30';
 import {anchorBowPoint} from './anchor.js?v=navigation-handling-30';
