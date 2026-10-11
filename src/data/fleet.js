@@ -1,7 +1,7 @@
 import {workboatDefinition,workboatHandling} from './workboat.js?v=workboat-throttle-31';
-import {definitions} from './fleet-definitions.js?v=fleet-npcs-20';
-import {buildBoat} from './boat-generator.js?v=anchor-scenery-21';
-import {model,definition,p} from './express-33.js?v=anchor-scenery-21';
+import {definitions} from './fleet-definitions.js?v=npc-fleet-spawns-33';
+import {buildBoat} from './boat-generator.js?v=npc-fleet-spawns-33';
+import {model,definition,p} from './express-33.js?v=npc-fleet-spawns-33';
 import {BOAT,OUTLINE} from './boats.js?v=anchor-scenery-21';
 const FT=.3048;
 // Handling calibration copied from the old 2D game's named boat profiles.
@@ -16,7 +16,8 @@ const expressLines={bow:{xFrac:41/108,xBody:.4,beam:2.3212,height:4.2917,label:'
 export const FLEET={'Express-33':{id:'Express-33',name:'Express-33 · Twin sterndrive',definition,model,p,handling:BOAT,outline:OUTLINE,geometryLength:31,originShift:0,lineDefs:expressLines,helm:{forward:.05/FT,side:.65/FT,height:1.9086576/FT},platformLength:2}};
 for(const def of [...definitions,workboatDefinition]){
  const p={...def.hull};for(const c of Object.values(def.components))Object.assign(p,c);p.enclosure=1;p.enclosureMount=def.components.enclosure.mount;p.accessory=def.components.accessory.type;p.accessoryMount=def.components.accessory.mount;
- const model=buildBoat(p),length=p.aft+p.forward,shift=(p.forward-p.aft)/2,platform=def.id==='deadrise-40'||def.id==='bowrider'||def.handlingProfile==='twin-outboard'?0:2;
+ p.hideCabinWindows=def.id==='explorer-50';
+ const model=buildBoat(p),length=p.aft+p.forward,shift=(p.forward-p.aft)/2,platform=def.id==='classic-30'||def.id==='deadrise-40'||def.id==='bowrider'||def.handlingProfile==='twin-outboard'?0:2;
  const points=model.rail.flatMap(r=>r.map(i=>{const v=model.vertices[i];return [v[0]/FT-shift,v[2]/FT];}));
  if(platform)for(const sign of [-1,1])points.push([-p.aft-shift-platform,sign*p.beam*p.stern*.46]);
  // Include the outboard's swept footprint in the plan-view collision envelope.

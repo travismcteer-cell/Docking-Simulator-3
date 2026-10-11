@@ -94,10 +94,11 @@ function buildBoat(p){
  const roofY=Math.max(baseB,(cabinInWell?floorY:deck(front)[1])+.025)+p.cabinHeight*FT;
  const rake=p.cabinHeight*FT*Math.tan(p.windshieldRake*Math.PI/180);
  const rt=back+.12,ft=front-rake,twb=wb*.94,twf=wf*.9;
+ function mainWindow(...args){if(args[8]!=='glass'||!p.hideCabinWindows)sub(...args);}
  if(p.cabinHeight>0&&p.cabinLength>0&&p.cabinWidth>0){
- for(const sign of [-1,1]){const a=[back,baseB,sign*wb],b=[front,baseF,sign*wf],c=[ft,roofY,sign*twf],d=[rt,roofY,sign*twb];panel(a,b,c,d,'cabin',[0,0,sign],8);sub(a,b,c,d,.07,.48,.46,.88,'glass',[0,0,sign]);sub(a,b,c,d,.53,.93,.46,.88,'glass',[0,0,sign]);}
- const fa=[front,baseF,-wf],fb=[front,baseF,wf],fc=[ft,roofY,twf],fd=[ft,roofY,-twf];panel(fa,fb,fc,fd,'cabin',[1,0,0],8);sub(fa,fb,fc,fd,.06,.48,.4,.89,'glass',[1,0,0]);sub(fa,fb,fc,fd,.52,.94,.4,.89,'glass',[1,0,0]);
- const ba=[back,baseB,wb],bb=[back,baseB,-wb],bc=[rt,roofY,-twb],bd=[rt,roofY,twb];panel(ba,bb,bc,bd,'cabin',[-1,0,0],6);sub(ba,bb,bc,bd,.33,.67,.02,.88,'door',[-1,0,0]);sub(ba,bb,bc,bd,.36,.64,.46,.83,'glass',[-1,0,0]);sub(ba,bb,bc,bd,.06,.29,.5,.84,'glass',[-1,0,0]);sub(ba,bb,bc,bd,.71,.94,.5,.84,'glass',[-1,0,0]);
+ for(const sign of [-1,1]){const a=[back,baseB,sign*wb],b=[front,baseF,sign*wf],c=[ft,roofY,sign*twf],d=[rt,roofY,sign*twb];panel(a,b,c,d,'cabin',[0,0,sign],8);mainWindow(a,b,c,d,.07,.48,.46,.88,'glass',[0,0,sign]);mainWindow(a,b,c,d,.53,.93,.46,.88,'glass',[0,0,sign]);}
+ const fa=[front,baseF,-wf],fb=[front,baseF,wf],fc=[ft,roofY,twf],fd=[ft,roofY,-twf];panel(fa,fb,fc,fd,'cabin',[1,0,0],8);mainWindow(fa,fb,fc,fd,.06,.48,.4,.89,'glass',[1,0,0]);mainWindow(fa,fb,fc,fd,.52,.94,.4,.89,'glass',[1,0,0]);
+ const ba=[back,baseB,wb],bb=[back,baseB,-wb],bc=[rt,roofY,-twb],bd=[rt,roofY,twb];panel(ba,bb,bc,bd,'cabin',[-1,0,0],6);mainWindow(ba,bb,bc,bd,.33,.67,.02,.88,'door',[-1,0,0]);mainWindow(ba,bb,bc,bd,.36,.64,.46,.83,'glass',[-1,0,0]);mainWindow(ba,bb,bc,bd,.06,.29,.5,.84,'glass',[-1,0,0]);mainWindow(ba,bb,bc,bd,.71,.94,.5,.84,'glass',[-1,0,0]);
  }
  // A slim roof slab follows cabin taper and moves with the whole assembly.
  const ov=p.roofOverhang*FT,rx0=rt-ov,rx1=ft+ov,rw0=twb+ov,rw1=twf+ov;

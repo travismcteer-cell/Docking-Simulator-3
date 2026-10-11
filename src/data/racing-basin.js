@@ -19,6 +19,9 @@ export function buildRacingBasin({DOCKS,DOCK_POLYGONS,DOCK_CLEATS,SOLIDS,FENDER_
  }
  group('race-south-west',x+19,bottom,270);group('race-south-east',right-112,bottom,270);
  group('race-west',x,y+19,0);group('race-east',right,y+112,180);
- SPAWNS.racing={x:x+width/2,y:y+100,a:0,label:'R · Workboat racing basin'};
+ // Headings point out of the slips; allow 1.5 ft behind the 40 ft hull.
+ const eastStart=berths.find(b=>b.id==='race-east-2'),southStart=berths.find(b=>b.id==='race-south-east-2');
+ SPAWNS.racing={x:eastStart.x-1.5,y:eastStart.y,a:180,label:'R1 · Racing basin · east wall · stern-in'};
+ SPAWNS.racingSouth={x:southStart.x,y:southStart.y-1.5,a:270,label:'R2 · Racing basin · south-east slips · stern-in'};
  return {basin:{x,y,w:width,h:depth,openRunFt:width-80,spectator,pilings},berths};
 }
