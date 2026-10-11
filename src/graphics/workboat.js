@@ -1,5 +1,5 @@
 import * as THREE from '../../vendor/three.module.js?v=touch-9';
-import {deckAt} from '../data/fleet.js?v=traffic-helm-38';
+import {deckAt} from '../data/fleet.js?v=gas-helm-cockpit-39';
 import {workboatMotion} from '../simulation/workboat.js?v=workboat-npc-34';
 export function addWorkboatDetails(boat,entry,mats){
  const FT=.3048,p=entry.p,deck=x=>deckAt(entry.model,p,x),stern=-p.aft*FT;
@@ -31,7 +31,14 @@ export function addWorkboatDetails(boat,entry,mats){
 }
 export function workboatVisualPose(sim,time){const {knots,plane}=workboatMotion(sim),wave=1+Math.min(1,sim.environment.wind/20),s=sim.state;
  // Cosmetic motion only: collision hull and helm camera remain stable.
- return {heave:plane*.32-(sim.workboatDynamics?.trim||0)*.22+wave*(.14*Math.sin(time*1.9)+.065*Math.sin(time*3.1))*(1+plane*.5),pitch:((sim.workboatDynamics?.trim||0)*.065+.045*Math.exp(-Math.pow((knots-11)/5,2))+plane*.022)+wave*(.010+plane*.006)*Math.sin(time*2.7),roll:wave*.014*Math.sin(time*1.55)-Math.max(-.055,Math.min(.055,s.omega*.0015))*plane};
+ const pose={heave:plane*.32-(sim.workboatDynamics?.trim||0)*.22+wave*(.14*Math.sin(time*1.9)+.065*Math.sin(time*3.1))*(1+plane*.5),pitch:((sim.workboatDynamics?.trim||0)*.065+.045*Math.exp(-Math.pow((knots-11)/5,2))+plane*.022)+wave*(.010+plane*.006)*Math.sin(time*2.7),roll:wave*.014*Math.sin(time*1.55)-Math.max(-.055,Math.min(.055,s.omega*.0015))*plane};
+ // Rotate the actual cockpit floor through the same roll then pitch as the model.
+ // Keep its lowest point 0.10 ft above the flat water plane; this only adjusts cosmetics.
+ const cp=Math.cos(pose.pitch),sp=Math.sin(pose.pitch),cr=Math.cos(pose.roll),sr=Math.sin(pose.roll);
+ const floor=sim.model.cockpitFloorPoints||[];
+ const low=floor.reduce((min,[x,y,z])=>Math.min(min,x*sp+(y*cr-z*sr)*cp),Infinity);
+ if(Number.isFinite(low))pose.heave=Math.max(pose.heave,.10-low);
+ return pose;
 }
 export function createWorkboatWake(scene,texture){
  const pool=[],material=new THREE.SpriteMaterial({map:texture,transparent:true,depthWrite:false,opacity:0});

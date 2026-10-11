@@ -1,12 +1,12 @@
-import {createWorkboatWake,workboatVisualPose} from './workboat.js?v=traffic-helm-38';
+import {createWorkboatWake,workboatVisualPose} from './workboat.js?v=gas-helm-cockpit-39';
 import {addRacingBasinDetails} from './racing-basin.js?v=traffic-helm-38';
 import {createLevelGraphics} from './levels.js?v=all-levels-25';
-import {createAnchorGraphics} from './anchor.js?v=traffic-helm-38';
-import {createOtherBoatGraphics,createMovingBoatGraphics} from './traffic.js?v=traffic-helm-38';
+import {createAnchorGraphics} from './anchor.js?v=gas-helm-cockpit-39';
+import {createOtherBoatGraphics,createMovingBoatGraphics} from './traffic.js?v=gas-helm-cockpit-39';
 import {addLandmarks} from './landmarks.js?v=traffic-helm-38';
 import {cameraPose,releaseCameraLockIfHidden} from './camera.js?v=camera-lock-26';
 import {DOCK_POLYGONS,LAND,ANCHOR_GUIDES,BOUNDS} from '../data/marina.js?v=traffic-helm-38';
-import {createCruiser} from './boats.js?v=traffic-helm-38';
+import {createCruiser} from './boats.js?v=gas-helm-cockpit-39';
 import * as THREE from '../../vendor/three.module.js?v=touch-9';
 import {createDockingGraphics} from './docking.js?v=navigation-handling-30';
 export function createGraphics(canvas,sim,camera){
