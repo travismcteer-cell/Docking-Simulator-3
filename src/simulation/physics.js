@@ -46,6 +46,7 @@ import {applyFenders} from './fenders.js?v=navigation-handling-30';
 
     // Converts our normalized force/lever units into visible yaw acceleration.
     const yawScale=1850;
+    const yawResponse=propulsion.yawResponse??1;
 
     function addForce(Fx,Fy,xBody=0,yBody=0){
       state.vx += Fx*dt;
@@ -70,15 +71,15 @@ import {applyFenders} from './fenders.js?v=navigation-handling-30';
         if(setting>0){
           const effectiveRudder=steerRad*(propulsion.aheadRudderDeflectionGain??1.8);
           const forward=T*Math.cos(effectiveRudder);
-          const lateral=-T*Math.sin(effectiveRudder);
+          const lateral=-T*Math.sin(effectiveRudder)*yawResponse;
           addForce(fwdx*forward+rightx*lateral,fwdy*forward+righty*lateral,
-            propulsion.rudderX,side*ENGINE_Y);
+            propulsion.rudderX*yawResponse,side*ENGINE_Y*yawResponse);
         }else{
-          addForce(fwdx*T,fwdy*T,DRIVE_X,side*ENGINE_Y);
+          addForce(fwdx*T,fwdy*T,DRIVE_X,side*ENGINE_Y*yawResponse);
         }
         // Counter-rotating shaft walk reinforces differential engine torque.
         const walkGain=setting<0?propulsion.propWalkYawGainReverse:propulsion.propWalkYawGainAhead;
-        state.omega-=side*setting*walkGain*dt;
+        state.omega-=side*setting*walkGain*yawResponse*dt;
         return;
       }
 
@@ -86,7 +87,7 @@ import {applyFenders} from './fenders.js?v=navigation-handling-30';
       const dir=sterndriveThrustDirection(setting);
       const Fx=dir.x*T;
       const Fy=dir.y*T;
-      addForce(Fx,Fy,DRIVE_X,side*ENGINE_Y);
+      addForce(Fx,Fy,DRIVE_X,side*ENGINE_Y*yawResponse);
 
       // Extra low-speed pivot authority calibrated for the sterndrive cruiser.
       const lateralThrust = Fx*rightx + Fy*righty;
@@ -109,7 +110,7 @@ import {applyFenders} from './fenders.js?v=navigation-handling-30';
     if(propulsion.bowThruster && bowThrusterInput){
       const bt=propulsion.bowThruster;
       const lateral=bt.force*bowThrusterInput;
-      addForce(rightx*lateral,righty*lateral,bt.xBody??0.42,0);
+      addForce(rightx*lateral,righty*lateral,(bt.xBody??0.42)*yawResponse,0);
     }
 
     // Resolve boat velocity into fore/aft and lateral components.
@@ -126,7 +127,7 @@ import {applyFenders} from './fenders.js?v=navigation-handling-30';
         // Rudders remain quite effective while coasting ahead and retain a
         // meaningful, though reduced, effect while moving astern.
         const directionGain=vf>=0 ? 1 : (propulsion.reverseFlowRudderGain ?? 0.45);
-        const flowLateral=-Math.abs(vf)*vf*steerSin*propulsion.flowRudderGain*directionGain;
+        const flowLateral=-Math.abs(vf)*vf*steerSin*propulsion.flowRudderGain*directionGain*yawResponse;
         addForce(rightx*flowLateral,righty*flowLateral,propulsion.rudderX,0);
       } else if(propulsion.type==='twinSterndrive' || propulsion.type==='singleSterndrive' || propulsion.type==='singleOutboard'){
         // Turned sterndrive gearcases/lower units also act like small foils

@@ -1,9 +1,9 @@
-import {selectBoat} from './state.js?v=workboat-race-36';
-import {setOtherBoats,npcShape,buildBerthSlots} from './traffic.js?v=workboat-race-36';
-import {SOLIDS,FENDER_SHAPES,DOCK_POLYGONS,SPAWNS,RACING_BERTHS} from '../data/marina.js?v=npc-fleet-spawns-33';
+import {selectBoat} from './state.js?v=traffic-helm-38';
+import {setOtherBoats,npcShape,buildBerthSlots} from './traffic.js?v=traffic-helm-38';
+import {SOLIDS,FENDER_SHAPES,DOCK_POLYGONS,SPAWNS,RACING_BERTHS} from '../data/marina.js?v=traffic-helm-38';
 import {hullAt,overlap,rectPoly} from './collisions.js?v=navigation-handling-30';
 import {anchorBowPoint} from './anchor.js?v=navigation-handling-30';
-import {FLEET} from '../data/fleet.js?v=workboat-race-36';
+import {FLEET} from '../data/fleet.js?v=traffic-helm-38';
 import {attachLine} from './lines.js?v=navigation-handling-30';
 const feet=(x,y,a)=>({x:x*180-650,y:y*120-525,a});
 const box=(x,y,w,h,label)=>({x:x*180-650,y:y*120-525,w:w*180,h:h*120,label});
@@ -27,7 +27,7 @@ export const LEVELS=[
  {id:'med-windy-arrival',number:8,name:'Windy Med Arrival',boat:'Express-33',density:'medium',type:'arrival',spawn:feet(4.25,6.85,105),target:medTarget('Express-33'),heading:285,wind:14,windDirection:90,current:.2,currentDirection:180,speed:.70,requireAnchor:true,requireSternPair:true,description:'Approach the diagonal Med quay in a crosswind. Drop anchor, reverse stern-to, and attach both port and starboard stern lines.',obstacles:medNeighbours},
  {id:'med-yacht-departure',number:9,name:'Crowded Yacht Departure',boat:'Motoryacht-60',density:'high',type:'departure',spawn:medPose('Motoryacht-60'),target:box(6.23,7.76,.4,.5,'F · SOUTH EXIT'),wind:10,windDirection:270,current:.3,currentDirection:90,startLines:[['stern','port'],['stern','stbd']],startFenders:'both',startAnchor:true,description:'Release both stern lines, retrieve the anchor, and guide the 60-foot motor yacht past neighboring boats and through the entrance.',obstacles:medNeighbours},
  {id:'precision-anchor',number:10,name:'Precision Anchor Drop',boat:'sportfisher-30',density:'high',type:'arrival',spawn:feet(4.3,6.70,105),target:medTarget('sportfisher-30'),heading:285,wind:9,windDirection:90,current:.2,currentDirection:180,speed:.65,requireAnchor:true,requireSternPair:true,anchorDropZone:medAnchorZone,description:'Drop the anchor inside the orange zone, then reverse the twin-inboard cruiser between neighbors to the diagonal Med quay and attach both stern lines.',obstacles:medNeighbours},
- {id:'workboat-race',number:11,name:'Workboat Basin Race',boat:'deadrise-40',density:'medium',type:'race',spawnId:'racingSouth',spawn:SPAWNS.racingSouth,target:centered(raceFinish.x,raceFinish.y,25,40,'FINISH · FOUR LINES'),heading:270,requiredPilingIds:raceFinish.pilingIds,contactPenalties:false,description:'Start stern-in in the southeast racing slips. Race to the middle slip of the southwest group and secure both bow lines and both stern lines. Fastest time wins; contact adds no penalties.',objective:'Attach both bow and both stern lines to the destination slip’s four separate pilings. No hold timer or contact penalties.'}
+ {id:'workboat-race',number:11,name:'Workboat Basin Race',boat:'deadrise-40',density:'medium',type:'race',spawnId:'racingSouth',spawn:SPAWNS.racingSouth,target:centered(raceFinish.x,raceFinish.y,25,40,'FINISH · FOUR LINES'),heading:raceFinish.a,requiredPilingIds:raceFinish.pilingIds,contactPenalties:false,description:'Start stern-in in the southeast racing slips. Race to the middle slip of the southwest group, finish stern-in with the bow pointing north, and secure both bow lines and both stern lines. Fastest time wins; contact adds no penalties.',objective:'Finish stern-in, bow pointing north and aligned within 10°, with both bow and both stern lines attached to the destination slip’s four separate pilings. No hold timer or contact penalties.'}
 
 ];
 for(const l of LEVELS){l.type??=l.number===2?'departure':'arrival';l.heading??=0;l.speed??=.75;l.objective??=l.type==='departure'?'Release every line, retrieve the anchor, and enter the exit zone.':(l.requireAnchor?(l.anchorDropZone?'Anchor in the orange zone; ':'Anchor deployed; ')+'both stern lines; ':'Two lines; ')+'align with the berth below '+l.speed+' kt and hold for 3 seconds.';}
@@ -39,7 +39,7 @@ export function classifyImpact(knots){return knots<.3?'gentle':knots<.8?'firm':k
 export function formatTime(seconds){const ticks=Math.round(Math.max(0,seconds)*10);return Math.floor(ticks/600)+':'+((ticks%600)/10).toFixed(1).padStart(4,'0');}
 function seeded(seed){return ()=>{seed=(seed*1664525+1013904223)>>>0;return seed/4294967296;};}
 export function startLevel(sim,id){const definition=LEVELS.find(l=>l.id===id);if(!definition)throw new Error('Unknown level: '+id);
- if(!sim.practiceSettings)sim.practiceSettings={boat:sim.model.id,spawn:sim.spawnId,density:sim.otherBoatsDensity,environment:{...sim.environment}};
+ if(!sim.practiceSettings)sim.practiceSettings={boat:sim.model.id,spawn:sim.spawnId,density:sim.otherBoatsDensity,trafficDensity:sim.trafficDensity,environment:{...sim.environment}};
  selectBoat(sim,definition.boat,definition.spawnId);Object.assign(sim.state,{x:definition.spawn.x/sim.scale,y:definition.spawn.y/sim.scale,a:definition.spawn.a});Object.assign(sim.environment,{wind:definition.wind||0,current:definition.current||0,windDirection:definition.windDirection??90,currentDirection:definition.currentDirection??180});setOtherBoats(sim,definition.density,seeded(100+definition.number));
  const t=definition.target,spawn=definition.spawn,curated=(definition.obstacles||[]).map(npc);
  if(definition.number===2||definition.gasNeighbours)curated.push(...gasNeighbours(sim,definition.number===6?{x:168.1,y:42.5,a:0}:spawn));
@@ -54,16 +54,18 @@ export function startLevel(sim,id){const definition=LEVELS.find(l=>l.id===id);if
  for(const [type,side] of startLines){attachLine(sim,type,side);if(!sim.lines[side+':'+type])throw new Error('Starting line could not attach: '+definition.name+' '+type+' '+side);}
  sim.solids=[...SOLIDS,...sim.otherBoats,...sim.movingBoats];sim.fenderShapes=[...FENDER_SHAPES,...sim.otherBoats,...sim.movingBoats];sim.trafficRevision++;sim.contact=false;sim.collision=null;sim.mode='levels';sim.levelRevision=(sim.levelRevision||0)+1;sim.levelRun={definition,elapsed:0,penalty:0,impacts:[],hold:0,complete:false,contactTimes:new Map()};return sim.levelRun;
 }
-export function enterPractice(sim){const saved=sim.practiceSettings;sim.mode='practice';sim.levelRun=null;sim.movingBoats=[];sim.levelRevision=(sim.levelRevision||0)+1;sim.practiceSettings=null;if(saved){sim.otherBoatsDensity=saved.density;Object.assign(sim.environment,saved.environment);selectBoat(sim,saved.boat,saved.spawn);}sim.collision=null;}
+export function enterPractice(sim){const saved=sim.practiceSettings;sim.mode='practice';sim.levelRun=null;sim.movingBoats=[];sim.levelRevision=(sim.levelRevision||0)+1;sim.practiceSettings=null;if(saved){sim.otherBoatsDensity=saved.density;sim.trafficDensity=saved.trafficDensity||'none';Object.assign(sim.environment,saved.environment);selectBoat(sim,saved.boat,saved.spawn);}sim.collision=null;}
 export function stepLevel(sim,dt){const run=sim.levelRun;if(sim.mode!=='levels'||!run||run.complete)return;run.elapsed+=dt;
  const impact=sim.collision;if(impact){const key=impact.kind+':'+impact.id,last=run.contactTimes.get(key);if(last===undefined||run.elapsed-last>.7){const severity=classifyImpact(impact.knots),seconds=run.definition.contactPenalties===false?0:IMPACT_PENALTIES[severity];run.impacts.push({...impact,severity,seconds,at:run.elapsed});run.penalty+=seconds;}run.contactTimes.set(key,run.elapsed);}
  const s=sim.state,l=run.definition,t=l.target,x=s.x*sim.scale,y=s.y*sim.scale,inside=pointInZone(t,x,y),speed=Math.hypot(s.vx,s.vy)*110,lines=Object.keys(sim.lines).length,parallel=Math.abs(Math.sin((s.a-l.heading)*Math.PI/180))<=Math.sin(10*Math.PI/180),departure=l.type==='departure';
- // Racing ends on four distinct destination pilings, never on spring lines or another slip.
+ // Racing requires the directed stern-in heading and four distinct destination pilings.
  if(l.type==='race'){
   const targets=['port:bow','stbd:bow','port:stern','stbd:stern'].map(key=>sim.lines[key]?.target?.id).filter(id=>l.requiredPilingIds.includes(id));
   const attached=new Set(targets).size;
-  run.status=!inside?'Reach the southwest middle slip':'Attach bow and stern lines · '+attached+' / 4';
-  if(inside&&attached===4){run.complete=true;run.total=run.elapsed;s.port=0;s.stbd=0;s.bowThruster=0;}
+  // Unlike ordinary parallel docking, the opposite (bow-in) heading cannot finish.
+  const headingError=Math.abs(((s.a-l.heading)%360+540)%360-180),sternIn=headingError<=10;
+  run.status=!inside?'Reach the southwest middle slip':!sternIn?'Finish stern-in · bow north, within 10°':'Attach bow and stern lines · '+attached+' / 4';
+  if(inside&&sternIn&&attached===4){run.complete=true;run.total=run.elapsed;s.port=0;s.stbd=0;s.bowThruster=0;}
   return;
  }
  const sternPair=!!sim.lines['port:stern']&&!!sim.lines['stbd:stern'],anchored=!l.requireAnchor||sim.anchor.mode!=='stowed',anchorInZone=!l.anchorDropZone||!!sim.anchor.target&&pointInZone(l.anchorDropZone,sim.anchor.target.x,sim.anchor.target.y);
