@@ -8,7 +8,7 @@ const FT=.3048;
 const profiles={
  bowrider:{dimensions:{lengthFt:21,beamFt:8.5},propulsion:{type:'singleOutboard',maxSteerDeg:35,thrust:.070,reverseEfficiency:.92,reverseSteerGain:1.22,driveX:-.47,engineY:0,steeringYawGain:1.10,flowSteerGain:.20,reverseFlowSteerGain:.72},hydrodynamics:{waterCenterX:-.16,airCenterX:.12,forwardLinearDrag:.050,forwardQuadraticDrag:.25,lateralLinearDrag:.46,lateralQuadraticDrag:.78,yawDampingBase:.14,yawDampingSpeedGain:8.5,yawDampingSpeedMax:.18},maneuvering:{fullPowerTurnRadiusFt:15,turnCalibrationResponse:2.25}},
  'sportfisher-30':{dimensions:{lengthFt:30,beamFt:10.5},propulsion:{type:'twinInboardRudder',maxSteerDeg:35,thrust:.064,reverseEfficiency:.88,driveX:-.38,engineY:.16,rudderX:-.47,rudderWashGain:.62,reverseRudderGain:.08,flowRudderGain:.58,reverseFlowRudderGain:.45,propWalkYawGainAhead:8,propWalkYawGainReverse:16},hydrodynamics:{waterCenterX:-.20,airCenterX:.08,forwardLinearDrag:.058,forwardQuadraticDrag:.31,lateralLinearDrag:.58,lateralQuadraticDrag:1,yawDampingBase:.19,yawDampingSpeedGain:10,yawDampingSpeedMax:.23},maneuvering:{fullPowerTurnRadiusFt:24,turnCalibrationResponse:1.7}},
- 'Motoryacht-60':{dimensions:{lengthFt:55,beamFt:17.7},propulsion:{type:'twinInboardRudder',maxSteerDeg:35,thrust:.058,reverseEfficiency:.88,driveX:-.39,engineY:.17,rudderX:-.47,rudderWashGain:.58,reverseRudderGain:.07,flowRudderGain:.54,reverseFlowRudderGain:.42,propWalkYawGainAhead:6.8,propWalkYawGainReverse:13,bowThruster:{force:.007,xBody:.42}},hydrodynamics:{waterCenterX:-.18,airCenterX:.10,forwardLinearDrag:.064,forwardQuadraticDrag:.34,lateralLinearDrag:.64,lateralQuadraticDrag:1.10,yawDampingBase:.22,yawDampingSpeedGain:11,yawDampingSpeedMax:.27},maneuvering:{fullPowerTurnRadiusFt:30,turnCalibrationResponse:1.45}}
+ 'Motoryacht-60':{dimensions:{lengthFt:55,beamFt:17.7},propulsion:{type:'twinInboardRudder',maxSteerDeg:35,thrust:.058,reverseEfficiency:.88,driveX:-.39,engineY:.17,rudderX:-.47,rudderWashGain:.58,reverseRudderGain:.07,flowRudderGain:.54,reverseFlowRudderGain:.42,propWalkYawGainAhead:6.8,propWalkYawGainReverse:13,yawResponse:.55,bowThruster:{force:.0045,xBody:.42}},hydrodynamics:{waterCenterX:-.18,airCenterX:.10,forwardLinearDrag:.064,forwardQuadraticDrag:.34,lateralLinearDrag:.64,lateralQuadraticDrag:1.10,yawDampingBase:.22,yawDampingSpeedGain:11,yawDampingSpeedMax:.27},maneuvering:{fullPowerTurnRadiusFt:48,turnCalibrationResponse:.70}}
 };
 export function deckAt(data,p,x){const t=Math.max(0,Math.min(64,(x+p.aft*FT)/((p.aft+p.forward)*FT)*64)),i=Math.min(63,Math.floor(t)),u=t-i;const a=data.vertices[data.rings[i][15]],b=data.vertices[data.rings[i+1][15]];return a.map((v,j)=>v+(b[j]-v)*u);}
 function convexHull(points){const sorted=points.slice().sort((a,b)=>a[0]-b[0]||a[1]-b[1]);const cross=(o,a,b)=>(a[0]-o[0])*(b[1]-o[1])-(a[1]-o[1])*(b[0]-o[0]);const chain=ps=>{const h=[];for(const q of ps){while(h.length>1&&cross(h[h.length-2],h[h.length-1],q)<=0)h.pop();h.push(q);}h.pop();return h;};return [...chain(sorted),...chain(sorted.slice().reverse())];}
@@ -30,7 +30,18 @@ for(const def of [...definitions,workboatDefinition]){
  const top=mount+(p.enclosureLift+p.enclosureHeight)*FT,wheelX=x1-p.enclosureHeight*FT*Math.tan(p.enclosureRake*Math.PI/180)-.38;
  let helm={forward:wheelX/FT-shift,side:deckAt(model,p,wheelX)[2]*p.enclosureWidth/100*.55/FT,height:top/FT};
  let helmFloor=hasRoof?mount:cockpitFloor;
- // The motor yacht is driven from inside its independent pilot house.
+ // Independent pilot-house helm for cabin boats; the playable yacht uses its flybridge.
  if(p.pilotHouseHeight>1){const a=(p.pilotHouseOffset-p.aft)*FT,b=a+p.pilotHouseLength*FT,baseA=deckAt(model,p,a)[1]+p.pilotHouseLift*FT,baseB=deckAt(model,p,b)[1]+p.pilotHouseLift*FT,eye=Math.max(baseA,baseB)+p.pilotHouseHeight*FT,hx=b-p.pilotHouseHeight*FT*Math.tan(p.pilotHouseRake*Math.PI/180)-.38;helmFloor=baseA+(baseB-baseA)*(hx-a)/(b-a);helm={forward:hx/FT-shift,side:deckAt(model,p,hx)[2]*p.pilotHouseWidth/100*.55/FT,height:(baseB+(eye-baseB)*.86)/FT};}
+ // Place the yacht's camera and helm furniture on the roof above the pilot house.
+ if(def.id==='Motoryacht-60'){
+  const a=(p.pilotHouseOffset-p.aft)*FT,b=a+p.pilotHouseLength*FT;
+  helmFloor=Math.max(deckAt(model,p,a)[1],deckAt(model,p,b)[1])+(p.pilotHouseLift+p.pilotHouseHeight)*FT+.11;
+  helm={forward:(a+(b-a)*.65)/FT-shift,side:p.beam*.20,height:helmFloor/FT+4.6};
+ }
+ if(def.id==='deadrise-40'){
+  const x=(-p.aft+length*.25)*FT;
+  helmFloor=cockpitFloor;
+  helm={forward:x/FT-shift,side:deckAt(model,p,x)[2]*.72/FT,height:helmFloor/FT+5.5};
+ }
  FLEET[def.id]={id:def.id,name:def.name+(def.id==='deadrise-40'?' · Single inboard':def.id==='bowrider'?' · Single outboard':def.handlingProfile==='twin-outboard'?' · Twin outboard':def.handlingProfile==='twin-sterndrive'?' · Twin sterndrive':def.handlingProfile==='unspecified'?'':' · Twin inboard'),definition:def,model,p,npcOnly:!!def.npcOnly,handling:def.id==='deadrise-40'?workboatHandling:profiles[def.id]||null,geometryLength:length,originShift:shift,outline:convexHull(points),lineDefs,helm,helmFloor,platformLength:platform};
 }
