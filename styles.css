@@ -121,3 +121,10 @@
 #level-result .text-small{color:#5b6570}
 #level-result .btn{background:#e0c68e;color:#263344;border-color:#aa8847}
 #level-result .btn:hover{background:#ead49f}
+
+#race-start-light{position:absolute;top:38px;left:50%;transform:translateX(-50%);z-index:3;display:flex;align-items:center;gap:8px;padding:6px 12px;border:1px solid #fff6;border-radius:10px;background:#142638ed;color:white;font-size:12px;font-weight:bold;pointer-events:none}
+#race-start-light[hidden]{display:none}
+#race-start-light i{width:18px;height:18px;border-radius:50%;background:#f34848;box-shadow:0 0 8px currentColor}
+#race-start-light[data-colour=yellow] i{background:#ffd346}
+#race-start-light[data-colour=green] i{background:#44df73}
+@media (orientation:portrait){#race-start-light{top:65px}}
