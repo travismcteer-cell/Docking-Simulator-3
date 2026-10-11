@@ -1,5 +1,5 @@
 import {workboatDefinition,workboatHandling} from './workboat.js?v=workboat-throttle-31';
-import {definitions} from './fleet-definitions.js?v=npc-fleet-spawns-33';
+import {definitions} from './fleet-definitions.js?v=workboat-race-36';
 import {buildBoat} from './boat-generator.js?v=npc-fleet-spawns-33';
 import {model,definition,p} from './express-33.js?v=npc-fleet-spawns-33';
 import {BOAT,OUTLINE} from './boats.js?v=anchor-scenery-21';
