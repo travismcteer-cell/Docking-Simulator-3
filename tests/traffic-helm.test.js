@@ -53,10 +53,10 @@ test('route cycling remains bounded and uses distinct routes',()=>{
  for(const b of sim.movingBoats)assert(Number.isFinite(b.xCenter)&&Number.isFinite(b.yCenter)&&Number.isFinite(b.heading));
  assert(sim.solids.length<=SOLIDS.length+5);
 });
-test('helm locations follow flybridge and aft starboard workboat positions',()=>{
+test('helm locations follow the aft-cabin roof and aft starboard workboat positions',()=>{
  const yacht=FLEET['Motoryacht-60'],p=yacht.p,ft=.3048;
- const a=(p.pilotHouseOffset-p.aft)*ft,b=a+p.pilotHouseLength*ft,deck=x=>{const t=(x+p.aft*ft)/((p.aft+p.forward)*ft)*64,i=Math.min(63,Math.floor(t)),u=t-i;return yacht.model.vertices[yacht.model.rings[i][15]][1]*(1-u)+yacht.model.vertices[yacht.model.rings[i+1][15]][1]*u;};
- assert(yacht.helmFloor>Math.max(deck(a),deck(b))+(p.pilotHouseLift+p.pilotHouseHeight)*ft);assert(yacht.helm.height*ft>yacht.helmFloor);
+ const a=(p.aftCabinOffset-p.aft)*ft,b=a+p.aftCabinLength*ft,deck=x=>{const t=(x+p.aft*ft)/((p.aft+p.forward)*ft)*64,i=Math.min(63,Math.floor(t)),u=t-i;return yacht.model.vertices[yacht.model.rings[i][15]][1]*(1-u)+yacht.model.vertices[yacht.model.rings[i+1][15]][1]*u;};
+ assert(yacht.helmFloor>Math.max(deck(a),deck(b))+(p.aftCabinLift+p.aftCabinHeight)*ft);assert(yacht.helm.height*ft>yacht.helmFloor);
  const work=FLEET['deadrise-40'];assert.equal(work.helm.forward,-10);assert(work.helm.side>0);assert(work.helm.height*ft>work.helmFloor);
 });
 test('motor yacht responds more reluctantly to rudder, differential thrust and bow thruster',()=>{
