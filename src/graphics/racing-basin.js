@@ -1,5 +1,5 @@
 import * as THREE from '../../vendor/three.module.js?v=touch-9';
-import {RACING_BASIN} from '../data/marina.js?v=racing-basin-27';
+import {RACING_BASIN} from '../data/marina.js?v=npc-fleet-spawns-33';
 export function addRacingBasinDetails(scene){
  const deck=RACING_BASIN.spectator,group=new THREE.Group();group.position.set(deck.x+deck.w/2,2.32,deck.y+deck.h/2);scene.add(group);
  const material=color=>new THREE.MeshStandardMaterial({color,roughness:.85,side:THREE.DoubleSide});
