@@ -1,6 +1,6 @@
 import * as THREE from '../../vendor/three.module.js?v=touch-9';
 import {deckAt} from '../data/fleet.js?v=npc-fleet-spawns-33';
-import {workboatMotion} from '../simulation/workboat.js?v=navigation-handling-30';
+import {workboatMotion} from '../simulation/workboat.js?v=workboat-npc-34';
 export function addWorkboatDetails(boat,entry,mats){
  const FT=.3048,p=entry.p,deck=x=>deckAt(entry.model,p,x),stern=-p.aft*FT;
  const steel=new THREE.MeshStandardMaterial({color:'#aeb9b9',metalness:.75,roughness:.3}),dark=new THREE.MeshStandardMaterial({color:'#30393a',roughness:.7}),bronze=new THREE.MeshStandardMaterial({color:'#a68b51',metalness:.7,roughness:.4});
@@ -31,7 +31,7 @@ export function addWorkboatDetails(boat,entry,mats){
 }
 export function workboatVisualPose(sim,time){const {knots,plane}=workboatMotion(sim),wave=1+Math.min(1,sim.environment.wind/20),s=sim.state;
  // Cosmetic motion only: collision hull and helm camera remain stable.
- return {heave:plane*.32+wave*(.14*Math.sin(time*1.9)+.065*Math.sin(time*3.1))*(1+plane*.5),pitch:(.045*Math.exp(-Math.pow((knots-11)/5,2))+plane*.022)+wave*(.010+plane*.006)*Math.sin(time*2.7),roll:wave*.014*Math.sin(time*1.55)-Math.max(-.055,Math.min(.055,s.omega*.0015))*plane};
+ return {heave:plane*.32-(sim.workboatDynamics?.trim||0)*.22+wave*(.14*Math.sin(time*1.9)+.065*Math.sin(time*3.1))*(1+plane*.5),pitch:((sim.workboatDynamics?.trim||0)*.065+.045*Math.exp(-Math.pow((knots-11)/5,2))+plane*.022)+wave*(.010+plane*.006)*Math.sin(time*2.7),roll:wave*.014*Math.sin(time*1.55)-Math.max(-.055,Math.min(.055,s.omega*.0015))*plane};
 }
 export function createWorkboatWake(scene,texture){
  const pool=[],material=new THREE.SpriteMaterial({map:texture,transparent:true,depthWrite:false,opacity:0});
