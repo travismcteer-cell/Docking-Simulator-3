@@ -1,12 +1,12 @@
-import {stepContacts} from './simulation/contacts.js?v=npc-fleet-spawns-33';
-import {stepLevel,stepLevelTraffic} from './simulation/levels.js?v=npc-fleet-spawns-33';
+import {stepContacts} from './simulation/contacts.js?v=workboat-npc-34';
+import {stepLevel,stepLevelTraffic} from './simulation/levels.js?v=workboat-npc-34';
 import {bindGameTouch,bindTouchRanges} from './interface/touch.js?v=racing-basin-27';
 import {createMiniMap} from './interface/minimap.js?v=npc-fleet-spawns-33';
-import {createSimulation} from './simulation/state.js?v=npc-fleet-spawns-33';
-import {stepPhysics} from './simulation/physics.js?v=navigation-handling-30';
-import {createGraphics} from './graphics/scene.js?v=npc-fleet-spawns-33';
+import {createSimulation} from './simulation/state.js?v=workboat-npc-34';
+import {stepPhysics} from './simulation/physics.js?v=reverse-hull-speed-35';
+import {createGraphics} from './graphics/scene.js?v=workboat-npc-34';
 import {resetCamera,followCamera,bindCameraLook} from './graphics/camera.js?v=camera-lock-26';
-import {bindControls} from './interface/controls.js?v=npc-fleet-spawns-33';
+import {bindControls} from './interface/controls.js?v=workboat-npc-34';
 const root=document.getElementById('dock3d');
 try {
  const sim=createSimulation(),camera={};resetCamera(camera,sim.state,sim.scale);
