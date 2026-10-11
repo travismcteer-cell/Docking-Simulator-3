@@ -114,3 +114,10 @@
  #level-result .setup-footer{gap:6px}
  #level-result .btn{font-size:12px;padding:7px}
 }
+
+/* A warm completion card stands apart from the navy helm controls. */
+#level-result{background:#f3e5c8;color:#263344;border:2px solid #d6ad55;box-shadow:0 8px 30px #0008}
+#level-result h2{color:#5b451d}
+#level-result .text-small{color:#5b6570}
+#level-result .btn{background:#e0c68e;color:#263344;border-color:#aa8847}
+#level-result .btn:hover{background:#ead49f}
