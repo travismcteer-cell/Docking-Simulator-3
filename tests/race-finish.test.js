@@ -1,9 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {LEVELS,stepLevel} from '../src/simulation/levels.js';
+import {RACES,stepLevel} from '../src/simulation/levels.js';
 import {RACING_BERTHS} from '../src/data/marina.js';
 
-const definition=LEVELS.find(l=>l.id==='workboat-race');
+const definition=RACES.find(l=>l.id==='workboat-race');
 const keys=['port:bow','stbd:bow','port:stern','stbd:stern'];
 function race(heading=270){
  const t=definition.target;
