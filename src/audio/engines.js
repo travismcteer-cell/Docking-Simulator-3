@@ -1,4 +1,4 @@
-import {engineFamily,engineCount,targetRPM,loopMix} from './mix.js?v=engine-audio-43';
+import {engineFamily,engineCount,targetRPM,loopMix,engineLoudness} from './mix.js?v=docking-audio-44';
 const assetRoot=new URL('../../assets/audio/engines/',import.meta.url);
 export function bindEngineAudio(root,sim){
  const enable=root.querySelector('#audio-enabled'),volume=root.querySelector('#audio-volume'),family=root.querySelector('#audio-family'),status=root.querySelector('#audio-status');
@@ -25,7 +25,7 @@ export function bindEngineAudio(root,sim){
   if(group?.key!==key){stop();if(!loading){report('Loading engine sound…');loading=load(type).then(clips=>{if(wanted===key&&active())start(key,type,count,clips);}).catch(error=>{enable.checked=false;report(error.message+'; sound disabled.');}).finally(()=>{loading=null;});}return;}
   if(now-lastUpdate<50)return;lastUpdate=now;const t=context.currentTime;
   master.gain.setTargetAtTime(Number(volume.value)/100*(count===2?.25:.4),t,.08);
-  group.engines.forEach((engine,i)=>{const power=Math.abs(i===0?sim.state.port:sim.state.stbd),rpm=targetRPM(power,group.clips[0].rpm),mix=loopMix(group.clips,rpm),loudness=.55+.45*Math.sqrt(Math.min(1,power));engine.forEach((voice,j)=>{voice.source.playbackRate.setTargetAtTime(mix[j].rate,t,.15);voice.gain.gain.setTargetAtTime(mix[j].gain*loudness,t,.12);});});
+  group.engines.forEach((engine,i)=>{const power=Math.abs(i===0?sim.state.port:sim.state.stbd),rpm=targetRPM(power,group.clips[0].rpm),mix=loopMix(group.clips,rpm),loudness=engineLoudness(power);engine.forEach((voice,j)=>{voice.source.playbackRate.setTargetAtTime(mix[j].rate,t,.15);voice.gain.gain.setTargetAtTime(mix[j].gain*loudness,t,.12);});});
   report((type==='gas-inboard'?'Gas inboard':type==='diesel-inboard'?'Diesel inboard':'Outboard')+' · '+(count===2?'twin engines':'single engine'));
  }
  enable.addEventListener('change',()=>{if(enable.checked){unlock();report('Sound enabled · starts when you return to the game.');}else{report('Sound off');update();}});

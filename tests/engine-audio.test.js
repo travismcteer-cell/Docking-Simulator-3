@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {engineFamily,engineCount,targetRPM,loopMix} from '../src/audio/mix.js';
+import {engineFamily,engineCount,targetRPM,loopMix,engineLoudness} from '../src/audio/mix.js';
 const manifest=JSON.parse(readFileSync(new URL('../assets/audio/engines/manifest.json',import.meta.url)));
 test('automatic sound families and single/twin engines match playable boats',()=>{
  for(const [id,propulsion,family,count] of [['Express-33','twinSterndrive','gas-inboard',2],['sportfisher-30','twinInboardRudder','gas-inboard',2],['Motoryacht-60','twinInboardRudder','diesel-inboard',2],['bowrider','singleOutboard','outboard',1],['deadrise-40','singleInboardRudder','gas-inboard',1]]){const sim={model:{id},boat:{propulsion:{type:propulsion}}};assert.equal(engineFamily(sim),family);assert.equal(engineCount(sim),count);assert.equal(engineFamily(sim,'diesel-inboard'),'diesel-inboard');}
@@ -18,4 +18,25 @@ test('blend is continuous and preserves squared gain across recording anchors',(
 });
 test('manifest loops match actual mono PCM WAV assets',()=>{
  for(const {clips} of Object.values(manifest.engines))for(const clip of clips){const wav=readFileSync(new URL('../assets/audio/engines/'+clip.file,import.meta.url));assert.equal(wav.toString('ascii',0,4),'RIFF');assert.equal(wav.readUInt16LE(20),1);assert.equal(wav.readUInt16LE(22),1);assert.equal(wav.readUInt32LE(24),44100);assert.equal(wav.readUInt16LE(34),16);assert.equal((wav.length-44)/88200,clip.duration);assert.equal(clip.loopEnd,clip.duration);}
+});
+
+test('docking buttons select idle and working; full racing power selects high',()=>{
+ for(const {clips} of Object.values(manifest.engines)){
+  const idle=clips[0].rpm;
+  for(const sign of [-1,1]){
+   assert.equal(targetRPM(sign*.1,idle),idle);
+   assert(Math.abs(targetRPM(sign*.25,idle)-1800)<1e-9);
+   assert.equal(targetRPM(sign,idle),3000);
+   const idleMix=loopMix(clips,targetRPM(sign*.1,idle));
+   assert.equal(idleMix[0].gain,1);assert.equal(idleMix[0].rate,1);
+   const workingMix=loopMix(clips,targetRPM(sign*.25,idle));
+   assert.equal(workingMix[1].gain,1);assert.equal(workingMix[1].rate,1);
+  }
+  assert(targetRPM(.5,idle)>1800&&targetRPM(.5,idle)<3000);
+  assert(Math.abs(targetRPM(.100001,idle)-idle)<.02);
+  assert(Math.abs(targetRPM(.250001,idle)-1800)<.02);
+ }
+ assert(engineLoudness(.1)>engineLoudness(0));
+ assert(engineLoudness(.1)/engineLoudness(0)<1.15);
+ assert.equal(engineLoudness(.1),engineLoudness(-.1));
 });
