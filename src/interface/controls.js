@@ -1,6 +1,6 @@
 import {bindMomentarySteering} from './steering.js?v=navigation-handling-30';
 import {contactNotice} from '../simulation/contacts.js?v=races-40';
-import {LEVELS,RACES,raceLight,registerRaceThrottle,startLevel,enterPractice,formatTime} from '../simulation/levels.js?v=races-40';
+import {LEVELS,RACES,raceLight,registerRaceThrottle,startLevel,enterPractice,formatTime} from '../simulation/levels.js?v=race-performance-42';
 import {anchorDown,anchorHold,anchorUp} from '../simulation/anchor.js?v=navigation-handling-30';
 import {setPracticeTraffic} from '../simulation/moving-traffic.js?v=races-40';
 import {setOtherBoats} from '../simulation/traffic.js?v=races-40';

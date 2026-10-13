@@ -1,14 +1,14 @@
 import {createRenderGate} from './graphics/performance.js?v=mobile-performance-41';
 import {stepPracticeTraffic} from './simulation/moving-traffic.js?v=races-40';
-import {stepContacts} from './simulation/contacts.js?v=races-40';
-import {stepLevel,stepLevelTraffic,stepRaceStart} from './simulation/levels.js?v=races-40';
+import {stepContacts} from './simulation/contacts.js?v=race-performance-42';
+import {stepLevel,stepLevelTraffic,stepRaceStart} from './simulation/levels.js?v=race-performance-42';
 import {bindGameTouch,bindTouchRanges} from './interface/touch.js?v=racing-basin-27';
 import {createMiniMap} from './interface/minimap.js?v=races-40';
 import {createSimulation} from './simulation/state.js?v=races-40';
 import {stepPhysics} from './simulation/physics.js?v=traffic-helm-38';
 import {createGraphics} from './graphics/scene.js?v=mobile-performance-41';
 import {resetCamera,followCamera,bindCameraLook} from './graphics/camera.js?v=camera-lock-26';
-import {bindControls} from './interface/controls.js?v=races-40';
+import {bindControls} from './interface/controls.js?v=race-performance-42';
 const root=document.getElementById('dock3d');
 try {
  const sim=createSimulation(),camera={};resetCamera(camera,sim.state,sim.scale);

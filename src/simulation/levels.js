@@ -38,7 +38,7 @@ export const RACES=[
  ['workboat-course-5','racingBow','race-south-west-2']
 ].map(([id,spawnId,finishId],i)=>{
  const berth=RACING_BERTHS.find(b=>b.id===finishId),west=finishId==='race-west-2';
- return {id,number:i+1,name:'Course '+(i+1),boat:'deadrise-40',density:'medium',type:'race',spawnId,spawn:SPAWNS[spawnId],target:centered(berth.x,berth.y,west?40:25,west?25:40,'FINISH · FOUR LINES'),heading:berth.a,requiredPilingIds:berth.pilingIds,contactPenalties:false,description:'Start at '+SPAWNS[spawnId].label+'. Race to the middle '+(west?'west-wall':'southwest')+' slip and finish stern-in with four lines. Contact adds no penalties.',objective:'Finish stern-in, aligned within 10°, with both bow and both stern lines attached to four separate destination pilings. Early throttle adds 5 seconds.'};
+ return {id,number:i+1,name:'Course '+(i+1),boat:'deadrise-40',density:'none',type:'race',spawnId,spawn:SPAWNS[spawnId],target:centered(berth.x,berth.y,west?40:25,west?25:40,'FINISH · FOUR LINES'),heading:berth.a,requiredPilingIds:berth.pilingIds,contactPenalties:false,description:'Start at '+SPAWNS[spawnId].label+'. Race to the middle '+(west?'west-wall':'southwest')+' slip and finish stern-in with four lines. Contact adds no penalties.',objective:'Finish stern-in, aligned within 10°, with both bow and both stern lines attached to four separate destination pilings. Early throttle adds 5 seconds.'};
 });
 export function raceLight(run){if(run?.definition.type!=='race'||run.complete)return null;const t=run.startElapsed??2.5;return t<1?'red':t<1.5?'yellow':t<2.5?'green':null;}
 export function registerRaceThrottle(sim){const run=sim.levelRun;if(run?.definition.type==='race'&&(run.startElapsed??1.5)<1.5&&!run.falseStart){run.falseStart=true;run.penalty+=5;}}
