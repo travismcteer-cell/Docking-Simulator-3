@@ -1,0 +1,122 @@
+{
+  "version": 1,
+  "sampleRate": 44100,
+  "channels": 1,
+  "format": "PCM16 WAV",
+  "engines": {
+    "diesel-inboard": {
+      "sourceProfile": "Diesel6.json",
+      "clips": [
+        {
+          "state": "idle",
+          "rpm": 640,
+          "file": "diesel-inboard-idle-640rpm.wav",
+          "duration": 6,
+          "loopStart": 0,
+          "loopEnd": 6,
+          "peak": 0.44438714320716316,
+          "rms": 0.23488062012215624,
+          "boundaryStep": 0.00018513833610195318
+        },
+        {
+          "state": "working",
+          "rpm": 1800,
+          "file": "diesel-inboard-working-1800rpm.wav",
+          "duration": 6,
+          "loopStart": 0,
+          "loopEnd": 6,
+          "peak": 0.421912864270137,
+          "rms": 0.26075921220222387,
+          "boundaryStep": 0.0007915769819479002
+        },
+        {
+          "state": "high",
+          "rpm": 3000,
+          "file": "diesel-inboard-high-3000rpm.wav",
+          "duration": 6,
+          "loopStart": 0,
+          "loopEnd": 6,
+          "peak": 0.34036712787265,
+          "rms": 0.19897257990936265,
+          "boundaryStep": 0.000430905596094322
+        }
+      ]
+    },
+    "gas-inboard": {
+      "sourceProfile": "GasV8.json",
+      "clips": [
+        {
+          "state": "idle",
+          "rpm": 900,
+          "file": "gas-inboard-idle-900rpm.wav",
+          "duration": 6,
+          "loopStart": 0,
+          "loopEnd": 6,
+          "peak": 0.36221615454910605,
+          "rms": 0.1725520286051292,
+          "boundaryStep": 0.0005678229694318082
+        },
+        {
+          "state": "working",
+          "rpm": 1800,
+          "file": "gas-inboard-working-1800rpm.wav",
+          "duration": 6,
+          "loopStart": 0,
+          "loopEnd": 6,
+          "peak": 0.35456482670887024,
+          "rms": 0.16787518803443618,
+          "boundaryStep": 0.000040178477682562
+        },
+        {
+          "state": "high",
+          "rpm": 3000,
+          "file": "gas-inboard-high-3000rpm.wav",
+          "duration": 6,
+          "loopStart": 0,
+          "loopEnd": 6,
+          "peak": 0.28856302280788165,
+          "rms": 0.1329386866260868,
+          "boundaryStep": 0.00024367884463954992
+        }
+      ]
+    },
+    "outboard": {
+      "sourceProfile": "Outboard4.json",
+      "clips": [
+        {
+          "state": "idle",
+          "rpm": 940,
+          "file": "outboard-idle-940rpm.wav",
+          "duration": 6,
+          "loopStart": 0,
+          "loopEnd": 6,
+          "peak": 0.3076738657770853,
+          "rms": 0.09318404181933865,
+          "boundaryStep": 0.00008335793367924074
+        },
+        {
+          "state": "working",
+          "rpm": 1800,
+          "file": "outboard-working-1800rpm.wav",
+          "duration": 6,
+          "loopStart": 0,
+          "loopEnd": 6,
+          "peak": 0.27381705697230174,
+          "rms": 0.09511132238983742,
+          "boundaryStep": 0.00057736309769537
+        },
+        {
+          "state": "high",
+          "rpm": 3000,
+          "file": "outboard-high-3000rpm.wav",
+          "duration": 6,
+          "loopStart": 0,
+          "loopEnd": 6,
+          "peak": 0.23484852240882167,
+          "rms": 0.09667600016826697,
+          "boundaryStep": 0.0010358956396189847
+        }
+      ]
+    }
+  }
+}
