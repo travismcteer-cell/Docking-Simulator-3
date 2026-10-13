@@ -37,8 +37,10 @@
  <label>Moving traffic <select class="form-select" id="moving-traffic"><option value="none" selected>None</option><option value="medium">Medium · 5 boats</option><option value="high">High · 10 boats</option></select></label><p class="text-small" id="moving-traffic-note">Ten routes; moving boats hold course and wait for occupied destinations.</p>
  <label>Boat <select class="form-select" id="boat-select"></select></label><p class="text-small" id="boat-note"></p>
  <label>Starting location <select class="form-select" id="spawn"></select></label><p class="text-small">Changing the start resets the boat and releases its lines. Simulation pauses while setup is open.</p></dialog>
+<pre id="render-stats" hidden style="position:fixed;top:60px;left:8px;z-index:10;background:#10232ddd;color:white;padding:8px;font-size:11px;pointer-events:none;white-space:pre-wrap"></pre>
 <dialog class="setup-screen" id="settings-screen" aria-labelledby="settings-title"><div class="setup-header"><h2 id="settings-title">Settings</h2><button class="btn" id="settings-close">Back</button></div>   <div class="control-card"><label for="catchup">Camera catch-up <strong id="cv">3 s</strong></label><input class="form-range" id="catchup" type="range" min="0" max="16" step="0.5" value="3"><div class="text-small" id="catchup-note">Far / Medium follow delay · 0 = immediate</div></div>
  <div class="control-card"><label for="helm-height">Helm camera height <strong id="helm-height-value">+3.00 ft</strong></label><input class="form-range" id="helm-height" aria-label="Helm camera height above windshield top, in feet" type="range" min="0" max="8" step="0.25" value="3"><div class="text-small">Raise the camera above the windshield top. Zero restores the original height.</div><div class="text-small" id="helm-height-note"></div></div>
+ <div class="control-card"><h3>Graphics</h3><label>Shadows <select class="form-select" id="graphics-shadows"><option value="off">Off (coolest)</option><option value="basic">Basic</option><option value="soft">Soft (highest quality)</option></select></label><label><input type="checkbox" id="graphics-stats"> Show rendering statistics</label><p class="text-small">Phones use 30 FPS and reduced resolution. Compare shadows in the same location to check performance and warmth.</p></div>
 </dialog>
 <dialog class="setup-screen home-screen" id="home-screen" aria-labelledby="home-title">
  <div class="home-heading"><div><p class="home-eyebrow">BOAT HANDLING · CONNECTED MARINA</p><h1 id="home-title">Docking Trainer <span>3D</span></h1><p>Practice freely, or take on docking challenges with fixed conditions, a destination, a timer and contact penalties.</p></div></div>
@@ -58,6 +60,6 @@
  </div></section>
  </dialog>
  <dialog class="setup-screen" id="level-result" aria-labelledby="level-result-title"><h2 id="level-result-title">Level complete</h2><p id="level-result-summary"></p><p id="level-result-contacts" class="text-small"></p><div class="setup-footer"><button class="btn" id="level-restart">Restart level</button><button class="btn" id="level-next">Next level</button><button class="btn" id="result-levels">Challenges</button><button class="btn" id="result-home">Home</button></div></dialog>
-</main><script type="module" src="src/main.js?v=races-40"></script></body></html>
+</main><script type="module" src="src/main.js?v=mobile-performance-41"></script></body></html>
 
 
