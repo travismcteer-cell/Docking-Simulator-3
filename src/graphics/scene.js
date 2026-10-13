@@ -1,3 +1,4 @@
+import {mobileGraphicsProfile} from './performance.js?v=mobile-performance-41';
 import {createWorkboatWake,workboatVisualPose} from './workboat.js?v=gas-helm-cockpit-39';
 import {addRacingBasinDetails} from './racing-basin.js?v=races-40';
 import {createLevelGraphics} from './levels.js?v=all-levels-25';
@@ -12,8 +13,9 @@ import {createDockingGraphics} from './docking.js?v=navigation-handling-30';
 export function createGraphics(canvas,sim,camera){
 const {state,docks,outline,scale}=sim;
 const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:false});
-renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.75));
-renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+const profile=mobileGraphicsProfile(navigator,window.matchMedia.bind(window));
+renderer.setPixelRatio(Math.min(devicePixelRatio||1,profile.pixelRatio));
+renderer.shadowMap.enabled=!profile.mobile;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
 renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.05;
 const scene=new THREE.Scene();scene.background=new THREE.Color('#b8d3dd');scene.fog=new THREE.Fog('#b8d3dd',300,1200);
 const viewCamera=new THREE.PerspectiveCamera(50,1,.3,2200),lockFrustum=new THREE.Frustum(),lockMatrix=new THREE.Matrix4(),lockBounds=new THREE.Box3();
@@ -97,7 +99,9 @@ function paint(dt=0){levelGraphics.update();otherBoats.update();movingBoats.upda
 let docking=createDockingGraphics(scene,vessel,sim);
 const cleatMesh=new THREE.InstancedMesh(new THREE.BoxGeometry(.9,.15,.24),chrome,sim.dockCleats.length),matrix=new THREE.Matrix4();sim.dockCleats.forEach((p,i)=>{matrix.makeTranslation(p.x,p.height??2.47,p.y);cleatMesh.setMatrixAt(i,matrix);});scene.add(cleatMesh);
 function resize(){const width=canvas.clientWidth,height=canvas.clientHeight;renderer.setSize(width,height,false);viewCamera.aspect=width/height;viewCamera.updateProjectionMatrix();}
-return {paint,resize,renderer};
+function setShadows(mode){renderer.shadowMap.enabled=mode!=='off';renderer.shadowMap.type=mode==='basic'?THREE.BasicShadowMap:THREE.PCFSoftShadowMap;shadow.visible=mode!=='off';scene.traverse(o=>{for(const m of (Array.isArray(o.material)?o.material:[o.material]))if(m)m.needsUpdate=true;});}
+setShadows(profile.mobile?'off':'soft');
+return {paint,resize,renderer,profile,setShadows};
 }
 
 
