@@ -1,4 +1,3 @@
-import {bindScrollGrip} from './touch.js?v=racing-basin-27';
 // Classify layout independently from the mobile graphics-quality profile.
 export function isPhoneLayout(coarse,width,height){return coarse&&Math.min(width,height)<=600;}
 export function bindPhoneLayout(root){
@@ -8,8 +7,7 @@ export function bindPhoneLayout(root){
  prompt.addEventListener('cancel',e=>e.preventDefault());
  if(!phone)return;
  root.querySelector('.right-controls').append(grip);
- bindScrollGrip(grip);
- grip.textContent='↕ Swipe to scroll';grip.tabIndex=0;grip.setAttribute('role','button');grip.setAttribute('aria-label','Scroll page: swipe vertically, or use arrow keys');
+ grip.textContent='↕ Swipe to scroll';grip.setAttribute('aria-label','Swipe vertically here to scroll the page');
  const landscape=matchMedia('(orientation: landscape)');
  function update(){
   if(landscape.matches&&!prompt.open)prompt.showModal();
