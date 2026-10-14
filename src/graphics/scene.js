@@ -1,7 +1,8 @@
+import {createEnvironmentDisc} from '../interface/environment-disc.js?v=progression-52';
 import {mobileGraphicsProfile} from './performance.js?v=mobile-performance-41';
-import {createWorkboatWake,workboatVisualPose} from './workboat.js?v=gas-helm-cockpit-39';
+import {createWorkboatWake,workboatVisualPose} from './workboat.js?v=progression-52';
 import {addRacingBasinDetails} from './racing-basin.js?v=races-40';
-import {createLevelGraphics} from './levels.js?v=all-levels-25';
+import {createLevelGraphics} from './levels.js?v=progression-52';
 import {createAnchorGraphics} from './anchor.js?v=gas-helm-cockpit-39';
 import {createOtherBoatGraphics,createMovingBoatGraphics} from './traffic.js?v=races-40';
 import {addLandmarks} from './landmarks.js?v=races-40';
@@ -11,7 +12,7 @@ import {createCruiser} from './boats.js?v=gas-helm-cockpit-39';
 import * as THREE from '../../vendor/three.module.js?v=touch-9';
 import {createDockingGraphics} from './docking.js?v=navigation-handling-30';
 export function createGraphics(canvas,sim,camera){
-const {state,docks,outline,scale}=sim;
+const {state,docks,outline,scale}=sim,environmentDisc=createEnvironmentDisc(canvas.closest('#dock3d'));
 const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:false});
 const profile=mobileGraphicsProfile(navigator,window.matchMedia.bind(window));
 renderer.setPixelRatio(Math.min(devicePixelRatio||1,profile.pixelRatio));
@@ -93,7 +94,7 @@ function paint(dt=0){levelGraphics.update();otherBoats.update();movingBoats.upda
  if(camera.lockedPose){viewCamera.updateMatrixWorld(true);lockMatrix.multiplyMatrices(viewCamera.projectionMatrix,viewCamera.matrixWorldInverse);lockFrustum.setFromProjectionMatrix(lockMatrix);vessel.updateMatrixWorld(true);lockBounds.setFromObject(vessel);if(releaseCameraLockIfHidden(camera,lockFrustum.intersectsBox(lockBounds),state,scale)){pose=cameraPose(camera,state,scale,sim.helm);viewCamera.position.set(...pose.eye);viewCamera.lookAt(...pose.target);}}
 
 
- const windAngle=sim.environment.windDirection*Math.PI/180;waterUniforms.uWind.value=sim.environment.wind/20;waterUniforms.uDir.value.set(Math.sin(windAngle),-Math.cos(windAngle));waterUniforms.uTime.value=elapsed;waterUniforms.uEye.value.copy(viewCamera.position);if(sim.model.id==='deadrise-40')workboatWake.update(sim,dt);else updateFoam(dt);docking.update();renderer.render(scene,viewCamera);
+ const windAngle=sim.environment.windDirection*Math.PI/180;waterUniforms.uWind.value=sim.environment.wind/20;waterUniforms.uDir.value.set(Math.sin(windAngle),-Math.cos(windAngle));waterUniforms.uTime.value=elapsed;waterUniforms.uEye.value.copy(viewCamera.position);if(sim.model.id==='deadrise-40')workboatWake.update(sim,dt);else updateFoam(dt);docking.update();environmentDisc.update(viewCamera,sim.environment);renderer.render(scene,viewCamera);
 }
 
 let docking=createDockingGraphics(scene,vessel,sim);

@@ -155,3 +155,15 @@
 /* Allow Safari to scroll from the strip through its ancestor containers. */
 .phone-ui .helm-panel,.phone-ui .right-controls{touch-action:pan-y}
 .phone-ui .helm-panel .control-card,.phone-ui #anchor-portrait{touch-action:none}
+
+/* A world-oriented water-plane compass stays clear of phone view/map controls. */
+.environment-indicators{top:3px;width:110px;gap:0;flex-direction:column;align-items:center}
+#environment-disc{width:110px;height:66px;overflow:visible}
+.environment-indicators>span{font-size:9px;padding:1px 4px;line-height:12px;background:#142638cc;border-radius:3px}
+#wind-indicator{color:#9fd6ec}#current-indicator{color:#88e0c0}
+#race-start-light,.phone-ui #race-start-light{top:103px!important}
+#failure-notice{position:absolute;bottom:4px;left:50%;transform:translateX(-50%);width:calc(100% - 16px);padding:5px 8px;border:1px solid #eab35e;border-radius:6px;background:#54371bea;color:#fff1cd;text-align:center;font-size:11px;pointer-events:none;z-index:5}
+#failure-notice[hidden]{display:none}.scene-frame:has(#failure-notice:not([hidden])) .scene-hint{display:none}
+.engine-button:disabled{opacity:.35;cursor:not-allowed}.local-best{color:#9ee1bb!important}
+
+.challenge-group-heading{grid-column:1/-1;margin:14px 0 0;color:#c8e3ee}

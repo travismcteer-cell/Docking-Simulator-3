@@ -1,16 +1,16 @@
 import {bindPhoneLayout} from './interface/phone-layout.js?v=full-height-scroll-50';
-import {bindEngineAudio} from './audio/engines.js?v=phone-ui-48';
+import {bindEngineAudio} from './audio/engines.js?v=progression-52';
 import {createRenderGate} from './graphics/performance.js?v=mobile-performance-41';
 import {stepPracticeTraffic} from './simulation/moving-traffic.js?v=races-40';
-import {stepContacts} from './simulation/contacts.js?v=challenge-score-51';
-import {stepLevel,stepLevelTraffic,stepRaceStart} from './simulation/levels.js?v=challenge-score-51';
+import {stepContacts} from './simulation/contacts.js?v=progression-52';
+import {stepLevel,stepLevelTraffic,stepRaceStart} from './simulation/levels.js?v=progression-52';
 import {bindGameTouch,bindTouchRanges} from './interface/touch.js?v=native-scroll-49';
 import {createMiniMap} from './interface/minimap.js?v=races-40';
-import {createSimulation} from './simulation/state.js?v=races-40';
-import {stepPhysics} from './simulation/physics.js?v=traffic-helm-38';
-import {createGraphics} from './graphics/scene.js?v=mobile-performance-41';
+import {createSimulation} from './simulation/state.js?v=progression-52';
+import {stepPhysics} from './simulation/physics.js?v=progression-52';
+import {createGraphics} from './graphics/scene.js?v=progression-52';
 import {resetCamera,followCamera,bindCameraLook} from './graphics/camera.js?v=camera-lock-26';
-import {bindControls} from './interface/controls.js?v=challenge-score-51';
+import {bindControls} from './interface/controls.js?v=progression-52';
 const root=document.getElementById('dock3d');
 try {
  const sim=createSimulation(),camera={};resetCamera(camera,sim.state,sim.scale);

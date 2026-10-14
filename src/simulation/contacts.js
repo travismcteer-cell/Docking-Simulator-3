@@ -1,5 +1,5 @@
 // Contact feedback runs in Practice and Levels; resting contact is one event.
-import {classifyImpact,IMPACT_PENALTIES} from './levels.js?v=challenge-score-51';
+import {classifyImpact,IMPACT_PENALTIES} from './levels.js?v=progression-52';
 export function stepContacts(sim,dt,now=performance.now()){
  if(!sim.contactFeedback||sim.contactFeedback.revision!==sim.trafficRevision)sim.contactFeedback={revision:sim.trafficRevision,clock:0,lastSeen:new Map(),notice:null,sequence:0};
  const feedback=sim.contactFeedback;feedback.clock+=dt;const impact=sim.collision;if(!impact)return;
