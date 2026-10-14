@@ -84,4 +84,47 @@ Fender protection is assessed on exposed sides within four feet while closing. M
 
 Final control averages alignment, speed and yaw during the required three-second arrival hold. Departure scoring assesses yaw at exit; existing line and anchor release conditions still apply. Efficiency counts gear-state changes and direction reversals for each engine, not raw taps, throttle changes within a gear, steering or equipment toggles. The first 12 gear changes per engine carry no shift deduction. Powered effort accumulates gently; necessary corrections should always take priority over efficiency.
 
-Completion shows the category breakdown, gear changes, reversals, contact counts and coaching feedback. No local score storage or additional challenges are introduced in this update. `SCORE_VERSION` permits future saved scores to distinguish scoring revisions. Phone/device testing is required to tune the envelope and costs against sensible docking manoeuvres.
+Completion shows the category breakdown, gear changes, reversals, contact counts and coaching feedback. Best-score tracking and the 30-challenge progression now build on this scoring model. `SCORE_VERSION` permits future saved scores to distinguish scoring revisions. Phone/device testing is required to tune the envelope and costs against sensible docking manoeuvres.
+
+## Thirty-challenge progression and saved bests
+
+The original ten tasks form Group 1 (Foundations). Group 2 repeats them with the approved weather increases; Group 3 adds traffic, equipment failures or tighter clearance. Failures are present from the start and reset on returning to Practice. Failed forces are masked in physics, failed engine audio is muted, and unavailable controls are disabled (including BOTH when either engine is unavailable). A persistent notice appears at the bottom of the marina view. Challenges 29/30 require both-side fenders.
+
+Crossing traffic repeats at the entrance approach (22) and near the west pier (24), with waits between crossings. The 40-foot gap in 26 is measured between neighbouring hulls. Close Med neighbours are placed outward from the player's berth with five-foot projected hull clearance on each side. The larger Express-33 uses a 42.65-foot finger berth in 23.
+
+Best challenge scores and race times save locally in browser storage. Challenge bests use the highest total, then shorter elapsed time on ties. Race bests use the lowest total time including penalties. Records include score breakdown, date, challenge revision and scoring revision. They survive reloads in the same browser/device; they do not sync across devices and clearing site data removes them. Storage errors fall back to session-only records without interrupting the game.
+
+The wind/current disc projects world-direction arrows into a water-parallel plane using the actual camera basis, including camera drag and locked views. Its position is anchored to the screen. Fixed blue wind and shorter green current arrows remain distinguishable even when directions agree. A small minimum tilt keeps the compass readable in Helm view. Zero-strength arrows are dimmed and numeric strengths remain visible. The SVG updates only when the camera or conditions change; no additional 3D render pass is used.
+
+| Challenge | Group | Task | Boat | Wind (kt) | Current (kt) | Complication |
+|---|---|---|---|---:|---:|---|
+| 1 | 1 | Gas Dock Arrival | Express-33 | 0 | 0 | — |
+| 2 | 1 | Crowded Gas Dock Departure | sportfisher-30 | 0 | 0 | — |
+| 3 | 1 | Finger Slip Crosswind | bowrider | 3 | 0 | — |
+| 4 | 1 | West Pier Cross-Current | Express-33 | 4 | 0.4 | — |
+| 5 | 1 | Big Yacht Tight Departure | Motoryacht-60 | 3 | 0.6 | — |
+| 6 | 1 | Gas Dock Squeeze | bowrider | 4 | 0.4 | — |
+| 7 | 1 | Windy Dock Departure | Express-33 | 8 | 0.4 | — |
+| 8 | 1 | Windy Med Arrival | Express-33 | 8 | 0.2 | — |
+| 9 | 1 | Crowded Yacht Departure | Motoryacht-60 | 4 | 0.3 | — |
+| 10 | 1 | Motor Yacht Med Arrival | Motoryacht-60 | 4 | 0.2 | — |
+| 11 | 2 | Gas Dock Arrival | Express-33 | 0 | 0 | — |
+| 12 | 2 | Crowded Gas Dock Departure | sportfisher-30 | 5 | 0 | — |
+| 13 | 2 | Finger Slip Crosswind | bowrider | 10 | 0 | — |
+| 14 | 2 | West Pier Cross-Current | Express-33 | 10 | 0.4 | — |
+| 15 | 2 | Big Yacht Tight Departure | Motoryacht-60 | 14 | 0.6 | — |
+| 16 | 2 | Gas Dock Squeeze | bowrider | 15 | 1 | — |
+| 17 | 2 | Windy Dock Departure | Express-33 | 14 | 0.4 | — |
+| 18 | 2 | Windy Med Arrival | Express-33 | 15 | 0.2 | — |
+| 19 | 2 | Crowded Yacht Departure | Motoryacht-60 | 10 | 0.3 | — |
+| 20 | 2 | Motor Yacht Med Arrival | Motoryacht-60 | 10 | 0.2 | — |
+| 21 | 3 | Gas Dock Arrival | Express-33 | 0 | 0 | Port engine unavailable |
+| 22 | 3 | Crowded Gas Dock Departure | sportfisher-30 | 5 | 0 | Crossing traffic |
+| 23 | 3 | Finger Slip Crosswind | Express-33 | 6 | 0 | Starboard engine unavailable |
+| 24 | 3 | West Pier Cross-Current | Express-33 | 10 | 0.4 | Crossing traffic |
+| 25 | 3 | Big Yacht Tight Departure | Motoryacht-60 | 14 | 0.6 | Bow thruster unavailable |
+| 26 | 3 | Gas Dock Squeeze | sportfisher-30 | 15 | 1 | 40-foot gap |
+| 27 | 3 | Windy Dock Departure | Express-33 | 20 | 0.4 | — |
+| 28 | 3 | Windy Med Arrival | Express-33 | 8 | 0.2 | Port engine unavailable |
+| 29 | 3 | Crowded Yacht Departure | Motoryacht-60 | 4 | 0.3 | 5-foot side clearance; fenders required |
+| 30 | 3 | Motor Yacht Med Arrival | Motoryacht-60 | 4 | 0.2 | 5-foot side clearance; fenders required |

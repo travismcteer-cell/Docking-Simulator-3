@@ -29,7 +29,7 @@ export function bindEngineAudio(root,sim){
   if(now-lastUpdate<50)return;const dt=Number.isFinite(lastUpdate)?(now-lastUpdate)/1000:.05;lastUpdate=now;const t=context.currentTime;
   const workboat=sim.model.id==='deadrise-40',speedKnots=workboat?Math.hypot(sim.state.vx||0,sim.state.vy||0)*110:0;
   master.gain.setTargetAtTime(Number(volume.value)/100*(count===2?.25:.4),t,.08);
-  group.engines.forEach((engine,i)=>{const power=Math.abs(i===0?sim.state.port:sim.state.stbd),loudness=engineLoudness(power);let mix;
+  group.engines.forEach((engine,i)=>{const power=Math.abs(i===0?sim.state.port:sim.state.stbd),loudness=sim.failures?.[i===0?'port':'stbd']?0:engineLoudness(power);let mix;
    if(workboat){group.rpms[i]=workboatAudioRPM(group.rpms[i],power,speedKnots,group.clips[0].rpm,dt);mix=loopMix(group.clips,group.rpms[i]);}else mix=throttleMix(group.clips,power);engine.forEach((voice,j)=>{voice.source.playbackRate.setTargetAtTime(mix[j].rate,t,.15);voice.gain.gain.setTargetAtTime(mix[j].gain*loudness,t,.12);});});
   report((type==='gas-inboard'?'Gas inboard':type==='diesel-inboard'?'Diesel inboard':'Outboard')+' · '+(count===2?'twin engines':'single engine'));
  }

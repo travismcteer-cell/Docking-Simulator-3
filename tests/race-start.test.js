@@ -4,8 +4,8 @@ import {LEVELS,RACES,startLevel,stepLevel,stepRaceStart,raceLight,registerRaceTh
 import {createSimulation,selectBoat} from '../src/simulation/state.js';
 import {SPAWNS,RACING_BERTHS,SOLIDS} from '../src/data/marina.js';
 import {hullAt,overlap,rectPoly} from '../src/simulation/collisions.js';
-test('ten challenges and five races have the requested starts and destinations',()=>{
- assert.equal(LEVELS.length,10);assert.equal(RACES.length,5);assert(!LEVELS.some(l=>l.type==='race'));
+test('thirty challenges and five races have the requested starts and destinations',()=>{
+ assert.equal(LEVELS.length,30);assert.equal(RACES.length,5);assert(!LEVELS.some(l=>l.type==='race'));
  const starts=['racingSouth','racing','racing','racingSouth','racingBow'],finishes=['race-south-west-2','race-west-2','race-south-west-2','race-west-2','race-south-west-2'];
  const sim=createSimulation();
  RACES.forEach((r,i)=>{assert.equal(r.spawnId,starts[i]);assert.deepEqual(r.requiredPilingIds,RACING_BERTHS.find(b=>b.id===finishes[i]).pilingIds);startLevel(sim,r.id);assert.equal(sim.levelRun.elapsed,0);assert.equal(raceLight(sim.levelRun),'red');const poly=hullAt(sim.state,sim.outline,sim.scale);assert(!SOLIDS.some(d=>overlap(poly,d.points||rectPoly(d))),r.name+' spawn clear');assert(Math.hypot(sim.state.x*sim.scale-r.spawn.x,sim.state.y*sim.scale-r.spawn.y)<.001);});

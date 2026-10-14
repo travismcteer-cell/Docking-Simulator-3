@@ -1,3 +1,4 @@
+import {effectivePower} from './faults.js?v=progression-52';
 import {integrate} from './collisions.js?v=navigation-handling-30';
 import {applyLines} from './lines.js?v=navigation-handling-30';
 import {applyAnchor} from './anchor.js?v=navigation-handling-30';
@@ -11,7 +12,7 @@ export function stepWorkboat(sim,dt){
  const current=sim.environment.currentDirection*Math.PI/180,u=sim.environment.current*.0065,vx=s.vx-Math.sin(current)*u,vy=s.vy+Math.cos(current)*u;
  const vf=vx*fx+vy*fy,vl=vx*rx+vy*ry,knots=Math.abs(vf)*110,targetPlane=smoothstep(10,19,vf*110);
  function addForce(x,y,bx=0,by=0){s.vx+=x*dt;s.vy+=y*dt;s.omega+=((bx*fx+by*rx)*y-(bx*fy+by*ry)*x)*1100*dt;}
- const setting=Math.max(-1,Math.min(1,s.port)),power=Math.sign(setting)*Math.pow(Math.abs(setting),1.6),thrust=p.thrust*power*(setting<0?p.reverseEfficiency:1);
+ const setting=Math.max(-1,Math.min(1,effectivePower(sim,'port'))),power=Math.sign(setting)*Math.pow(Math.abs(setting),1.6),thrust=p.thrust*power*(setting<0?p.reverseEfficiency:1);
  addForce(fx*thrust,fy*thrust,p.driveX,0);
  const response=sim.workboatDynamics??={plane:targetPlane,trim:0,breakaway:0};
  const accelerationLoad=Math.max(0,Math.min(1,(thrust-(.12*vf+1.7*vf*Math.abs(vf))*(.075/.14))/.06));

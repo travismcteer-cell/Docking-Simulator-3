@@ -1,3 +1,4 @@
+import {effectivePower} from './faults.js?v=progression-52';
 import {bodyPoint,nearestShape} from './collisions.js?v=navigation-handling-30';
 export const SCORE_VERSION=1;
 const clamp=(v,lo=0,hi=100)=>Math.max(lo,Math.min(hi,v));
@@ -11,7 +12,7 @@ export function createChallengeScore(sim){
 }
 export function recordControlStates(sim){
  const score=sim.levelRun?.score;if(!score||sim.levelRun.complete)return;
- for(let i=0;i<score.engines;i++){const gear=Math.sign(sim.state[i===0?'port':'stbd']||0);if(gear===score.gear[i])continue;score.shifts++;if(gear&&score.lastDirection[i]&&gear!==score.lastDirection[i])score.reversals++;if(gear)score.lastDirection[i]=gear;score.gear[i]=gear;}
+ for(let i=0;i<score.engines;i++){const gear=Math.sign(effectivePower(sim,i===0?'port':'stbd'));if(gear===score.gear[i])continue;score.shifts++;if(gear&&score.lastDirection[i]&&gear!==score.lastDirection[i])score.reversals++;if(gear)score.lastDirection[i]=gear;score.gear[i]=gear;}
 }
 // Relative point velocity includes the hull's rotation. Only closing motion is penalized.
 export function approachRisk(sim,score,dt){
@@ -45,6 +46,7 @@ export function recordImpact(score,impact){
 }
 export function recordLineRelease(sim,line){
  const score=sim.levelRun?.score;if(!score||sim.levelRun.complete||sim.levelRun.definition.type!=='departure'||!line)return;
+ if(sim.levelRun.definition.requireFenders&&!(sim.fenders.port&&sim.fenders.stbd)){score.sequencePenalty=10;return;}
  if(line.type!=='bow'&&line.type!=='stern')return;
  const point=line.target;if(!point)return;
  const near=Math.hypot(point.x-sim.state.x*sim.scale,point.y-sim.state.y*sim.scale)<score.radius+8;
@@ -56,7 +58,7 @@ export function recordLineRelease(sim,line){
 export function stepChallengeScore(sim,dt){
  const run=sim.levelRun,score=run?.score;if(!score||run.complete)return;
  recordControlStates(sim);
- const s=sim.state;score.powerEffort+=((s.port||0)**2+(score.engines===2?(s.stbd||0)**2:0)+.1*(s.bowThruster||0)**2)*dt;
+ const s=sim.state;score.powerEffort+=(effectivePower(sim,'port')**2+(score.engines===2?effectivePower(sim,'stbd')**2:0)+.1*effectivePower(sim,'bowThruster')**2)*dt;
  score.sampleClock+=dt;if(score.sampleClock+.000001>=.1){const period=score.sampleClock;score.sampleClock=0;const risk=approachRisk(sim,score,period);score.riskDose+=risk.rate*period;if(risk.rate>0)score.unsafeSeconds+=period;if(risk.protection)score.protectionSeconds+=period;if(risk.unprotected)score.unprotectedSeconds+=period;}
 }
 export function finalControlQuality(sim){

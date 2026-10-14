@@ -1,4 +1,5 @@
-import {stepWorkboat} from './workboat.js?v=workboat-npc-34';
+import {effectivePower} from './faults.js?v=progression-52';
+import {stepWorkboat} from './workboat.js?v=progression-52';
 import {applyAnchor} from './anchor.js?v=navigation-handling-30';
 import {integrate} from './collisions.js?v=navigation-handling-30';
 import {applyLines} from './lines.js?v=navigation-handling-30';
@@ -9,7 +10,7 @@ import {applyFenders} from './fenders.js?v=navigation-handling-30';
 
     const {state,environment}=sim;
     const activeBoat=()=>sim.boat;
-    const bowThrusterInput=state.bowThruster||0;
+    const bowThrusterInput=effectivePower(sim,'bowThruster'),portPower=effectivePower(sim,'port'),stbdPower=effectivePower(sim,'stbd');
     const ang=state.a*Math.PI/180;
     const steerRad=state.steer*Math.PI/180;
 
@@ -99,10 +100,10 @@ import {applyFenders} from './fenders.js?v=navigation-handling-30';
 
     const singleEngine=propulsion.type==='singleSterndrive'||propulsion.type==='singleOutboard';
     if(singleEngine){
-      engineForce(state.port,0);
+      engineForce(portPower,0);
     } else {
-      engineForce(state.port,-1);
-      engineForce(state.stbd,1);
+      engineForce(portPower,-1);
+      engineForce(stbdPower,1);
     }
 
     // Bow thruster: pure transverse thrust applied near the bow. Positive input
@@ -243,7 +244,7 @@ import {applyFenders} from './fenders.js?v=navigation-handling-30';
     // the calibration represents the resulting steady low-speed curvature rather
     // than being immediately cancelled by the hydrodynamic resistance model.
     const speedKt=Math.hypot(state.vx,state.vy)*110;
-    const bothAhead=state.port>0.02 && (singleEngine||state.stbd>0.02);
+    const bothAhead=portPower>0.02 && (singleEngine||stbdPower>0.02);
     const steerFrac=Math.min(1,Math.abs(state.steer)/activeBoat().propulsion.maxSteerDeg);
 
     if(bothAhead && steerFrac>0.35 && speedKt>0.10){

@@ -45,10 +45,10 @@ test('safety dominates efficiency and hard-impact runs cannot outrank clean comp
  const clean=fixture();clean.levelRun.score.shifts=100;const unsafe=fixture();recordImpact(unsafe.levelRun.score,{knots:1,protected:false});
  assert(scoreBreakdown(clean,true).total>scoreBreakdown(unsafe,true).total);
 });
-test('all ten challenges complete with bounded breakdowns, and restarts clear score state',()=>{
+test('all thirty challenges complete with bounded breakdowns, and restarts clear score state',()=>{
  const s=createSimulation();
  for(const level of LEVELS){startLevel(s,level.id);const l=s.levelRun.definition,t=l.target;Object.assign(s.state,{x:(t.x+t.w/2)/s.scale,y:(t.y+t.h/2)/s.scale,a:l.heading,vx:0,vy:0,omega:0});
-  s.lines=l.type==='departure'?{}:{'port:stern':{},'stbd:stern':{}};s.anchor={mode:l.requireAnchor?'holding':'stowed',target:l.anchorDropZone?{x:l.anchorDropZone.x+l.anchorDropZone.w/2,y:l.anchorDropZone.y+l.anchorDropZone.h/2}:{x:0,y:0}};
+  if(l.requireFenders)s.fenders.port=s.fenders.stbd=true;s.lines=l.type==='departure'?{}:{'port:stern':{},'stbd:stern':{}};s.anchor={mode:l.requireAnchor?'holding':'stowed',target:l.anchorDropZone?{x:l.anchorDropZone.x+l.anchorDropZone.w/2,y:l.anchorDropZone.y+l.anchorDropZone.h/2}:{x:0,y:0}};
   for(let i=0;i<400&&!s.levelRun.complete;i++)stepLevel(s,1/120);
   assert(s.levelRun.complete,level.id);const r=s.levelRun.result;assert(r&&r.total>=0&&r.total<=100);assert.equal(s.levelRun.total,r.total);assert.equal(s.levelRun.penalty,0);assert.equal(r.finalControl,100);assert(r.feedback.length);
  }
