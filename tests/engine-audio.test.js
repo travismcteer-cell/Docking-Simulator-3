@@ -25,16 +25,16 @@ test('docking buttons select idle and working; full racing power selects high',(
   const idle=clips[0].rpm;
   for(const sign of [-1,1]){
    assert.equal(targetRPM(sign*.1,idle),idle+200);
-   assert(Math.abs(targetRPM(sign*.25,idle)-1800)<1e-9);
+   assert(Math.abs(targetRPM(sign*.25,idle)-1200)<1e-9);
    assert.equal(targetRPM(sign,idle),3000);
    const idleMix=throttleMix(clips,sign*.1);
    assert.equal(idleMix[0].gain,1);assert.equal(idleMix[0].rate,(idle+200)/idle);assert.equal(idleMix[1].gain,0);assert.equal(idleMix[2].gain,0);
-   const workingMix=loopMix(clips,targetRPM(sign*.25,idle));
-   assert.equal(workingMix[1].gain,1);assert.equal(workingMix[1].rate,1);
+   const workingMix=throttleMix(clips,sign*.25);
+   assert.equal(workingMix[1].gain,1);assert.equal(workingMix[1].rate,1200/1800);
   }
-  assert(targetRPM(.5,idle)>1800&&targetRPM(.5,idle)<3000);
+  assert(targetRPM(.5,idle)>1200&&targetRPM(.5,idle)<3000);
   assert(Math.abs(targetRPM(.100001,idle)-(idle+200))<.02);
-  assert(Math.abs(targetRPM(.250001,idle)-1800)<.02);
+  assert(Math.abs(targetRPM(.250001,idle)-1200)<.02);
  }
  assert(engineLoudness(.1)>engineLoudness(0));
  assert(engineLoudness(.1)/engineLoudness(0)<1.15);
@@ -62,4 +62,9 @@ test('workboat RPM follows throttle gradually with bounded speed influence',()=>
  assert(settle(.5,20)<moving);
  const down=3000-workboatAudioRPM(3000,0,20,idle,.05),up=workboatAudioRPM(idle,1,20,idle,.05)-idle;assert(down>up);
  assert.equal(workboatAudioRPM(idle,1,20,idle,0),idle);
+});
+
+test('workboat retains its original 50% RPM target',()=>{
+ const idle=900;let rpm=idle;for(let i=0;i<400;i++)rpm=workboatAudioRPM(rpm,.5,20,idle,.05);
+ assert(Math.abs(rpm-2200)<.001);
 });
