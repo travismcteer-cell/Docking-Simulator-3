@@ -1,4 +1,4 @@
-import {bindPhoneLayout} from './interface/phone-layout.js?v=native-scroll-49';
+import {bindPhoneLayout} from './interface/phone-layout.js?v=full-height-scroll-50';
 import {bindEngineAudio} from './audio/engines.js?v=phone-ui-48';
 import {createRenderGate} from './graphics/performance.js?v=mobile-performance-41';
 import {stepPracticeTraffic} from './simulation/moving-traffic.js?v=races-40';
