@@ -50,7 +50,7 @@ Run `npm test` if Node is installed; there are no dependencies to install. Brows
 
 ## Scope of this version
 
-This is a migration foundation, not yet the full 2D game. Anchor, traffic, multiple boats, levels and scoring are still to be ported. The simplified scene keeps physics collisions at the hull's plan outline. Bobbing is cosmetic. Far shoreline scenery is decorative. Lines and fenders are tuned approximations for practice rather than an engineering model of real rope or rubber.
+Anchor, traffic, multiple boats, challenges, racing and challenge scoring are implemented; handling and scoring tuning remain iterative. The simplified scene keeps physics collisions at the hull's plan outline. Bobbing is cosmetic. Far shoreline scenery is decorative. Lines and fenders are tuned approximations for practice rather than an engineering model of real rope or rubber.
 
 ## Setup and touch update
 
@@ -73,3 +73,15 @@ Portrait keeps the existing throttle/steering panel below the scene, including B
 The boat uses the supplied configurator geometry and Express-33 definition, with a 31.5-foot hull, 11-foot beam and 2-foot swim platform (33.5 feet overall). Added fittings include rub rails, bow rails, cleats, cockpit seats, a wheel and instruments. Windscreen opacity defaults to 0.35 in src/graphics/boats.js. Geometry generators and the boat definition are separate modules; no external model files or extra dependencies are needed.
 
 The convex docking collision perimeter follows the hull rail and includes the swim platform. Rope attachment positions match the visible cleats; fenders follow the new hull outline. Existing 31-foot twin-sterndrive handling calibration is retained rather than inferred from visual dimensions. All marina starts clear the enlarged outline. The berth test fixture was moved 0.2 feet inward to keep its starting position clear of the wider hull.
+
+## Challenge scoring (version 1)
+
+Challenges finish using their existing arrival/departure requirements, then receive a higher-is-better score out of 100: safety 70%, final control 20%, efficiency 10%. Elapsed time is informational. Races retain elapsed time plus false-start penalties; no challenge scoring is applied to races or Practice.
+
+Safety samples up to 16 hull points at 10 Hz against nearby collision shapes. It uses closing velocity, including rotation, and relative NPC motion when the player is approaching. The initial envelope is `0.15 + 0.22 * sqrt(clearanceFeet)` knots, capped at 3 knots, sampled within 40 feet. Each sample contributes only its worst excess, so additional nearby boats do not multiply the penalty. Unsafe exposure accumulates over time; waiting cannot erase it. This is gameplay calibration, not a real-world stopping-distance rule.
+
+Fender protection is assessed on exposed sides within four feet while closing. Missing protection deducts up to ten safety points; unnecessary fenders carry no penalty. Releasing side-on bow/stern departure lines without fenders adds a bounded preparation deduction; stern-to quay lines are excluded. Gentle protected contact costs zero, firm protected contact receives a reduced deduction, and fenders never reduce hard/crash severity for scoring. Hard impact caps overall score at 49; a crash caps it at 24. Contacts are debounced as before.
+
+Final control averages alignment, speed and yaw during the required three-second arrival hold. Departure scoring assesses yaw at exit; existing line and anchor release conditions still apply. Efficiency counts gear-state changes and direction reversals for each engine, not raw taps, throttle changes within a gear, steering or equipment toggles. The first 12 gear changes per engine carry no shift deduction. Powered effort accumulates gently; necessary corrections should always take priority over efficiency.
+
+Completion shows the category breakdown, gear changes, reversals, contact counts and coaching feedback. No local score storage or additional challenges are introduced in this update. `SCORE_VERSION` permits future saved scores to distinguish scoring revisions. Phone/device testing is required to tune the envelope and costs against sensible docking manoeuvres.
