@@ -21,11 +21,12 @@ test('audio loads once per family, twins respond separately, and menus/mute susp
   assert.equal(sources.length,6);assert.equal(downloads.length,4);assert(sources.every(s=>s.loop&&s.loopStart===0&&s.loopEnd===6));
   sim.state.port=.25;audio.update(200);assert(sources[0].playbackRate.value>sources[3].playbackRate.value);
   sim.state.port=-.25;audio.update(300);assert(sources[0].playbackRate.value>sources[3].playbackRate.value);
-  elements['settings-screen'].open=true;audio.update(400);await settle();assert.equal(contexts[0].state,'suspended');assert(sources.every(s=>s.stopped));
+  elements['settings-screen'].open=true;audio.update(400);await new Promise(r=>setTimeout(r,100));assert.equal(contexts[0].state,'suspended');assert(sources.every(s=>s.stopped));
+  root.dispatchEvent(new Event('pointerdown'));await settle();assert.equal(contexts[0].state,'suspended','menu buttons must not resume audio');
   elements['settings-screen'].open=false;audio.update(500);await settle();audio.update(600);assert.equal(downloads.length,4);assert.equal(contexts[0].state,'running');
   sim.model.id='bowrider';sim.boat.propulsion.type='singleOutboard';audio.update(700);for(let i=0;i<30&&sources.length<15;i++)await settle();audio.update(800);assert.equal(sources.length,15);assert.equal(downloads.length,7);
-  doc.hidden=true;doc.dispatchEvent(new Event('visibilitychange'));await settle();assert.equal(contexts[0].state,'suspended');assert(sources.every(s=>s.stopped));
+  doc.hidden=true;doc.dispatchEvent(new Event('visibilitychange'));await new Promise(r=>setTimeout(r,100));assert.equal(contexts[0].state,'suspended');assert(sources.every(s=>s.stopped));
   doc.hidden=false;doc.dispatchEvent(new Event('visibilitychange'));await settle();audio.update(900);
-  elements['audio-enabled'].checked=false;elements['audio-enabled'].dispatchEvent(new Event('change'));await settle();assert.equal(contexts[0].state,'suspended');assert(sources.every(s=>s.stopped));
+  elements['audio-enabled'].checked=false;elements['audio-enabled'].dispatchEvent(new Event('change'));await new Promise(r=>setTimeout(r,100));assert.equal(contexts[0].state,'suspended');assert(sources.every(s=>s.stopped));
  }finally {Object.assign(globalThis,original);}
 });
