@@ -1,4 +1,4 @@
-import {engineFamily,engineCount,throttleMix,engineLoudness} from './mix.js?v=idle-rpm-45';
+import {engineFamily,engineCount,throttleMix,engineLoudness,loopMix,workboatAudioRPM} from './mix.js?v=workboat-audio-46';
 const assetRoot=new URL('../../assets/audio/engines/',import.meta.url);
 export function bindEngineAudio(root,sim){
  const enable=root.querySelector('#audio-enabled'),volume=root.querySelector('#audio-volume'),family=root.querySelector('#audio-family'),status=root.querySelector('#audio-status');
@@ -17,15 +17,17 @@ export function bindEngineAudio(root,sim){
  }
  function start(key,type,count,clips){stop();master.gain.setValueAtTime(0,context.currentTime);const engines=[];
   for(let i=0;i<count;i++){const voices=clips.map((clip,j)=>{const source=context.createBufferSource(),gain=context.createGain();source.buffer=buffers.get(type)[j];source.loop=true;source.loopStart=clip.loopStart;source.loopEnd=clip.loopEnd;gain.gain.value=0;source.connect(gain);gain.connect(master);source.start(0,i*.137);return {source,gain};});engines.push(voices);}
-  group={key,clips,engines};
+  group={key,clips,engines,rpms:engines.map(()=>clips[0].rpm)};
  }
  function update(now=performance.now()){
   const playing=active();if(!playing||!unlocked){wanted='';stop();running(false);lastUpdate=-Infinity;return;}
-  running(true);const type=engineFamily(sim,family.value),count=engineCount(sim),key=type+':'+count;wanted=key;
+  running(true);const type=engineFamily(sim,family.value),count=engineCount(sim),key=type+':'+count+':'+sim.model.id;wanted=key;
   if(group?.key!==key){stop();if(!loading){report('Loading engine sound…');loading=load(type).then(clips=>{if(wanted===key&&active())start(key,type,count,clips);}).catch(error=>{enable.checked=false;report(error.message+'; sound disabled.');}).finally(()=>{loading=null;});}return;}
-  if(now-lastUpdate<50)return;lastUpdate=now;const t=context.currentTime;
+  if(now-lastUpdate<50)return;const dt=Number.isFinite(lastUpdate)?(now-lastUpdate)/1000:.05;lastUpdate=now;const t=context.currentTime;
+  const workboat=sim.model.id==='deadrise-40',speedKnots=workboat?Math.hypot(sim.state.vx||0,sim.state.vy||0)*110:0;
   master.gain.setTargetAtTime(Number(volume.value)/100*(count===2?.25:.4),t,.08);
-  group.engines.forEach((engine,i)=>{const power=Math.abs(i===0?sim.state.port:sim.state.stbd),mix=throttleMix(group.clips,power),loudness=engineLoudness(power);engine.forEach((voice,j)=>{voice.source.playbackRate.setTargetAtTime(mix[j].rate,t,.15);voice.gain.gain.setTargetAtTime(mix[j].gain*loudness,t,.12);});});
+  group.engines.forEach((engine,i)=>{const power=Math.abs(i===0?sim.state.port:sim.state.stbd),loudness=engineLoudness(power);let mix;
+   if(workboat){group.rpms[i]=workboatAudioRPM(group.rpms[i],power,speedKnots,group.clips[0].rpm,dt);mix=loopMix(group.clips,group.rpms[i]);}else mix=throttleMix(group.clips,power);engine.forEach((voice,j)=>{voice.source.playbackRate.setTargetAtTime(mix[j].rate,t,.15);voice.gain.gain.setTargetAtTime(mix[j].gain*loudness,t,.12);});});
   report((type==='gas-inboard'?'Gas inboard':type==='diesel-inboard'?'Diesel inboard':'Outboard')+' · '+(count===2?'twin engines':'single engine'));
  }
  enable.addEventListener('change',()=>{if(enable.checked){unlock();report('Sound enabled · starts when you return to the game.');}else{report('Sound off');update();}});
