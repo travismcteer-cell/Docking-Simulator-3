@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Docking Trainer 3D</title><link rel="stylesheet" href="styles.css?v=races-40"></head><body>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Docking Trainer 3D</title><link rel="stylesheet" href="styles.css?v=phone-ui-48"></head><body>
 <main id="dock3d">
  <header class="viz-row"><strong>Docking Trainer · Express-33</strong><span id="level-hud" hidden></span><span id="readout" class="tabular-nums">0.0 kt</span></header>
  <div class="scene-frame">
@@ -38,6 +38,7 @@
  <label>Boat <select class="form-select" id="boat-select"></select></label><p class="text-small" id="boat-note"></p>
  <label>Starting location <select class="form-select" id="spawn"></select></label><p class="text-small">Changing the start resets the boat and releases its lines. Simulation pauses while setup is open.</p></dialog>
 <pre id="render-stats" hidden style="position:fixed;top:60px;left:8px;z-index:10;background:#10232ddd;color:white;padding:8px;font-size:11px;pointer-events:none;white-space:pre-wrap"></pre>
+<dialog id="phone-rotate" aria-labelledby="phone-rotate-title"><h2 id="phone-rotate-title">Rotate your phone</h2><p>Use portrait mode for the docking controls.</p><p class="text-small">Your session pauses until you rotate back.</p></dialog>
 <dialog class="setup-screen" id="settings-screen" aria-labelledby="settings-title"><div class="setup-header"><h2 id="settings-title">Settings</h2><button class="btn" id="settings-close">Back</button></div>   <div class="control-card"><label for="catchup">Camera catch-up <strong id="cv">3 s</strong></label><input class="form-range" id="catchup" type="range" min="0" max="16" step="0.5" value="3"><div class="text-small" id="catchup-note">Far / Medium follow delay · 0 = immediate</div></div>
  <div class="control-card"><label for="helm-height">Helm camera height <strong id="helm-height-value">+3.00 ft</strong></label><input class="form-range" id="helm-height" aria-label="Helm camera height above windshield top, in feet" type="range" min="0" max="8" step="0.25" value="3"><div class="text-small">Raise the camera above the windshield top. Zero restores the original height.</div><div class="text-small" id="helm-height-note"></div></div>
  <div class="control-card"><h3>Graphics</h3><label>Shadows <select class="form-select" id="graphics-shadows"><option value="off">Off (coolest)</option><option value="basic">Basic</option><option value="soft">Soft (highest quality)</option></select></label><label><input type="checkbox" id="graphics-stats"> Show rendering statistics</label><p class="text-small">Phones use 30 FPS and reduced resolution. Compare shadows in the same location to check performance and warmth.</p></div>
@@ -61,6 +62,6 @@
  </div></section>
  </dialog>
  <dialog class="setup-screen" id="level-result" aria-labelledby="level-result-title"><h2 id="level-result-title">Level complete</h2><p id="level-result-summary"></p><p id="level-result-contacts" class="text-small"></p><div class="setup-footer"><button class="btn" id="level-restart">Restart level</button><button class="btn" id="level-next">Next level</button><button class="btn" id="result-levels">Challenges</button><button class="btn" id="result-home">Home</button></div></dialog>
-</main><script type="module" src="src/main.js?v=audio-clicks-47"></script></body></html>
+</main><script type="module" src="src/main.js?v=phone-ui-48"></script></body></html>
 
 

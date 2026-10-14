@@ -5,7 +5,7 @@ export function bindEngineAudio(root,sim){
  let context,master,manifest,group=null,wanted='',loading=null,lastUpdate=-Infinity,desiredRunning=false,transition=Promise.resolve(),unlocked=false;
  const buffers=new Map();
  function report(message){status.textContent=message;}
- function active(){return enable.checked&&Number(volume.value)>0&&sim.sessionActive&&!sim.levelRun?.complete&&!document.hidden&&!['home-screen','settings-screen','setup-screen','level-result'].some(id=>root.querySelector('#'+id)?.open);}
+ function active(){return enable.checked&&Number(volume.value)>0&&sim.sessionActive&&!sim.levelRun?.complete&&!document.hidden&&!['home-screen','settings-screen','setup-screen','level-result','phone-rotate'].some(id=>root.querySelector('#'+id)?.open);}
  function running(value){if(!context||desiredRunning===value)return;desiredRunning=value;transition=transition.catch(()=>{}).then(async()=>{if(!desiredRunning)await new Promise(resolve=>setTimeout(resolve,80));return desiredRunning?context.resume():context.suspend();}).catch(()=>report('Tap an engine control to resume sound.'));}
  function unlock(){if(!enable.checked||(context&&!active()))return;try{if(!context){const Audio=window.AudioContext||window.webkitAudioContext;if(!Audio)throw new Error('Audio is unavailable in this browser');context=new Audio({latencyHint:'interactive'});master=context.createGain();master.gain.value=0;master.connect(context.destination);}unlocked=true;desiredRunning=true;if(context.state!=='running')context.resume().catch(()=>report('Tap an engine control to resume sound.'));}catch(error){enable.checked=false;report(error.message);}}
  function stop(){if(!group)return;const retired=group;group=null;retired.bus.gain.setTargetAtTime(0,context.currentTime,.008);
