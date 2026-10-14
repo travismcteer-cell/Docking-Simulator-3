@@ -94,7 +94,7 @@ Crossing traffic repeats at the entrance approach (22) and near the west pier (2
 
 Best challenge scores and race times save locally in browser storage. Challenge bests use the highest total, then shorter elapsed time on ties. Race bests use the lowest total time including penalties. Records include score breakdown, date, challenge revision and scoring revision. They survive reloads in the same browser/device; they do not sync across devices and clearing site data removes them. Storage errors fall back to session-only records without interrupting the game.
 
-The wind/current disc projects world-direction arrows into a water-parallel plane using the actual camera basis, including camera drag and locked views. Its position is anchored to the screen. Fixed blue wind and shorter orange current arrows remain distinguishable even when directions agree. A small minimum tilt keeps the compass readable in Helm view. Zero-strength arrows are dimmed and numeric strengths remain visible. The SVG updates only when the camera or conditions change; no additional 3D render pass is used.
+The wind/current disc projects world-direction arrows into a water-parallel plane using the actual camera basis, including camera drag and locked views. Its position is anchored to the screen. Fixed blue wind and shorter orange current arrows remain distinguishable even when directions agree. A small minimum tilt keeps the compass readable in Helm view. Zero-strength arrows are hidden and numeric strengths remain visible. The SVG updates only when the camera or conditions change; no additional 3D render pass is used.
 
 | Challenge | Group | Task | Boat | Wind (kt) | Current (kt) | Complication |
 |---|---|---|---|---:|---:|---|

@@ -1,4 +1,4 @@
-import {createEnvironmentDisc} from '../interface/environment-disc.js?v=progression-52';
+import {createEnvironmentDisc} from '../interface/environment-disc.js?v=compass-foreground-54';
 import {mobileGraphicsProfile} from './performance.js?v=mobile-performance-41';
 import {createWorkboatWake,workboatVisualPose} from './workboat.js?v=progression-52';
 import {addRacingBasinDetails} from './racing-basin.js?v=races-40';
