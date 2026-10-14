@@ -6,8 +6,8 @@ export function engineFamily(sim,override='auto'){
 export function engineCount(sim){return ['singleOutboard','singleInboardRudder'].includes(sim.boat.propulsion.type)?1:2;}
 export function targetRPM(power,idle){
  const load=Math.min(1,Math.abs(power||0));
- if(load<=.1)return idle;
- if(load<=.25)return idle+(1800-idle)*(load-.1)/.15;
+ if(load<=.1)return idle+200*load/.1;
+ if(load<=.25)return idle+200+(1800-idle-200)*(load-.1)/.15;
  return 1800+(3000-1800)*(load-.25)/.75;
 }
 export function engineLoudness(power){
@@ -20,4 +20,11 @@ export function loopMix(clips,rpm){
  const blend=(target-clips[low].rpm)/(clips[low+1].rpm-clips[low].rpm);
  weights[low]=Math.cos(blend*Math.PI/2);weights[low+1]=Math.sin(blend*Math.PI/2);
  return clips.map((clip,i)=>({gain:weights[i],rate:target/clip.rpm}));
+}
+
+export function throttleMix(clips,power){
+ const rpm=targetRPM(power,clips[0].rpm);
+ const load=Math.min(1,Math.abs(power||0));
+ if(load<=.25){const blend=Math.max(0,(load-.1)/.15);return clips.map((clip,i)=>({gain:i===0?Math.cos(blend*Math.PI/2):i===1?Math.sin(blend*Math.PI/2):0,rate:rpm/clip.rpm}));}
+ return loopMix(clips,rpm);
 }

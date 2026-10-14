@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {engineFamily,engineCount,targetRPM,loopMix,engineLoudness} from '../src/audio/mix.js';
+import {engineFamily,engineCount,targetRPM,loopMix,engineLoudness,throttleMix} from '../src/audio/mix.js';
 const manifest=JSON.parse(readFileSync(new URL('../assets/audio/engines/manifest.json',import.meta.url)));
 test('automatic sound families and single/twin engines match playable boats',()=>{
  for(const [id,propulsion,family,count] of [['Express-33','twinSterndrive','gas-inboard',2],['sportfisher-30','twinInboardRudder','gas-inboard',2],['Motoryacht-60','twinInboardRudder','diesel-inboard',2],['bowrider','singleOutboard','outboard',1],['deadrise-40','singleInboardRudder','gas-inboard',1]]){const sim={model:{id},boat:{propulsion:{type:propulsion}}};assert.equal(engineFamily(sim),family);assert.equal(engineCount(sim),count);assert.equal(engineFamily(sim,'diesel-inboard'),'diesel-inboard');}
@@ -24,19 +24,27 @@ test('docking buttons select idle and working; full racing power selects high',(
  for(const {clips} of Object.values(manifest.engines)){
   const idle=clips[0].rpm;
   for(const sign of [-1,1]){
-   assert.equal(targetRPM(sign*.1,idle),idle);
+   assert.equal(targetRPM(sign*.1,idle),idle+200);
    assert(Math.abs(targetRPM(sign*.25,idle)-1800)<1e-9);
    assert.equal(targetRPM(sign,idle),3000);
-   const idleMix=loopMix(clips,targetRPM(sign*.1,idle));
-   assert.equal(idleMix[0].gain,1);assert.equal(idleMix[0].rate,1);
+   const idleMix=throttleMix(clips,sign*.1);
+   assert.equal(idleMix[0].gain,1);assert.equal(idleMix[0].rate,(idle+200)/idle);assert.equal(idleMix[1].gain,0);assert.equal(idleMix[2].gain,0);
    const workingMix=loopMix(clips,targetRPM(sign*.25,idle));
    assert.equal(workingMix[1].gain,1);assert.equal(workingMix[1].rate,1);
   }
   assert(targetRPM(.5,idle)>1800&&targetRPM(.5,idle)<3000);
-  assert(Math.abs(targetRPM(.100001,idle)-idle)<.02);
+  assert(Math.abs(targetRPM(.100001,idle)-(idle+200))<.02);
   assert(Math.abs(targetRPM(.250001,idle)-1800)<.02);
  }
  assert(engineLoudness(.1)>engineLoudness(0));
  assert(engineLoudness(.1)/engineLoudness(0)<1.15);
  assert.equal(engineLoudness(.1),engineLoudness(-.1));
+});
+
+test('neutral stays at original idle pitch while 10% shifts idle only',()=>{
+ for(const {clips} of Object.values(manifest.engines)){
+  assert.equal(throttleMix(clips,0)[0].rate,1);
+  assert.equal(targetRPM(.05,clips[0].rpm),clips[0].rpm+100);
+  for(const threshold of [.1,.25]){const before=throttleMix(clips,threshold-.000001),after=throttleMix(clips,threshold+.000001);before.forEach((m,i)=>assert(Math.abs(m.gain-after[i].gain)<.0001));}
+ }
 });
