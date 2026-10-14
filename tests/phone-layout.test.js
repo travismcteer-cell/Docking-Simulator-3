@@ -15,12 +15,12 @@ test('native scrolling gestures on the strip bypass game touch cancellation',()=
  }
 });
 
-test('phone landscape prompt closes on portrait without moving the scroll strip again',()=>{
+test('phone landscape prompt closes on portrait and keeps native scroll-strip text',()=>{
  const prior={window:globalThis.window,screen:globalThis.screen,matchMedia:globalThis.matchMedia};
  const orientation=new EventTarget();orientation.matches=true;
  const prompt=new EventTarget();prompt.open=false;prompt.showModal=()=>prompt.open=true;prompt.close=()=>prompt.open=false;
  const grip=new EventTarget();grip.setAttribute=()=>{};const mount={append(node){assert.equal(node,grip);this.count=(this.count||0)+1;}};
  const root={classList:{toggle(name,on){assert.equal(name,'phone-ui');assert(on);}},querySelector:s=>({'#phone-rotate':prompt,'#scroll-grip':grip,'.right-controls':mount})[s]};
  globalThis.window=new EventTarget();globalThis.screen={width:844,height:390};globalThis.matchMedia=s=>s.includes('pointer')?{matches:true}:orientation;
- try{bindPhoneLayout(root);assert(prompt.open);const cancel=new Event('cancel',{cancelable:true});prompt.dispatchEvent(cancel);assert(cancel.defaultPrevented);orientation.matches=false;orientation.dispatchEvent(new Event('change'));assert(!prompt.open);assert.equal(mount.count,1);}finally{Object.assign(globalThis,prior);}
+ try{bindPhoneLayout(root);assert(prompt.open);const cancel=new Event('cancel',{cancelable:true});prompt.dispatchEvent(cancel);assert(cancel.defaultPrevented);orientation.matches=false;orientation.dispatchEvent(new Event('change'));assert(!prompt.open);assert.equal(grip.textContent,'↕ Swipe to scroll');}finally{Object.assign(globalThis,prior);}
 });

@@ -6,7 +6,6 @@ export function bindPhoneLayout(root){
  const prompt=root.querySelector('#phone-rotate'),grip=root.querySelector('#scroll-grip');
  prompt.addEventListener('cancel',e=>e.preventDefault());
  if(!phone)return;
- root.querySelector('.right-controls').append(grip);
  grip.textContent='↕ Swipe to scroll';grip.setAttribute('aria-label','Swipe vertically here to scroll the page');
  const landscape=matchMedia('(orientation: landscape)');
  function update(){
