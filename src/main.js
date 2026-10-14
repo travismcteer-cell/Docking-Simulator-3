@@ -1,4 +1,4 @@
-import {bindEngineAudio} from './audio/engines.js?v=docking-audio-44';
+import {bindEngineAudio} from './audio/engines.js?v=idle-rpm-45';
 import {createRenderGate} from './graphics/performance.js?v=mobile-performance-41';
 import {stepPracticeTraffic} from './simulation/moving-traffic.js?v=races-40';
 import {stepContacts} from './simulation/contacts.js?v=race-performance-42';
