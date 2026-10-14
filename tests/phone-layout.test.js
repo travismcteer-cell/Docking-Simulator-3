@@ -1,15 +1,18 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {isPhoneLayout,bindPhoneLayout} from '../src/interface/phone-layout.js';
-import {bindScrollGrip} from '../src/interface/touch.js';
+import {bindGameTouch} from '../src/interface/touch.js';
 test('phone layout is stable across rotation and excludes tablets and desktop',()=>{
  for(const [w,h] of [[375,667],[390,844],[430,932]]){assert(isPhoneLayout(true,w,h));assert(isPhoneLayout(true,h,w));assert(!isPhoneLayout(false,w,h));}
  for(const [w,h] of [[744,1133],[768,1024],[820,1180],[1024,1366]]){assert(!isPhoneLayout(true,w,h));assert(!isPhoneLayout(true,h,w));}
 });
-test('scroll strip scrolls by pointer movement and supports keyboard access',()=>{
- const prior=globalThis.window,calls=[],grip=new EventTarget();grip.setPointerCapture=()=>{};grip.classList={add(){},remove(){}};globalThis.window={scrollBy:(x,y)=>calls.push([x,y])};
- const emit=(type,fields)=>{const e=new Event(type,{cancelable:true});Object.assign(e,fields);grip.dispatchEvent(e);};
- try{bindScrollGrip(grip);emit('pointerdown',{pointerId:1,pointerType:'touch',clientY:400});emit('pointermove',{pointerId:2,clientY:200});assert.equal(calls.length,0);emit('pointermove',{pointerId:1,clientY:330});assert.deepEqual(calls,[[0,70]]);emit('pointercancel',{pointerId:1});emit('pointermove',{pointerId:1,clientY:300});assert.equal(calls.length,1);emit('keydown',{key:'ArrowDown'});assert.deepEqual(calls[1],[0,80]);}finally{globalThis.window=prior;}
+test('native scrolling gestures on the strip bypass game touch cancellation',()=>{
+ const root=new EventTarget();bindGameTouch(root);
+ for(const type of ['touchstart','touchmove'])for(const strip of [true,false]){
+  const e=new Event(type,{cancelable:true});
+  Object.defineProperty(e,'target',{value:{closest:s=>s==='#scroll-grip'?(strip?{}:null):s==='.scene-frame,.helm-panel'?{}:null}});
+  root.dispatchEvent(e);assert.equal(e.defaultPrevented,!strip);
+ }
 });
 
 test('phone landscape prompt closes on portrait without moving the scroll strip again',()=>{
