@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {engineFamily,engineCount,targetRPM,loopMix,engineLoudness,throttleMix} from '../src/audio/mix.js';
+import {engineFamily,engineCount,targetRPM,loopMix,engineLoudness,throttleMix,workboatAudioRPM} from '../src/audio/mix.js';
 const manifest=JSON.parse(readFileSync(new URL('../assets/audio/engines/manifest.json',import.meta.url)));
 test('automatic sound families and single/twin engines match playable boats',()=>{
  for(const [id,propulsion,family,count] of [['Express-33','twinSterndrive','gas-inboard',2],['sportfisher-30','twinInboardRudder','gas-inboard',2],['Motoryacht-60','twinInboardRudder','diesel-inboard',2],['bowrider','singleOutboard','outboard',1],['deadrise-40','singleInboardRudder','gas-inboard',1]]){const sim={model:{id},boat:{propulsion:{type:propulsion}}};assert.equal(engineFamily(sim),family);assert.equal(engineCount(sim),count);assert.equal(engineFamily(sim,'diesel-inboard'),'diesel-inboard');}
@@ -47,4 +47,19 @@ test('neutral stays at original idle pitch while 10% shifts idle only',()=>{
   assert.equal(targetRPM(.05,clips[0].rpm),clips[0].rpm+100);
   for(const threshold of [.1,.25]){const before=throttleMix(clips,threshold-.000001),after=throttleMix(clips,threshold+.000001);before.forEach((m,i)=>assert(Math.abs(m.gain-after[i].gain)<.0001));}
  }
+});
+
+test('workboat RPM follows throttle gradually with bounded speed influence',()=>{
+ const idle=900;
+ const settle=(power,speed,start=idle)=>{let rpm=start;for(let i=0;i<200;i++)rpm=workboatAudioRPM(rpm,power,speed,idle,.05);return rpm;};
+ assert(workboatAudioRPM(idle,1,0,idle,.05)>idle);
+ assert(workboatAudioRPM(idle,1,0,idle,.05)<1200);
+ const stationary=settle(1,0),moving=settle(1,20);
+ assert(stationary>2500&&stationary<2600);assert(moving>2999&&moving<=3000);
+ assert(Math.abs(settle(1,40)-moving)<1e-9);
+ assert(Math.abs(settle(-1,20)-moving)<1e-9);
+ assert(settle(0,20,3000)<901);
+ assert(settle(.5,20)<moving);
+ const down=3000-workboatAudioRPM(3000,0,20,idle,.05),up=workboatAudioRPM(idle,1,20,idle,.05)-idle;assert(down>up);
+ assert.equal(workboatAudioRPM(idle,1,20,idle,0),idle);
 });
