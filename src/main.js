@@ -1,5 +1,5 @@
 import {bindPhoneLayout} from './interface/phone-layout.js?v=full-height-scroll-50';
-import {bindEngineAudio} from './audio/engines.js?v=progression-52';
+import {bindEngineAudio} from './audio/engines.js?v=sound-race-defaults-57';
 import {createRenderGate} from './graphics/performance.js?v=mobile-performance-41';
 import {stepPracticeTraffic} from './simulation/moving-traffic.js?v=races-40';
 import {stepContacts} from './simulation/contacts.js?v=progression-52';
@@ -10,7 +10,7 @@ import {createSimulation} from './simulation/state.js?v=progression-52';
 import {stepPhysics} from './simulation/physics.js?v=staged-spin-56';
 import {createGraphics} from './graphics/scene.js?v=staged-spin-56';
 import {resetCamera,followCamera,bindCameraLook} from './graphics/camera.js?v=camera-pivot-55';
-import {bindControls} from './interface/controls.js?v=camera-pivot-55';
+import {bindControls} from './interface/controls.js?v=sound-race-defaults-57';
 const root=document.getElementById('dock3d');
 try {
  const sim=createSimulation(),camera={};resetCamera(camera,sim.state,sim.scale);

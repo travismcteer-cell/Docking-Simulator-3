@@ -37,5 +37,5 @@ export function bindEngineAudio(root,sim){
  family.addEventListener('change',()=>{wanted='';stop();report('Engine type selected · starts when you return to the game.');});
  root.addEventListener('pointerdown',unlock,{passive:true});root.addEventListener('keydown',unlock);
  document.addEventListener('visibilitychange',()=>{if(document.hidden){wanted='';stop();running(false);}else update();});
- report('Sound off');return {update};
+ report(enable.checked?'Sound enabled · starts when you enter the game.':'Sound off');return {update};
 }
