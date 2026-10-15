@@ -16,3 +16,11 @@ export function createRenderGate(fps){
   return dt;
  };
 }
+
+export const GRAPHICS_OPTIONS={fps:['default','24','30','60'],resolution:['default','1','1.25','1.75'],distance:['full','medium','short'],water:['detailed','simple'],boats:['normal','reduced'],ui:['frame','10'],shadows:['off','basic','soft']};
+export function graphicsDefaults(profile){return {fps:'default',resolution:'default',distance:'full',water:'detailed',boats:'normal',ui:'frame',shadows:profile.mobile?'off':'soft'};}
+export function validateGraphicsSettings(value,profile){const settings=graphicsDefaults(profile);for(const key of Object.keys(settings))if(GRAPHICS_OPTIONS[key].includes(value?.[key]))settings[key]=value[key];return settings;}
+export function resolveGraphicsSettings(settings,profile){
+ const range={full:{far:2200,fogNear:300,fogFar:1200},medium:{far:750,fogNear:350,fogFar:700},short:{far:500,fogNear:220,fogFar:450}}[settings.distance];
+ return {...range,fps:settings.fps==='default'?profile.fps:Number(settings.fps),pixelRatio:settings.resolution==='default'?profile.pixelRatio:Number(settings.resolution),simpleWater:settings.water==='simple',boatDetailDistance:settings.boats==='reduced'?100:220,uiInterval:settings.ui==='10'?100:0};
+}

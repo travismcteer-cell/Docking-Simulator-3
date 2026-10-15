@@ -1,10 +1,10 @@
 import {createEnvironmentDisc} from '../interface/environment-disc.js?v=compass-foreground-54';
-import {mobileGraphicsProfile} from './performance.js?v=mobile-performance-41';
+import {mobileGraphicsProfile,resolveGraphicsSettings} from './performance.js?v=graphics-options-58';
 import {createWorkboatWake,workboatVisualPose} from './workboat.js?v=staged-spin-56';
 import {addRacingBasinDetails} from './racing-basin.js?v=races-40';
 import {createLevelGraphics} from './levels.js?v=progression-52';
 import {createAnchorGraphics} from './anchor.js?v=gas-helm-cockpit-39';
-import {createOtherBoatGraphics,createMovingBoatGraphics} from './traffic.js?v=races-40';
+import {createOtherBoatGraphics,createMovingBoatGraphics} from './traffic.js?v=graphics-options-58';
 import {addLandmarks} from './landmarks.js?v=races-40';
 import {cameraPose,releaseCameraLockIfHidden} from './camera.js?v=camera-pivot-55';
 import {DOCK_POLYGONS,LAND,ANCHOR_GUIDES,BOUNDS} from '../data/marina.js?v=races-40';
@@ -53,15 +53,20 @@ for(const p of ANCHOR_GUIDES){const buoy=mesh(new THREE.SphereGeometry(.7,8,6),m
 box(-570,8,-480,32,12,22,mat('#d5c9b4'));box(-570,14,-480,35,1.2,25,mat('#475e66'));
 addLandmarks(scene);
 // Animated water normals, sky tint and sun glints. No reflection render pass.
-const waterUniforms={uTime:{value:0},uEye:{value:new THREE.Vector3()},uWind:{value:0},uDir:{value:new THREE.Vector2(1,0)}};
+const waterUniforms={uSimple:{value:0},uFogNear:{value:400},uFogFar:{value:1400},uTime:{value:0},uEye:{value:new THREE.Vector3()},uWind:{value:0},uDir:{value:new THREE.Vector2(1,0)}};
 const waterMat=new THREE.ShaderMaterial({uniforms:waterUniforms,vertexShader:`
  varying vec3 vWorld;uniform float uTime;uniform float uWind;uniform vec2 uDir;
  void main(){vec3 p=position;float t=uTime;
  float along=dot(p.xz,uDir),across=dot(p.xz,vec2(-uDir.y,uDir.x));float amp=.012+uWind*.12;float speed=.15+uWind*2.;// Water stays level; analytic normals carry the wind ripples.
  vWorld=(modelMatrix*vec4(p,1.)).xyz;gl_Position=projectionMatrix*viewMatrix*vec4(vWorld,1.);}
  `,fragmentShader:`
- varying vec3 vWorld;uniform float uTime;uniform float uWind;uniform vec2 uDir;uniform vec3 uEye;
+ varying vec3 vWorld;uniform float uTime;uniform float uWind;uniform vec2 uDir;uniform vec3 uEye;uniform float uSimple;uniform float uFogNear;uniform float uFogFar;
  void main(){vec2 p=vWorld.xz;float t=uTime;
+ if(uSimple>.5){float ripple=sin(dot(p,uDir)*.35-t*.5)*(.004+uWind*.008);vec3 c=vec3(.075,.29,.33)+ripple;float haze=smoothstep(uFogNear,uFogFar,length(uEye-vWorld));gl_FragColor=vec4(mix(c,vec3(.56,.68,.72),haze),1.);
+ #include <tonemapping_fragment>
+ #include <colorspace_fragment>
+ return;}
+
  float along=dot(p,uDir),across=dot(p,vec2(-uDir.y,uDir.x)),speed=.15+uWind*2.;float phase=along*.55-t*speed;
  float slope=(.007+uWind*.095)*cos(phase)+(.003+uWind*.04)*cos(along*1.1+across*.18-t*speed*1.4);vec2 normalSlope=uDir*slope+vec2(-uDir.y,uDir.x)*(.002+uWind*.012)*cos(across*.9+along*.3-t*.5);float dx=normalSlope.x,dz=normalSlope.y;
  vec3 n=normalize(vec3(-dx,1.,-dz));vec3 v=normalize(uEye-vWorld);vec3 l=normalize(vec3(-.6,.8,.3));
@@ -69,7 +74,7 @@ const waterMat=new THREE.ShaderMaterial({uniforms:waterUniforms,vertexShader:`
  float rip=.5+.5*sin(phase+sin(across*.3)*.3);
  vec3 c=mix(vec3(.035,.23,.27),vec3(.12,.36,.40),rip*(.03+uWind*.25));
  c=mix(c,vec3(.56,.72,.75),fres*.45);c+=vec3(1.,.88,.65)*glint*.45;
- float foam=smoothstep(.88,.99,sin(phase))*smoothstep(.45,.8,uWind)*smoothstep(.4,.85,sin(across*.7+along*.15));c=mix(c,vec3(.72,.82,.81),foam*.15);float fog=smoothstep(400.,1400.,length(uEye-vWorld));c=mix(c,vec3(.56,.68,.72),fog);
+ float foam=smoothstep(.88,.99,sin(phase))*smoothstep(.45,.8,uWind)*smoothstep(.4,.85,sin(across*.7+along*.15));c=mix(c,vec3(.72,.82,.81),foam*.15);float fog=smoothstep(uFogNear,uFogFar,length(uEye-vWorld));c=mix(c,vec3(.56,.68,.72),fog);
  gl_FragColor=vec4(c,1.);
  #include <tonemapping_fragment>
  #include <colorspace_fragment>
@@ -86,7 +91,8 @@ function updateFoam(dt){for(const f of foam){if(f.life<=0)continue;f.life-=dt;f.
 const workboatWake=createWorkboatWake(scene,foamTex);
 const levelGraphics=createLevelGraphics(scene,sim);
 const anchorGraphics=createAnchorGraphics(scene,sim);
-const otherBoats=createOtherBoatGraphics(scene,sim),movingBoats=createMovingBoatGraphics(scene,sim);
+const boatOptions={detailDistance:220,renderDistance:Infinity};
+const otherBoats=createOtherBoatGraphics(scene,sim,boatOptions),movingBoats=createMovingBoatGraphics(scene,sim);
 let elapsed=0;
 function paint(dt=0){levelGraphics.update();otherBoats.update();movingBoats.update();anchorGraphics.update();if(modelId!==sim.model.id){workboatWake.clear();for(const f of foam){f.life=0;f.sprite.material.opacity=0;}docking.dispose();vessel.removeFromParent();const materials=new Set();vessel.traverse(o=>{o.geometry?.dispose();if(o.material)materials.add(o.material);});for(const m of materials)m.dispose();vessel=createCruiser(sim.model);scene.add(vessel);docking=createDockingGraphics(scene,vessel,sim);modelId=sim.model.id;}vessel.userData.updateSteering?.(state.steer);elapsed+=dt;vessel.position.set(state.x*scale,.07*Math.sin(elapsed*1.2),state.y*scale);vessel.rotation.set(.004*Math.sin(elapsed*.9),-state.a*Math.PI/180,.003*Math.sin(elapsed*1.1));if(sim.model.id==='deadrise-40'){const motion=workboatVisualPose(sim,elapsed);vessel.position.y=motion.heave;vessel.rotation.set(0,-state.a*Math.PI/180,0);vessel.rotateZ(motion.pitch);vessel.rotateX(motion.roll);}
  sun.position.set(camera.x-70,100,camera.y+30);sun.target.position.set(camera.x,0,camera.y);sun.target.updateMatrixWorld();
@@ -102,7 +108,16 @@ const cleatMesh=new THREE.InstancedMesh(new THREE.BoxGeometry(.9,.15,.24),chrome
 function resize(){const width=canvas.clientWidth,height=canvas.clientHeight;renderer.setSize(width,height,false);viewCamera.aspect=width/height;viewCamera.updateProjectionMatrix();}
 function setShadows(mode){renderer.shadowMap.enabled=mode!=='off';renderer.shadowMap.type=mode==='basic'?THREE.BasicShadowMap:THREE.PCFSoftShadowMap;shadow.visible=mode!=='off';scene.traverse(o=>{for(const m of (Array.isArray(o.material)?o.material:[o.material]))if(m)m.needsUpdate=true;});}
 setShadows(profile.mobile?'off':'soft');
-return {paint,resize,renderer,profile,setShadows};
+function setPerformance(settings){const resolved=resolveGraphicsSettings(settings,profile);
+ renderer.setPixelRatio(Math.min(devicePixelRatio||1,resolved.pixelRatio));resize();
+ viewCamera.far=resolved.far;viewCamera.updateProjectionMatrix();scene.fog.near=resolved.fogNear;scene.fog.far=resolved.fogFar;
+ waterUniforms.uSimple.value=resolved.simpleWater?1:0;waterUniforms.uFogNear.value=settings.distance==='full'?400:resolved.fogNear;waterUniforms.uFogFar.value=settings.distance==='full'?1400:resolved.fogFar;
+ boatOptions.detailDistance=resolved.boatDetailDistance;
+ // Include the follow-camera offset: never omit a boat the camera could see.
+ boatOptions.renderDistance=settings.distance==='full'?Infinity:resolved.far+200;
+ setShadows(settings.shadows);return resolved;
+}
+return {paint,resize,renderer,profile,setShadows,setPerformance};
 }
 
 

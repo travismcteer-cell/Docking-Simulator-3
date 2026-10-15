@@ -14,3 +14,6 @@ test('hidden and home screens reset visual time; desktop renders each callback',
  const gate=createRenderGate(30);assert.equal(gate(0),0);assert.equal(gate(10),null);assert.equal(gate(2000,false),null);assert.equal(gate(4000),0);
  const desktop=createRenderGate(0);assert.equal(desktop(0),0);assert.equal(desktop(10),.01);
 });
+test('24 FPS works across phone and tablet refresh rates',()=>{
+ for(const hz of [60,90,120]){const gate=createRenderGate(24);let count=0,time=0;for(let i=0;i<=hz*5;i++){const dt=gate(i*1000/hz);if(dt!==null){count++;time+=dt;}}assert.equal(count,121);assert(Math.abs(time-5)<1e-9);}
+});

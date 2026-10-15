@@ -45,7 +45,19 @@
 <dialog class="setup-screen" id="settings-screen" aria-labelledby="settings-title"><div class="setup-header"><h2 id="settings-title">Settings</h2><button class="btn" id="settings-close">Back</button></div>   <div class="control-card"><label for="catchup">Camera catch-up <strong id="cv">0.5 s</strong></label><input class="form-range" id="catchup" type="range" min="0" max="16" step="0.5" value="0.5"><div class="text-small" id="catchup-note">Far / Medium follow delay · 0 = immediate</div></div>
  <div class="control-card"><h3>Camera swipe direction</h3><label><input id="camera-invert-x" type="checkbox"> Invert horizontal (X)</label><label><input id="camera-invert-y" type="checkbox"> Invert vertical (Y)</label></div>
  <div class="control-card"><label for="helm-height">Helm camera height <strong id="helm-height-value">+3.00 ft</strong></label><input class="form-range" id="helm-height" aria-label="Helm camera height above windshield top, in feet" type="range" min="0" max="8" step="0.25" value="3"><div class="text-small">Raise the camera above the windshield top. Zero restores the original height.</div><div class="text-small" id="helm-height-note"></div></div>
- <div class="control-card"><h3>Graphics</h3><label>Shadows <select class="form-select" id="graphics-shadows"><option value="off">Off (coolest)</option><option value="basic">Basic</option><option value="soft">Soft (highest quality)</option></select></label><label><input type="checkbox" id="graphics-stats"> Show rendering statistics</label><p class="text-small">Phones use 30 FPS and reduced resolution. Compare shadows in the same location to check performance and warmth.</p></div>
+ <div class="control-card"><h3>Graphics and power</h3>
+ <label>Frame rate <select class="form-select" id="graphics-fps"><option value="default">Device default</option><option value="24">24 FPS (lower power)</option><option value="30">30 FPS</option><option value="60">60 FPS</option></select></label>
+ <label>Resolution <select class="form-select" id="graphics-resolution"><option value="default">Device default</option><option value="1">Low · 1.0×</option><option value="1.25">Medium · 1.25×</option><option value="1.75">High · 1.75×</option></select></label>
+ <label>Haze and draw distance <select class="form-select" id="graphics-distance"><option value="full">Original</option><option value="medium">Medium · hazy distance</option><option value="short">Short · stronger haze</option></select></label>
+ <label>Water <select class="form-select" id="graphics-water"><option value="detailed">Detailed ripples and glints</option><option value="simple">Simple animated water</option></select></label>
+ <label>Distant boat detail <select class="form-select" id="graphics-boats"><option value="normal">Original</option><option value="reduced">Simplify sooner</option></select></label>
+ <label>Interface refresh <select class="form-select" id="graphics-ui"><option value="frame">Every rendered frame</option><option value="10">10 times per second</option></select></label>
+ <label>Shadows <select class="form-select" id="graphics-shadows"><option value="off">Off (coolest)</option><option value="basic">Basic</option><option value="soft">Soft (highest quality)</option></select></label>
+ <label><input type="checkbox" id="graphics-stats"> Show rendering statistics</label>
+ <p class="text-small">Settings apply immediately and are saved on this device. Device defaults: phones and tablets use 30 FPS, 1.25× resolution and no shadows. Shorter draw distance hides distant scenery and boats; the map remains complete. Boat physics are unchanged.</p>
+ <p class="text-small">For comparisons, change one option at a time and repeat the same course with similar screen brightness. Start with 1.0× resolution and simple water.</p>
+ <button type="button" class="btn" id="graphics-defaults">Restore graphics defaults</button>
+ </div>
  <div class="control-card"><h3>Engine sound</h3><label><input type="checkbox" id="audio-enabled" checked> Enable engine sound</label><label for="audio-volume">Volume</label><input class="form-range" id="audio-volume" type="range" min="0" max="100" value="50"><label>Engine type <select class="form-select" id="audio-family"><option value="auto">Automatic for this boat</option><option value="gas-inboard">Gas inboard</option><option value="diesel-inboard">Diesel inboard</option><option value="outboard">Outboard</option></select></label><p class="text-small" id="audio-status" role="status">Sound enabled · starts when you enter the game.</p><p class="text-small">Sound starts when you return to the game. 10% uses slightly louder idle with a 200 RPM pitch increase; 25% uses working sound at 1,200 RPM; full racing power uses high sound. Menus and background tabs pause sound.</p></div>
 </dialog>
 <dialog class="setup-screen home-screen" id="home-screen" aria-labelledby="home-title">
@@ -66,6 +78,6 @@
  </div></section>
  </dialog>
  <dialog class="setup-screen" id="level-result" aria-labelledby="level-result-title"><h2 id="level-result-title">Level complete</h2><p id="level-result-summary"></p><div id="level-result-breakdown" hidden></div><p id="level-result-best" class="text-small"></p><p id="level-result-contacts" class="text-small"></p><div class="setup-footer"><button class="btn" id="level-restart">Restart level</button><button class="btn" id="level-next">Next level</button><button class="btn" id="result-levels">Challenges</button><button class="btn" id="result-home">Home</button></div></dialog>
-</main><script type="module" src="src/main.js?v=sound-race-defaults-57"></script></body></html>
+</main><script type="module" src="src/main.js?v=graphics-options-58"></script></body></html>
 
 
