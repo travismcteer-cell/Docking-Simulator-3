@@ -4,7 +4,7 @@ import {setOtherBoats,npcShape,buildBerthSlots} from './traffic.js?v=races-40';
 import {SOLIDS,FENDER_SHAPES,DOCK_POLYGONS,SPAWNS,RACING_BERTHS} from '../data/marina.js?v=races-40';
 import {hullAt,overlap,rectPoly} from './collisions.js?v=navigation-handling-30';
 import {anchorBowPoint} from './anchor.js?v=navigation-handling-30';
-import {FLEET} from '../data/fleet.js?v=gas-helm-cockpit-39';
+import {FLEET} from '../data/fleet.js?v=staged-spin-56';
 import {attachLine} from './lines.js?v=navigation-handling-30';
 const feet=(x,y,a)=>({x:x*180-650,y:y*120-525,a});
 const box=(x,y,w,h,label)=>({x:x*180-650,y:y*120-525,w:w*180,h:h*120,label});

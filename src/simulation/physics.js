@@ -1,5 +1,5 @@
 import {effectivePower} from './faults.js?v=progression-52';
-import {stepWorkboat} from './workboat.js?v=camera-pivot-55';
+import {stepWorkboat} from './workboat.js?v=staged-spin-56';
 import {applyAnchor} from './anchor.js?v=navigation-handling-30';
 import {integrate} from './collisions.js?v=navigation-handling-30';
 import {applyLines} from './lines.js?v=navigation-handling-30';

@@ -7,7 +7,7 @@ import {LEVELS,RACES,raceLight,registerRaceThrottle,startLevel,enterPractice,for
 import {anchorDown,anchorHold,anchorUp} from '../simulation/anchor.js?v=navigation-handling-30';
 import {setPracticeTraffic} from '../simulation/moving-traffic.js?v=races-40';
 import {setOtherBoats} from '../simulation/traffic.js?v=races-40';
-import {FLEET} from '../data/fleet.js?v=gas-helm-cockpit-39';
+import {FLEET} from '../data/fleet.js?v=staged-spin-56';
 import {bindDirectionDial} from './setup.js?v=touch-9';
 import {SPAWNS} from '../data/marina.js?v=races-40';
 import {resetSimulation,selectBoat} from '../simulation/state.js?v=progression-52';

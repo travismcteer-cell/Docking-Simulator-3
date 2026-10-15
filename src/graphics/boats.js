@@ -1,6 +1,6 @@
-import {addWorkboatDetails} from './workboat.js?v=camera-pivot-55';
+import {addWorkboatDetails} from './workboat.js?v=staged-spin-56';
 import * as THREE from '../../vendor/three.module.js?v=touch-9';
-import {deckAt as sampleDeck,FLEET} from '../data/fleet.js?v=gas-helm-cockpit-39';
+import {deckAt as sampleDeck,FLEET} from '../data/fleet.js?v=staged-spin-56';
 export function createCruiser(entry=FLEET['Express-33'],details=true){
 const {model:data,definition:def,p}=entry;
 const vessel=new THREE.Group(),boat=new THREE.Group();boat.scale.setScalar(1/.3048);vessel.add(boat);
