@@ -4,6 +4,9 @@ import {applyLines} from './lines.js?v=navigation-handling-30';
 import {applyAnchor} from './anchor.js?v=navigation-handling-30';
 import {applyFenders} from './fenders.js?v=navigation-handling-30';
 export const smoothstep=(lo,hi,x)=>{const t=Math.max(0,Math.min(1,(x-lo)/(hi-lo)));return t*t*(3-2*t);};
+// Aft-of-centre wetted-hull target during an unloaded planing spin only.
+export const WORKBOAT_SPIN_PIVOT=-.08;
+export function planingPivotBlend(plane,breakaway,dt){return plane*breakaway*(1-Math.exp(-dt/.012));}
 export function workboatMotion(sim){const a=sim.state.a*Math.PI/180,c=sim.environment.currentDirection*Math.PI/180,u=sim.environment.current*.0065;const forward=(sim.state.vx-Math.sin(c)*u)*Math.cos(a)+(sim.state.vy+Math.cos(c)*u)*Math.sin(a);return {forward,knots:Math.abs(forward)*110,plane:sim.workboatDynamics?.plane??smoothstep(10,19,forward*110)};}
 // Fixed shaft, one large rudder. Astern wash does not rotate with the rudder:
 // reverse steering comes from actual sternway; prop walk nudges the stern port.
@@ -26,7 +29,7 @@ export function stepWorkboat(sim,dt){
  const wash=Math.max(0,thrust)*1.15*(1+lowSpeed*.35+response.trim*.7);
  // Large rudder responds to water flow in neutral and astern as well as propwash.
  const flow=Math.abs(vf)*vf*(vf<0?4.2:.75*(1+lowSpeed*1.8));
- // On plane, the fine bow grips while the flatter stern can break sideways.
+ // On plane the bow unloads; spin-out grip shifts toward the aft wetted hull.
  // Blend out below planing speed so docking and reverse keep their old tune.
  const turnGain=1+gripBreak*4;
  const lateral=-(wash+flow)*Math.sin(rudder)*turnGain;
@@ -45,9 +48,9 @@ export function stepWorkboat(sim,dt){
  addForce(-fx*(resistance+Math.sign(vf)*steeringDrag),-fy*(resistance+Math.sign(vf)*steeringDrag),0,0);
  // Separate hull stations sense translation AND rotation through the water.
  // Loaded stern tracks during acceleration; on-plane breakaway releases its grip.
+ const omega=s.omega*Math.PI/180,length=sim.geometryLength||40;
  const bowGrip=.30+plane*.65-response.trim*.18;
  const sternGrip=(.60+response.trim*1.3)*(1-gripBreak*.78);
- const omega=s.omega*Math.PI/180,length=sim.geometryLength||40;
  for(const [station,grip] of [[.32,bowGrip],[-.36,sternGrip]]){
   const localFlow=vl+omega*station*length/sim.scale;
   const drag=grip*(localFlow+1.6*localFlow*Math.abs(localFlow));
@@ -57,6 +60,12 @@ export function stepWorkboat(sim,dt){
  addForce(Math.sin(wind)*windForce,-Math.cos(wind)*windForce,.08,0);
  applyLines(sim,dt,addForce);applyAnchor(sim,dt,addForce);applyFenders(sim,dt,addForce);
  s.omega*=Math.exp(-(.38+Math.min(2.2,Math.abs(vf)*8)*(1-plane*.35))*dt);
+ // Relax transverse flow at the aft pivot toward zero while on-plane grip breaks.
+ // Longitudinal motion and yaw remain governed by the existing force model.
+ const lateralNow=(s.vx-Math.sin(current)*u)*rx+(s.vy+Math.cos(current)*u)*ry;
+ const targetLateral=-(s.omega*Math.PI/180)*WORKBOAT_SPIN_PIVOT*length/sim.scale;
+ const slipCorrection=(targetLateral-lateralNow)*planingPivotBlend(plane,gripBreak,dt);
+ s.vx+=rx*slipCorrection;s.vy+=ry*slipCorrection;
  s.stbd=0;
  integrate(sim,dt);
 }

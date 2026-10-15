@@ -1,6 +1,6 @@
 # Docking Trainer 3D — first playable
 
-A small static web app for GitHub Pages. This is the first stage of the 2D game's migration: one 31-foot twin-sterndrive cruiser, the connected large marina from the latest 2D game, dock lines and fenders. It keeps the prototype's low chase camera and eight-second exponential catch-up for position and heading.
+A small static web app for GitHub Pages. This is the first stage of the 2D game's migration: one 31-foot twin-sterndrive cruiser, the connected large marina from the latest 2D game, dock lines and fenders. It keeps the prototype's low chase camera and 0.5-second default exponential catch-up for position and heading.
 
 ## Put it on GitHub Pages
 
@@ -15,7 +15,7 @@ No npm install, compilation, backend or paid hosting is required. Three.js is in
 
 - Start at **F · Entrance** to navigate into the connected marina, or select another section directly.
 - The start selector offers eight locations across sections A–F and the fuel dock. Changing the start resets the boat and releases all lines.
-- Drag the scene to look around; release for a three-second exponential return. The boat chase still has an eight-second response.
+- Drag the scene to look around; release for a three-second exponential return. The boat chase defaults to a 0.5-second response.
 - Wind speed changes surface roughness and ripple travel speed. Wind direction is explicitly the direction the wind blows toward (0° north, 90° east). Ripple motion follows the same direction as the force on the hull. Water movement is cosmetic; the boat physics applies wind forces separately.
 - Orange buoys mark the original Med anchor guide locations. Anchor operation and paired Med stern lines are not included yet.
 - Hold a 10 FWD, 25 FWD, 10 REV or 25 REV button to apply power. Release to return to neutral. Port and starboard can be held independently with two fingers; the BOTH column operates both engines. Keyboard users can hold Space or Enter on a focused button. The hull continues to carry momentum.
@@ -62,11 +62,11 @@ Play areas use touch-action:none and non-passive touch/gesture cancellation. Dis
 
 ## Compact touch controls
 
-Steering, camera catch-up and setup sliders handle touch dragging explicitly, including when another finger holds a control. The narrow textured strip below the active helm uses native touchscreen page scrolling. There is no scripted scroll loop. Throttle and steering fit together in the available viewport, with a smaller scene on short screens. Camera catch-up is now in Practice setup. Routine contact and line status rows, Release all lines and Both neutral have been removed; individual line buttons still show their state. Startup errors remain visible if graphics initialization fails.
+Steering, camera catch-up and setup sliders handle touch dragging explicitly, including when another finger holds a control. The narrow textured strip below the active helm uses native touchscreen page scrolling. There is no scripted scroll loop. Throttle and steering fit together in the available viewport, with a smaller scene on short screens. Camera catch-up is available in Settings. Routine contact and line status rows, Release all lines and Both neutral have been removed; individual line buttons still show their state. Startup errors remain visible if graphics initialization fails.
 
 ## Orientation controls
 
-Portrait keeps the existing throttle/steering panel below the scene, including BOTH engine controls. Landscape moves independent port and starboard momentary throttle buttons inside the line/fender rails and places steering at bottom centre. Landscape has no BOTH engine buttons. Rotating preserves simulation and camera state while clearing held engine inputs to neutral. Camera catch-up remains in Practice setup.
+Portrait keeps the existing throttle/steering panel below the scene, including BOTH engine controls. Landscape moves independent port and starboard momentary throttle buttons inside the line/fender rails and places steering at bottom centre. Landscape has no BOTH engine buttons. Rotating preserves simulation and camera state while clearing held engine inputs to neutral. Camera catch-up is available in Settings.
 
 ## Express-33 visual
 
@@ -128,3 +128,9 @@ The wind/current disc projects world-direction arrows into a water-parallel plan
 | 28 | 3 | Windy Med Arrival | Express-33 | 8 | 0.2 | Port engine unavailable |
 | 29 | 3 | Crowded Yacht Departure | Motoryacht-60 | 4 | 0.3 | 5-foot side clearance; fenders required |
 | 30 | 3 | Motor Yacht Med Arrival | Motoryacht-60 | 4 | 0.2 | 5-foot side clearance; fenders required |
+
+## Camera preferences and planing workboat pivot
+
+Settings is available in the bottom button row in Practice as well as challenges and races. Horizontal (X) and vertical (Y) camera-swipe inversion can be toggled independently in Settings and apply in all camera modes. These choices survive boat/session resets within the current page. Default camera catch-up is 0.5 seconds; explicit slider choices, including zero, are preserved through resets.
+
+During a planing workboat spin, transverse flow relaxes toward an effective pivot 0.08 hull lengths aft of centre (a 3.2-foot target on the 40-foot boat). The response blends with existing plane/breakaway state, allowing the bow to swing more while the stern still slides. It adjusts lateral water-relative motion, not the rendered mesh origin. Longitudinal forces and the existing yaw model remain in place. With no plane or no breakaway the response is zero; displacement docking, reverse from displacement speed and straight planing were compared against the previous implementation and remained numerically identical. Actual turn feel is initial tuning and needs play-testing.

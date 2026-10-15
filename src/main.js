@@ -9,8 +9,8 @@ import {createMiniMap} from './interface/minimap.js?v=races-40';
 import {createSimulation} from './simulation/state.js?v=progression-52';
 import {stepPhysics} from './simulation/physics.js?v=progression-52';
 import {createGraphics} from './graphics/scene.js?v=compass-foreground-54';
-import {resetCamera,followCamera,bindCameraLook} from './graphics/camera.js?v=camera-lock-26';
-import {bindControls} from './interface/controls.js?v=progression-52';
+import {resetCamera,followCamera,bindCameraLook} from './graphics/camera.js?v=camera-pivot-55';
+import {bindControls} from './interface/controls.js?v=camera-pivot-55';
 const root=document.getElementById('dock3d');
 try {
  const sim=createSimulation(),camera={};resetCamera(camera,sim.state,sim.scale);
