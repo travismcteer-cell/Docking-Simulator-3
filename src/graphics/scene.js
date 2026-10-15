@@ -1,6 +1,6 @@
 import {createEnvironmentDisc} from '../interface/environment-disc.js?v=compass-foreground-54';
 import {mobileGraphicsProfile} from './performance.js?v=mobile-performance-41';
-import {createWorkboatWake,workboatVisualPose} from './workboat.js?v=camera-pivot-55';
+import {createWorkboatWake,workboatVisualPose} from './workboat.js?v=staged-spin-56';
 import {addRacingBasinDetails} from './racing-basin.js?v=races-40';
 import {createLevelGraphics} from './levels.js?v=progression-52';
 import {createAnchorGraphics} from './anchor.js?v=gas-helm-cockpit-39';
@@ -8,7 +8,7 @@ import {createOtherBoatGraphics,createMovingBoatGraphics} from './traffic.js?v=r
 import {addLandmarks} from './landmarks.js?v=races-40';
 import {cameraPose,releaseCameraLockIfHidden} from './camera.js?v=camera-pivot-55';
 import {DOCK_POLYGONS,LAND,ANCHOR_GUIDES,BOUNDS} from '../data/marina.js?v=races-40';
-import {createCruiser} from './boats.js?v=gas-helm-cockpit-39';
+import {createCruiser} from './boats.js?v=staged-spin-56';
 import * as THREE from '../../vendor/three.module.js?v=touch-9';
 import {createDockingGraphics} from './docking.js?v=navigation-handling-30';
 export function createGraphics(canvas,sim,camera){

@@ -3,9 +3,9 @@ import {fenderBeam,FENDER_TUNING} from './fenders.js?v=navigation-handling-30';
 import {setPracticeTraffic} from './moving-traffic.js?v=races-40';
 import {stowAnchor} from './anchor.js?v=navigation-handling-30';
 import {setOtherBoats} from './traffic.js?v=races-40';
-import {BOAT,SCALE,OUTLINE} from '../data/boats.js?v=anchor-scenery-21';
+import {BOAT,SCALE,OUTLINE} from '../data/boats.js?v=staged-spin-56';
 import {DOCKS,DOCK_CLEATS,SPAWNS,SOLIDS,FENDER_SHAPES,BOUNDS} from '../data/marina.js?v=races-40';
-import {FLEET} from '../data/fleet.js?v=gas-helm-cockpit-39';
+import {FLEET} from '../data/fleet.js?v=staged-spin-56';
 import {hullAt,overlap,rectPoly} from './collisions.js?v=navigation-handling-30';
 export function createSimulation(){const sim={boat:BOAT,scale:SCALE,outline:OUTLINE,docks:DOCKS,solids:SOLIDS,fenderShapes:FENDER_SHAPES,bounds:BOUNDS,dockCleats:DOCK_CLEATS,environment:{wind:0,current:0,windDirection:90,currentDirection:180},state:{},lines:{},fenders:{port:false,stbd:false,contactPort:0,contactStbd:0},contact:false,otherBoatsDensity:'medium',trafficDensity:'none'};selectBoat(sim,'Express-33');return sim;}
 export function selectBoat(sim,id,name='f'){const entry=FLEET[id];if(!entry)throw new Error('Unknown boat: '+id);if(entry.npcOnly)throw new Error('This boat is NPC-only: '+id);Object.assign(sim,{boat:entry.handling,model:entry,outline:entry.outline,lineDefs:entry.lineDefs,geometryLength:entry.geometryLength,helm:entry.helm});resetSimulation(sim,name);}

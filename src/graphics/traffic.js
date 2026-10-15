@@ -1,6 +1,6 @@
 import {buildBoat} from '../data/boat-generator.js?v=npc-fleet-spawns-33';
 import * as THREE from '../../vendor/three.module.js?v=touch-9';
-import {createCruiser} from './boats.js?v=gas-helm-cockpit-39';
+import {createCruiser} from './boats.js?v=staged-spin-56';
 import {npcShape} from '../simulation/traffic.js?v=races-40';
 // Shared geometry and GPU instances keep a crowded marina inexpensive. Full
 // cosmetics appear nearby; distant boats use their matching hull silhouette.

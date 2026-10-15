@@ -7,6 +7,18 @@ export const smoothstep=(lo,hi,x)=>{const t=Math.max(0,Math.min(1,(x-lo)/(hi-lo)
 // Aft-of-centre wetted-hull target during an unloaded planing spin only.
 export const WORKBOAT_SPIN_PIVOT=-.08;
 export function planingPivotBlend(plane,breakaway,dt){return plane*breakaway*(1-Math.exp(-dt/.012));}
+// Keep the bow-engaged stage latched until the helm is eased or reversed.
+// Wrapped heading deltas also handle a spin crossing north in either direction.
+export function spinPivotWeight(response,heading,steer,plane){
+ const direction=Math.abs(steer)>12?Math.sign(steer):0;
+ const delta=response.spinHeading===undefined?0:((heading-response.spinHeading+540)%360+360)%360-180;
+ response.spinHeading=heading;
+ if(!direction||direction!==response.spinDirection){response.spinDegrees=0;response.spinActive=false;}
+ response.spinDirection=direction;
+ if(direction&&plane>.5)response.spinActive=true;
+ if(response.spinActive)response.spinDegrees=(response.spinDegrees??0)+Math.max(0,delta*direction);
+ return 1-smoothstep(35,55,response.spinDegrees??0);
+}
 export function workboatMotion(sim){const a=sim.state.a*Math.PI/180,c=sim.environment.currentDirection*Math.PI/180,u=sim.environment.current*.0065;const forward=(sim.state.vx-Math.sin(c)*u)*Math.cos(a)+(sim.state.vy+Math.cos(c)*u)*Math.sin(a);return {forward,knots:Math.abs(forward)*110,plane:sim.workboatDynamics?.plane??smoothstep(10,19,forward*110)};}
 // Fixed shaft, one large rudder. Astern wash does not rotate with the rudder:
 // reverse steering comes from actual sternway; prop walk nudges the stern port.
@@ -26,6 +38,7 @@ export function stepWorkboat(sim,dt){
  const breakDemand=plane*smoothstep(12,30,Math.abs(s.steer))*(1-response.trim*.85);
  response.breakaway=approach(response.breakaway,breakDemand,.35);
  const gripBreak=response.breakaway;
+ const aftPivotWeight=spinPivotWeight(response,s.a,s.steer,plane);
  const wash=Math.max(0,thrust)*1.15*(1+lowSpeed*.35+response.trim*.7);
  // Large rudder responds to water flow in neutral and astern as well as propwash.
  const flow=Math.abs(vf)*vf*(vf<0?4.2:.75*(1+lowSpeed*1.8));
@@ -43,7 +56,7 @@ export function stepWorkboat(sim,dt){
  // Displacement hump fades as the hull rises onto plane; quadratic drag then
  // sets the top speed, instead of the existing boats' displacement limiter.
  const hump=vf>0?.011*Math.exp(-Math.pow((knots-8)/3,2))*(1-plane):0;
- const resistance=(.12*vf+(vf>=0?1.7:5.8)*vf*Math.abs(vf)+hump)*(.075/.14);
+ const resistance=(.12*vf+(vf>=0?1.7:2.1)*vf*Math.abs(vf)+hump)*(.075/.14);
  const steeringDrag=Math.abs(lateral*Math.sin(rudder))*.5;
  addForce(-fx*(resistance+Math.sign(vf)*steeringDrag),-fy*(resistance+Math.sign(vf)*steeringDrag),0,0);
  // Separate hull stations sense translation AND rotation through the water.
@@ -60,11 +73,12 @@ export function stepWorkboat(sim,dt){
  addForce(Math.sin(wind)*windForce,-Math.cos(wind)*windForce,.08,0);
  applyLines(sim,dt,addForce);applyAnchor(sim,dt,addForce);applyFenders(sim,dt,addForce);
  s.omega*=Math.exp(-(.38+Math.min(2.2,Math.abs(vf)*8)*(1-plane*.35))*dt);
- // Relax transverse flow at the aft pivot toward zero while on-plane grip breaks.
+ // First the unloaded hull turns about midships; after about 45 degrees the
+ // bow bites again. Release the correction so the original stern wash-out returns.
  // Longitudinal motion and yaw remain governed by the existing force model.
  const lateralNow=(s.vx-Math.sin(current)*u)*rx+(s.vy+Math.cos(current)*u)*ry;
  const targetLateral=-(s.omega*Math.PI/180)*WORKBOAT_SPIN_PIVOT*length/sim.scale;
- const slipCorrection=(targetLateral-lateralNow)*planingPivotBlend(plane,gripBreak,dt);
+ const slipCorrection=(targetLateral-lateralNow)*planingPivotBlend(plane,gripBreak,dt)*aftPivotWeight;
  s.vx+=rx*slipCorrection;s.vy+=ry*slipCorrection;
  s.stbd=0;
  integrate(sim,dt);

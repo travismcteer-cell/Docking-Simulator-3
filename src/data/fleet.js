@@ -1,8 +1,8 @@
-import {workboatDefinition,workboatHandling} from './workboat.js?v=camera-pivot-55';
+import {workboatDefinition,workboatHandling} from './workboat.js?v=staged-spin-56';
 import {definitions} from './fleet-definitions.js?v=workboat-race-36';
 import {buildBoat} from './boat-generator.js?v=npc-fleet-spawns-33';
 import {model,definition,p} from './express-33.js?v=npc-fleet-spawns-33';
-import {BOAT,OUTLINE} from './boats.js?v=anchor-scenery-21';
+import {BOAT,OUTLINE} from './boats.js?v=staged-spin-56';
 const FT=.3048;
 // Handling calibration copied from the old 2D game's named boat profiles.
 const profiles={
