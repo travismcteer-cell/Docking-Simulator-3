@@ -1,4 +1,4 @@
-import {addWorkboatDetails} from './workboat.js?v=progression-52';
+import {addWorkboatDetails} from './workboat.js?v=camera-pivot-55';
 import * as THREE from '../../vendor/three.module.js?v=touch-9';
 import {deckAt as sampleDeck,FLEET} from '../data/fleet.js?v=gas-helm-cockpit-39';
 export function createCruiser(entry=FLEET['Express-33'],details=true){
