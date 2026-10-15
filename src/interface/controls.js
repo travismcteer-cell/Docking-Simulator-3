@@ -47,7 +47,7 @@ export function bindControls(root,sim,camera){const q=s=>root.querySelector(s);c
 
  function syncSetup(){q('#boat-select').value=sim.model.id;q('#spawn').value=sim.spawnId;q('#other-boats').value=sim.otherBoatsDensity;q('#moving-traffic').value=sim.trafficDensity||'none';for(const [id,key] of [['wind','wind'],['current','current'],['wind-direction','windDirection'],['current-direction','currentDirection']])q('#'+id).value=sim.environment[key];q('#steer').value=0;updateBoatControls();}
  function closeMenus(){for(const id of ['setup-screen','settings-screen','home-screen','level-result'])if(q('#'+id).open)q('#'+id).close();}
- function launchLevel(id){neutral();closeMenus();sim.contactFeedback=null;startLevel(sim,id);sim.sessionActive=true;syncSetup();resetCamera(camera,sim.state,sim.scale);update();}
+ function launchLevel(id){neutral();closeMenus();sim.contactFeedback=null;startLevel(sim,id);if(sim.levelRun.definition.type==='race')camera.mode='far';sim.sessionActive=true;syncSetup();resetCamera(camera,sim.state,sim.scale);update();}
  function endSession(){sim.sessionActive=false;neutral();enterPractice(sim);resetSimulation(sim,sim.spawnId);sim.contactFeedback=null;closeMenus();syncSetup();resetCamera(camera,sim.state,sim.scale);}
  function goHome(view='modes'){endSession();homeView(view);q('#home-screen').showModal();update();}
  function practice(){neutral();q('#home-screen').close();syncSetup();q('#setup-screen').showModal();update();}
