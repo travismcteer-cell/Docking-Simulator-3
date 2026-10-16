@@ -42,7 +42,7 @@
  <label>Starting location <select class="form-select" id="spawn"></select></label><p class="text-small">Changing the start resets the boat and releases its lines. Simulation pauses while setup is open.</p></dialog>
 <pre id="render-stats" hidden style="position:fixed;top:60px;left:8px;z-index:10;background:#10232ddd;color:white;padding:8px;font-size:11px;pointer-events:none;white-space:pre-wrap"></pre>
 <dialog id="phone-rotate" aria-labelledby="phone-rotate-title"><h2 id="phone-rotate-title">Rotate your phone</h2><p>Use portrait mode for the docking controls.</p><p class="text-small">Your session pauses until you rotate back.</p></dialog>
-<dialog class="setup-screen" id="settings-screen" aria-labelledby="settings-title"><div class="setup-header"><h2 id="settings-title">Settings</h2><button class="btn" id="settings-close">Back</button></div>   <div class="control-card"><label for="catchup">Camera catch-up <strong id="cv">0.5 s</strong></label><input class="form-range" id="catchup" type="range" min="0" max="16" step="0.5" value="0.5"><div class="text-small" id="catchup-note">Far / Medium follow delay · 0 = immediate</div></div>
+<dialog class="setup-screen" id="settings-screen" aria-labelledby="settings-title"><div class="setup-header"><h2 id="settings-title">Settings</h2><button class="btn" id="settings-close">Back</button></div>   <div class="control-card"><label for="catchup">Camera catch-up <strong id="cv">0 s</strong></label><input class="form-range" id="catchup" type="range" min="0" max="16" step="0.5" value="0"><div class="text-small" id="catchup-note">Far / Medium follow delay · 0 = immediate</div></div>
  <div class="control-card"><h3>Camera swipe direction</h3><label><input id="camera-invert-x" type="checkbox"> Invert horizontal (X)</label><label><input id="camera-invert-y" type="checkbox"> Invert vertical (Y)</label></div>
  <div class="control-card"><label for="helm-height">Helm camera height <strong id="helm-height-value">+3.00 ft</strong></label><input class="form-range" id="helm-height" aria-label="Helm camera height above windshield top, in feet" type="range" min="0" max="8" step="0.25" value="3"><div class="text-small">Raise the camera above the windshield top. Zero restores the original height.</div><div class="text-small" id="helm-height-note"></div></div>
  <div class="control-card"><h3>Graphics and power</h3>
@@ -78,6 +78,6 @@
  </div></section>
  </dialog>
  <dialog class="setup-screen" id="level-result" aria-labelledby="level-result-title"><h2 id="level-result-title">Level complete</h2><p id="level-result-summary"></p><div id="level-result-breakdown" hidden></div><p id="level-result-best" class="text-small"></p><p id="level-result-contacts" class="text-small"></p><div class="setup-footer"><button class="btn" id="level-restart">Restart level</button><button class="btn" id="level-next">Next level</button><button class="btn" id="result-levels">Challenges</button><button class="btn" id="result-home">Home</button></div></dialog>
-</main><script type="module" src="src/main.js?v=graphics-options-58"></script></body></html>
+</main><script type="module" src="src/main.js?v=challenge-targets-59"></script></body></html>
 
 

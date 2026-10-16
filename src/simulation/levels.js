@@ -32,21 +32,27 @@ export const LEVELS=[
 ];
 // Three rounds retain task identity while increasing the conditions.
 const baseChanges={
- 2:{target:centered(510,460,65,45,'F · ENTRANCE APPROACH')},3:{wind:3},4:{wind:4},
- 5:{target:centered(480,300,80,55,'LARGE BASIN · EXIT'),wind:3},6:{wind:4,current:.4},
- 7:{wind:8,current:.4,name:'Windy Dock Departure'},8:{wind:8},9:{wind:4},
+ 2:{target:centered(300,230,80,55,'LARGE BASIN · EXIT')},3:{wind:3},4:{wind:4},
+ 5:{target:centered(165,190,100,60,'BASIN · GAS DOCK FRONT'),wind:3},6:{wind:4,current:.4},
+ 7:{target:centered(300,230,80,55,'LARGE BASIN · EXIT'),wind:8,current:.4,name:'Windy Dock Departure'},8:{wind:8},9:{wind:4},
  10:{boat:'Motoryacht-60',name:'Motor Yacht Med Arrival',target:medTarget('Motoryacht-60'),wind:4,anchorDropZone:null}
 };
 for(const l of LEVELS){Object.assign(l,baseChanges[l.number]||{});l.taskId=l.id;l.taskNumber=l.number;l.group=1;l.revision=2;l.gasNeighbours ||= l.number===2;l.objective=undefined;
- l.description=['','Approach the gas dock directly and secure alongside.','Walk sideways away from the crowded gas dock, then proceed toward the entrance.','Dock the single-outboard boat in a finger slip with a light crosswind.','Use an angled approach against opposing wind and current.','Use the bow thruster to depart the tight yacht berth and reach the large basin.','Dock precisely between neighbours at the gas dock.','Depart the fuel dock in wind without relying on a bow thruster.','Reverse to the Med quay with an anchor and both stern lines.','Release the Med mooring and depart safely between neighbouring boats.','Anchor and reverse the motor yacht to the Med quay; no precision anchor-drop zone.'][l.number];}
+ l.description=['','Approach the gas dock directly and secure alongside.','Walk sideways away from the crowded gas dock, then enter the nearby open-basin target.','Dock the single-outboard boat in a finger slip with a light crosswind.','Use an angled approach against opposing wind and current.','Use the bow thruster to depart the tight yacht berth and reach the large basin.','Dock precisely between neighbours at the gas dock.','Depart the fuel dock in wind without relying on a bow thruster.','Reverse to the Med quay with an anchor and both stern lines.','Release the Med mooring and depart safely between neighbouring boats.','Anchor and reverse the motor yacht to the Med quay; no precision anchor-drop zone.'][l.number];}
 const weather={2:{wind:5,windDirection:0},3:{wind:10},4:{wind:10},5:{wind:14},6:{wind:15,current:1},7:{wind:14},8:{wind:15},9:{wind:10},10:{wind:10}};
 const longSlot=slots.find(s=>s.id==='A-120-3-L');
-const complications={1:{failures:{port:true}},2:{crossingTraffic:'entrance'},
+const complications={1:{failures:{port:true}},2:{crossingTraffic:'basin'},
  3:{boat:'Express-33',wind:6,failures:{stbd:true},spawn:{x:longSlot.x,y:longSlot.y+100,a:270},target:centered(longSlot.x,longSlot.y,9,20,'A · LONG FINGER SLIP'),obstacles:[]},
  4:{crossingTraffic:'west'},5:{failures:{bowThruster:true}},6:{boat:'sportfisher-30',gasGap:40},7:{wind:20},
  8:{wind:8,failures:{port:true}},9:{wind:4,closeMed:true,requireFenders:true},10:{wind:4,closeMed:true,requireFenders:true}};
 const base=LEVELS.slice();
 for(let group=2;group<=3;group++)for(const l of base){const variant={...l,...weather[l.taskNumber],...(group===3?complications[l.taskNumber]:{}),id:l.taskId+'-g'+group,number:(group-1)*10+l.taskNumber,group,objective:undefined};variant.description=l.description+' '+(group===2?'Repeat the task in harder weather.':'Manage the specified advanced conditions, traffic or failure.');LEVELS.push(variant);}
+// These adjustments apply only to the specified rounds, after variants are built.
+for(const l of LEVELS){
+ if([2,5,7].includes(l.taskNumber)||l.number===11)l.revision=3;
+ if([7,17].includes(l.number))l.movingTraffic=false;
+ if(l.number===11){l.wind=7;l.windDirection=45;l.description='Approach and secure at the gas dock in a 7 kt northeast wind.';}
+}
 LEVELS.find(l=>l.number===23).description='Dock the Express-33 in the longer finger slip with 6 kt wind and the starboard engine unavailable.';
 LEVELS.find(l=>l.number===26).description='Dock the compact sportfisher in a 40-foot gap with opposing wind and current.';
 function closeMedNeighbours(boat){
@@ -88,7 +94,7 @@ export function startLevel(sim,id){const definition=[...LEVELS,...RACES].find(l=
  sim.otherBoats=sim.otherBoats.filter(b=>Math.hypot(b.xCenter-spawn.x,b.yCenter-spawn.y)>50&&Math.hypot(b.xCenter-(t.x+t.w/2),b.yCenter-(t.y+t.h/2))>50&&!(b.x+b.w>t.x-15&&b.x<t.x+t.w+15&&b.y+b.h>t.y-15&&b.y<t.y+t.h+15)&&!curated.some(c=>overlap(b.points,c.points)));
  sim.otherBoats.push(...curated);sim.movingBoats=[];
  if(definition.movingTraffic)sim.movingBoats.push(npc({id:'departing-traffic',boatKey:'bowrider21',...feet(5.4,5.0,90),moving:true,route:[[5.4,5.0],[5.4,5.55],[6.35,6.4],[6.4,7.4],[6.4,8.5],[6.4,8.9]].map(([x,y])=>feet(x,y)),segment:0}));
- if(definition.crossingTraffic){const route=(definition.crossingTraffic==='entrance'?[{x:465,y:430},{x:580,y:430}]:[{x:-20,y:-120},{x:48,y:-120}]);sim.movingBoats.push(npc({id:'crossing-traffic',boatKey:'bowrider21',x:route[0].x,y:route[0].y,a:0,moving:true,route,segment:0,loop:true,speedKt:2,startAt:3,dwell:0}));}
+ if(definition.crossingTraffic){const route=(definition.crossingTraffic==='basin'?[{x:220,y:190},{x:380,y:190}]:[{x:-20,y:-120},{x:48,y:-120}]);sim.movingBoats.push(npc({id:'crossing-traffic',boatKey:'bowrider21',x:route[0].x,y:route[0].y,a:0,moving:true,route,segment:0,loop:true,speedKt:2,startAt:3,dwell:0}));}
  if(definition.startFenders){sim.fenders.port=['port','both'].includes(definition.startFenders);sim.fenders.stbd=['stbd','both'].includes(definition.startFenders);}
  if(definition.startAnchor){const bow=anchorBowPoint(sim),target={x:bow.x+Math.cos(angle)*35,y:bow.y+Math.sin(angle)*35};sim.anchor={mode:'holding',target,lengthFt:Math.hypot(target.x-bow.x,target.y-bow.y)+2,tension:0,notice:''};}
  const startLines=definition.taskId==='gas-departure'?[['bow','port'],['stern','port']]:definition.startLines||[];
