@@ -1,7 +1,7 @@
-import {SOLIDS,FENDER_SHAPES} from '../data/marina.js?v=races-40';
-import {buildTrafficRoutes,trafficBerthEnvelope} from '../data/traffic-routes.js?v=races-40';
-import {buildBerthSlots,npcShape} from './traffic.js?v=races-40';
-import {hullAt,overlap,rectPoly} from './collisions.js?v=navigation-handling-30';
+import {SOLIDS,FENDER_SHAPES} from '../data/marina.js?v=traffic-padding-60';
+import {buildTrafficRoutes,trafficBerthEnvelope} from '../data/traffic-routes.js?v=traffic-padding-60';
+import {buildBerthSlots,npcShape} from './traffic.js?v=traffic-padding-60';
+import {hullAt,overlap,rectPoly} from './collisions.js?v=traffic-padding-60';
 export const TRAFFIC_ROUTES=buildTrafficRoutes(buildBerthSlots());
 const angleTo=(a,b)=>Math.atan2(b.y-a.y,b.x-a.x)*180/Math.PI;
 const difference=(a,b)=>((a-b)%360+540)%360-180;

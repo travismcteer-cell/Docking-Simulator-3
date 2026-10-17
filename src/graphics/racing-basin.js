@@ -1,5 +1,5 @@
 import * as THREE from '../../vendor/three.module.js?v=touch-9';
-import {RACING_BASIN} from '../data/marina.js?v=races-40';
+import {RACING_BASIN} from '../data/marina.js?v=traffic-padding-60';
 export function addRacingBasinDetails(scene){
  const deck=RACING_BASIN.spectator,group=new THREE.Group();group.position.set(deck.x+deck.w/2,2.32,deck.y+deck.h/2);scene.add(group);
  const material=color=>new THREE.MeshStandardMaterial({color,roughness:.85,side:THREE.DoubleSide});
@@ -13,5 +13,11 @@ export function addRacingBasinDetails(scene){
  const sign=new THREE.Mesh(new THREE.PlaneGeometry(22,5.5),new THREE.MeshStandardMaterial({map:texture,side:THREE.DoubleSide,roughness:.9}));sign.position.set(0,7,-18.15);sign.rotation.y=Math.PI;group.add(sign);
  box(0,2.2,9,25,4.4,3,blue);box(0,4.5,9,26,.3,4,wood);
  for(const x of [-53,53])for(const z of [-16,8]){box(x,2.7,z,13,.4,5,wood);for(const dz of [-4,4])box(x,1.5,z+dz,13,.35,1.8,wood);for(const dx of [-4,4])box(x+dx,1.3,z,.5,2.6,8,metal);}
+ // Each continuous timber face spreads a hull contact over hanging tires.
+ const tireGeometry=new THREE.TorusGeometry(.72,.22,6,12),tireMaterial=material('#25292a'),boardGeometry=new THREE.BoxGeometry(25,1,2/12);
+ for(const pad of RACING_BASIN.padding){const rack=new THREE.Group();rack.name=pad.id;rack.position.set(pad.x,0,pad.y);rack.rotation.y=Math.atan2(pad.nx,pad.ny);scene.add(rack);
+  for(let x=-10;x<=10;x+=5){const tire=new THREE.Mesh(tireGeometry,tireMaterial);tire.position.set(x,2.15,.22);rack.add(tire);}
+  const board=new THREE.Mesh(boardGeometry,wood);board.position.set(0,2.15,pad.face-1/12);board.castShadow=board.receiveShadow=true;rack.add(board);
+ }
  return group;
 }

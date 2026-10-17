@@ -1,5 +1,5 @@
 import {effectivePower} from './faults.js?v=progression-52';
-import {bodyPoint,nearestShape} from './collisions.js?v=navigation-handling-30';
+import {bodyPoint,nearestShape} from './collisions.js?v=traffic-padding-60';
 export const SCORE_VERSION=1;
 const clamp=(v,lo=0,hi=100)=>Math.max(lo,Math.min(hi,v));
 export function safeClosingSpeed(clearanceFt){return Math.min(3,.15+.22*Math.sqrt(Math.max(0,clearanceFt)));}

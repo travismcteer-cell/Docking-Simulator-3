@@ -1,16 +1,16 @@
 import {createEnvironmentDisc} from '../interface/environment-disc.js?v=compass-foreground-54';
 import {mobileGraphicsProfile,resolveGraphicsSettings} from './performance.js?v=graphics-options-58';
-import {createWorkboatWake,workboatVisualPose} from './workboat.js?v=staged-spin-56';
-import {addRacingBasinDetails} from './racing-basin.js?v=races-40';
+import {createWorkboatWake,workboatVisualPose} from './workboat.js?v=traffic-padding-60';
+import {addRacingBasinDetails} from './racing-basin.js?v=traffic-padding-60';
 import {createLevelGraphics} from './levels.js?v=challenge-targets-59';
-import {createAnchorGraphics} from './anchor.js?v=gas-helm-cockpit-39';
-import {createOtherBoatGraphics,createMovingBoatGraphics} from './traffic.js?v=graphics-options-58';
-import {addLandmarks} from './landmarks.js?v=races-40';
+import {createAnchorGraphics} from './anchor.js?v=traffic-padding-60';
+import {createOtherBoatGraphics,createMovingBoatGraphics} from './traffic.js?v=traffic-padding-60';
+import {addLandmarks} from './landmarks.js?v=traffic-padding-60';
 import {cameraPose,releaseCameraLockIfHidden} from './camera.js?v=challenge-targets-59';
-import {DOCK_POLYGONS,LAND,ANCHOR_GUIDES,BOUNDS} from '../data/marina.js?v=races-40';
-import {createCruiser} from './boats.js?v=staged-spin-56';
+import {DOCK_POLYGONS,LAND,ANCHOR_GUIDES,BOUNDS} from '../data/marina.js?v=traffic-padding-60';
+import {createCruiser} from './boats.js?v=traffic-padding-60';
 import * as THREE from '../../vendor/three.module.js?v=touch-9';
-import {createDockingGraphics} from './docking.js?v=navigation-handling-30';
+import {createDockingGraphics} from './docking.js?v=traffic-padding-60';
 export function createGraphics(canvas,sim,camera){
 const {state,docks,outline,scale}=sim,environmentDisc=createEnvironmentDisc(canvas.closest('#dock3d'));
 const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:false});
