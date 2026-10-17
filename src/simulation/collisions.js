@@ -1,3 +1,4 @@
+import {paddedWallContact} from './padded-contact.js?v=traffic-padding-60';
 // World geometry is measured in feet; the physics retains its original units.
 export function bodyPoint(state,x,y,scale){const a=state.a*Math.PI/180,c=Math.cos(a),s=Math.sin(a);return {x:state.x*scale+x*c-y*s,y:state.y*scale+x*s+y*c};}
 export function hullAt(state,outline,scale){return outline.map(([x,y])=>bodyPoint(state,x,y,scale));}
@@ -28,9 +29,9 @@ export function integrate(sim,dt){
     const lo=Math.max(Math.min(...along),Math.min(...other)),hi=Math.min(Math.max(...along),Math.max(...other)),t=lo<=hi?(lo+hi)/2:(Math.min(...along)+Math.max(...along))/2;
     const px=n.x*minN+tx*t,py=n.y*minN+ty*t,rx=px-s.x*scale,ry=py-s.y*scale,arm=rx*n.y-ry*n.x;
     const omega=s.omega*Math.PI/180,normalSpeed=s.vx*scale*n.x+s.vy*scale*n.y+omega*arm;
-    const a=s.a*Math.PI/180,sideDot=n.x*(-Math.sin(a))+n.y*Math.cos(a),protectedSide=Math.abs(sideDot)>.42&&(sideDot>0?fenders.port:fenders.stbd);
+    const a=s.a*Math.PI/180,sideDot=n.x*(-Math.sin(a))+n.y*Math.cos(a),padded=paddedWallContact(sim,px,py,n.x,n.y),protectedSide=(Math.abs(sideDot)>.42&&(sideDot>0?fenders.port:fenders.stbd))||padded;
     const impact=Math.max(0,-normalSpeed)*.592484*(protectedSide?.45:1);
-    if(!sim.collision||impact>sim.collision.knots)sim.collision={id:object.id,kind:object.kind||'dock',knots:impact,protected:!!protectedSide};
+    if(!sim.collision||impact>sim.collision.knots)sim.collision={id:object.id,kind:object.kind||'dock',knots:impact,protected:!!protectedSide,padded};
     // Resolve penetration geometrically, then apply only a normal impulse.
     // Preserve tangent velocity and allow natural rotation around the contact.
     s.x+=n.x*(hit.depth+.001)/scale;s.y+=n.y*(hit.depth+.001)/scale;

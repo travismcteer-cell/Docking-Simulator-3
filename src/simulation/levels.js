@@ -1,11 +1,11 @@
-import {createChallengeScore,stepChallengeScore,recordImpact,finalControlQuality,scoreBreakdown} from './scoring.js?v=progression-52';
-import {selectBoat} from './state.js?v=progression-52';
-import {setOtherBoats,npcShape,buildBerthSlots} from './traffic.js?v=races-40';
-import {SOLIDS,FENDER_SHAPES,DOCK_POLYGONS,SPAWNS,RACING_BERTHS} from '../data/marina.js?v=races-40';
-import {hullAt,overlap,rectPoly} from './collisions.js?v=navigation-handling-30';
-import {anchorBowPoint} from './anchor.js?v=navigation-handling-30';
+import {createChallengeScore,stepChallengeScore,recordImpact,finalControlQuality,scoreBreakdown} from './scoring.js?v=traffic-padding-60';
+import {selectBoat} from './state.js?v=traffic-padding-60';
+import {setOtherBoats,npcShape,buildBerthSlots} from './traffic.js?v=traffic-padding-60';
+import {SOLIDS,FENDER_SHAPES,DOCK_POLYGONS,SPAWNS,RACING_BERTHS} from '../data/marina.js?v=traffic-padding-60';
+import {hullAt,overlap,rectPoly} from './collisions.js?v=traffic-padding-60';
+import {anchorBowPoint} from './anchor.js?v=traffic-padding-60';
 import {FLEET} from '../data/fleet.js?v=staged-spin-56';
-import {attachLine} from './lines.js?v=navigation-handling-30';
+import {attachLine} from './lines.js?v=traffic-padding-60';
 const feet=(x,y,a)=>({x:x*180-650,y:y*120-525,a});
 const box=(x,y,w,h,label)=>({x:x*180-650,y:y*120-525,w:w*180,h:h*120,label});
 const centered=(x,y,w,h,label,rotation=0)=>({x:x-w/2,y:y-h/2,w,h,label,rotation});
@@ -41,9 +41,9 @@ for(const l of LEVELS){Object.assign(l,baseChanges[l.number]||{});l.taskId=l.id;
  l.description=['','Approach the gas dock directly and secure alongside.','Walk sideways away from the crowded gas dock, then enter the nearby open-basin target.','Dock the single-outboard boat in a finger slip with a light crosswind.','Use an angled approach against opposing wind and current.','Use the bow thruster to depart the tight yacht berth and reach the large basin.','Dock precisely between neighbours at the gas dock.','Depart the fuel dock in wind without relying on a bow thruster.','Reverse to the Med quay with an anchor and both stern lines.','Release the Med mooring and depart safely between neighbouring boats.','Anchor and reverse the motor yacht to the Med quay; no precision anchor-drop zone.'][l.number];}
 const weather={2:{wind:5,windDirection:0},3:{wind:10},4:{wind:10},5:{wind:14},6:{wind:15,current:1},7:{wind:14},8:{wind:15},9:{wind:10},10:{wind:10}};
 const longSlot=slots.find(s=>s.id==='A-120-3-L');
-const complications={1:{failures:{port:true}},2:{crossingTraffic:'basin'},
+const complications={1:{failures:{port:true}},2:{trafficScenario:'fuel-two-pass'},
  3:{boat:'Express-33',wind:6,failures:{stbd:true},spawn:{x:longSlot.x,y:longSlot.y+100,a:270},target:centered(longSlot.x,longSlot.y,9,20,'A · LONG FINGER SLIP'),obstacles:[]},
- 4:{crossingTraffic:'west'},5:{failures:{bowThruster:true}},6:{boat:'sportfisher-30',gasGap:40},7:{wind:20},
+ 4:{trafficScenario:'west-departure'},5:{failures:{bowThruster:true}},6:{boat:'sportfisher-30',gasGap:40},7:{wind:20},
  8:{wind:8,failures:{port:true}},9:{wind:4,closeMed:true,requireFenders:true},10:{wind:4,closeMed:true,requireFenders:true}};
 const base=LEVELS.slice();
 for(let group=2;group<=3;group++)for(const l of base){const variant={...l,...weather[l.taskNumber],...(group===3?complications[l.taskNumber]:{}),id:l.taskId+'-g'+group,number:(group-1)*10+l.taskNumber,group,objective:undefined};variant.description=l.description+' '+(group===2?'Repeat the task in harder weather.':'Manage the specified advanced conditions, traffic or failure.');LEVELS.push(variant);}
@@ -63,7 +63,8 @@ function closeMedNeighbours(boat){
  return boats;
 }
 for(const l of LEVELS)if(l.closeMed)l.obstacles=closeMedNeighbours(l.boat);
-for(const l of LEVELS){l.type??=l.taskNumber===2?'departure':'arrival';l.heading??=0;l.speed??=.75;l.objective??=l.type==='departure'?'Release every line, retrieve the anchor, and enter the exit zone.':(l.requireAnchor?(l.anchorDropZone?'Anchor in the orange zone; ':'Anchor deployed; ')+'both stern lines; ':'Two lines; ')+'align with the berth below '+l.speed+' kt and hold for 3 seconds.';if(l.gasGap)l.objective+=' Dock within a 40-foot gap.';if(l.requireFenders)l.objective+=' Both-side fenders required.';if(l.failures)l.objective+=' Equipment failure active from the start.';if(l.crossingTraffic)l.objective+=' Watch for crossing traffic and wait for a safe opening.';}
+for(const l of LEVELS){l.type??=l.taskNumber===2?'departure':'arrival';l.heading??=0;l.speed??=.75;l.objective??=l.type==='departure'?'Release every line'+(l.startAnchor?', retrieve the anchor,':'')+' and enter the exit zone.':(l.requireAnchor?(l.anchorDropZone?'Anchor in the orange zone; ':'Anchor deployed; ')+'both stern lines; ':'Two lines; ')+'align with the berth below '+l.speed+' kt and hold for 3 seconds.';if(l.gasGap)l.objective+=' Dock within a 40-foot gap.';if(l.requireFenders)l.objective+=' Both-side fenders required.';if(l.failures)l.objective+=' Equipment failure active from the start.';if(l.crossingTraffic||l.trafficScenario)l.objective+=' Watch for crossing traffic and wait for a safe opening.';}
+for(const l of LEVELS)if([22,24].includes(l.number))l.revision=4;
 export const RACES=[
  ['workboat-race','racingSouth','race-south-west-2'],
  ['workboat-course-2','racing','race-west-2'],
@@ -72,7 +73,7 @@ export const RACES=[
  ['workboat-course-5','racingBow','race-south-west-2']
 ].map(([id,spawnId,finishId],i)=>{
  const berth=RACING_BERTHS.find(b=>b.id===finishId),west=finishId==='race-west-2';
- return {id,number:i+1,name:'Course '+(i+1),boat:'deadrise-40',density:'none',type:'race',spawnId,spawn:SPAWNS[spawnId],target:centered(berth.x,berth.y,west?40:25,west?25:40,'FINISH · FOUR LINES'),heading:berth.a,requiredPilingIds:berth.pilingIds,contactPenalties:false,description:'Start at '+SPAWNS[spawnId].label+'. Race to the middle '+(west?'west-wall':'southwest')+' slip and finish stern-in with four lines. Contact adds no penalties.',objective:'Finish stern-in, aligned within 10°, with both bow and both stern lines attached to four separate destination pilings. Early throttle adds 5 seconds.'};
+ return {id,revision:2,number:i+1,name:'Course '+(i+1),boat:'deadrise-40',density:'none',type:'race',spawnId,spawn:SPAWNS[spawnId],target:centered(berth.x,berth.y,west?40:25,west?25:40,'FINISH · FOUR LINES'),heading:berth.a,requiredPilingIds:berth.pilingIds,contactPenalties:false,description:'Start at '+SPAWNS[spawnId].label+'. Race to the middle '+(west?'west-wall':'southwest')+' slip and finish stern-in with four lines. Contact adds no penalties.',objective:'Finish stern-in, aligned within 10°, with both bow and both stern lines attached to four separate destination pilings. Early throttle adds 5 seconds.'};
 });
 export function raceLight(run){if(run?.definition.type!=='race'||run.complete)return null;const t=run.startElapsed??2.5;return t<1?'red':t<1.5?'yellow':t<2.5?'green':null;}
 export function registerRaceThrottle(sim){const run=sim.levelRun;if(run?.definition.type==='race'&&(run.startElapsed??1.5)<1.5&&!run.falseStart){run.falseStart=true;run.penalty+=5;}}
@@ -84,15 +85,26 @@ export const IMPACT_PENALTIES={gentle:2,firm:10,hard:30,crash:60};
 export function classifyImpact(knots){return knots<.3?'gentle':knots<.8?'firm':knots<1.5?'hard':'crash';}
 export function formatTime(seconds){const ticks=Math.round(Math.max(0,seconds)*10);return Math.floor(ticks/600)+':'+((ticks%600)/10).toFixed(1).padStart(4,'0');}
 function seeded(seed){return ()=>{seed=(seed*1664525+1013904223)>>>0;return seed/4294967296;};}
+
+export function challengeTraffic(definition){
+ const make=(id,boatKey,route,speedKt)=>npc({id,boatKey,x:route[0].x,y:route[0].y,a:route[1].heading??Math.atan2(route[1].y-route[0].y,route[1].x-route[0].x)*180/Math.PI,moving:true,route,segment:0,startAt:0,speedKt,dwell:0});
+ if(definition.trafficScenario==='fuel-two-pass'){
+  const exit=[{x:285,y:60},{x:225,y:100},{x:225,y:155},{x:500,y:300},{x:520,y:440},{x:520,y:560}];
+  return [make('fuel-pass-1','bowrider21',[{x:285,y:0},...exit],4),make('fuel-pass-2','inboard30',[{x:285,y:-190},...exit],4)];
+ }
+ if(definition.trafficScenario==='west-departure')return [make('west-departing','inboard30',[{x:61.3,y:-110},{x:45,y:-110,heading:270},{x:38,y:-237},{x:-290,y:-237}],1)];
+ return [];
+}
 export function startLevel(sim,id){const definition=[...LEVELS,...RACES].find(l=>l.id===id);if(!definition)throw new Error('Unknown level: '+id);
  if(!sim.practiceSettings)sim.practiceSettings={boat:sim.model.id,spawn:sim.spawnId,density:sim.otherBoatsDensity,trafficDensity:sim.trafficDensity,environment:{...sim.environment}};
  selectBoat(sim,definition.boat,definition.spawnId);sim.failures={...(definition.failures||{})};Object.assign(sim.state,{x:definition.spawn.x/sim.scale,y:definition.spawn.y/sim.scale,a:definition.spawn.a});Object.assign(sim.environment,{wind:definition.wind||0,current:definition.current||0,windDirection:definition.windDirection??90,currentDirection:definition.currentDirection??180});setOtherBoats(sim,definition.density,seeded(100+definition.number));
  const t=definition.target,spawn=definition.spawn,curated=(definition.obstacles||[]).map(npc);
  if(definition.taskId==='gas-departure'||definition.gasNeighbours)curated.push(...gasNeighbours(sim,definition.taskId==='gas-squeeze'?{x:168.1,y:42.5,a:0}:spawn,definition.gasGap));
+ const scripted=challengeTraffic(definition);
  const playerHull=hullAt(sim.state,sim.outline,sim.scale);
  for(const b of curated){if(SOLIDS.some(d=>overlap(b.points,d.points||rectPoly(d)))||overlap(b.points,playerHull))throw new Error('Blocked challenge boat: '+b.id);}
- sim.otherBoats=sim.otherBoats.filter(b=>Math.hypot(b.xCenter-spawn.x,b.yCenter-spawn.y)>50&&Math.hypot(b.xCenter-(t.x+t.w/2),b.yCenter-(t.y+t.h/2))>50&&!(b.x+b.w>t.x-15&&b.x<t.x+t.w+15&&b.y+b.h>t.y-15&&b.y<t.y+t.h+15)&&!curated.some(c=>overlap(b.points,c.points)));
- sim.otherBoats.push(...curated);sim.movingBoats=[];
+ sim.otherBoats=sim.otherBoats.filter(b=>Math.hypot(b.xCenter-spawn.x,b.yCenter-spawn.y)>50&&Math.hypot(b.xCenter-(t.x+t.w/2),b.yCenter-(t.y+t.h/2))>50&&!(b.x+b.w>t.x-15&&b.x<t.x+t.w+15&&b.y+b.h>t.y-15&&b.y<t.y+t.h+15)&&!curated.some(c=>overlap(b.points,c.points))&&!scripted.some(c=>overlap(b.points,c.points)));
+ sim.otherBoats.push(...curated);sim.movingBoats=scripted;
  if(definition.movingTraffic)sim.movingBoats.push(npc({id:'departing-traffic',boatKey:'bowrider21',...feet(5.4,5.0,90),moving:true,route:[[5.4,5.0],[5.4,5.55],[6.35,6.4],[6.4,7.4],[6.4,8.5],[6.4,8.9]].map(([x,y])=>feet(x,y)),segment:0}));
  if(definition.crossingTraffic){const route=(definition.crossingTraffic==='basin'?[{x:220,y:190},{x:380,y:190}]:[{x:-20,y:-120},{x:48,y:-120}]);sim.movingBoats.push(npc({id:'crossing-traffic',boatKey:'bowrider21',x:route[0].x,y:route[0].y,a:0,moving:true,route,segment:0,loop:true,speedKt:2,startAt:3,dwell:0}));}
  if(definition.startFenders){sim.fenders.port=['port','both'].includes(definition.startFenders);sim.fenders.stbd=['stbd','both'].includes(definition.startFenders);}
@@ -124,4 +136,4 @@ export function stepLevel(sim,dt){const run=sim.levelRun;if(sim.mode!=='levels'|
  run.status=!fendersReady?'Deploy fenders on both sides':!inside?(departure?'Enter the gold exit zone':'Enter the docking zone'):departure?(lines>0?'Release every line':sim.anchor.mode!=='stowed'?'Retrieve the anchor':'Exit reached'):!anchored?'Deploy the anchor':!anchorInZone?'Anchor must be in orange zone':l.requireSternPair&&!sternPair?'Attach both stern lines':lines<2?'Attach two lines':!parallel?'Align with the berth':speed>l.speed?'Slow below '+l.speed+' kt':'Hold '+run.hold.toFixed(1)+' / 3s';
  if((departure&&inside&&secured)||(!departure&&run.hold+1e-9>=3)){if(run.score)run.result=scoreBreakdown(sim,true);run.complete=true;run.total=run.result?.total??run.elapsed+run.penalty;s.port=0;s.stbd=0;s.bowThruster=0;}
 }
-export function stepLevelTraffic(sim,dt){const run=sim.levelRun;if(!run||run.complete)return;for(const boat of sim.movingBoats||[]){if(boat.finished||run.elapsed<(boat.startAt??9))continue;if(boat.dwell>0){boat.dwell=Math.max(0,boat.dwell-dt);continue;}let travel=(boat.speedKt??2.4)/.592484*dt;while(travel>0&&!boat.finished){const end=boat.route[boat.segment+1];if(!end){if(boat.loop){boat.route.reverse();boat.segment=0;boat.dwell=8;break;}boat.finished=true;sim.solids=sim.solids.filter(s=>s!==boat);sim.fenderShapes=sim.fenderShapes.filter(s=>s!==boat);break;}const dx=end.x-boat.xCenter,dy=end.y-boat.yCenter,dist=Math.hypot(dx,dy),move=Math.min(travel,dist);if(dist>1e-8){boat.xCenter+=dx/dist*move;boat.yCenter+=dy/dist*move;boat.heading=Math.atan2(dy,dx)*180/Math.PI;}travel-=move;if(dist<=move+1e-8)boat.segment++;const fresh=npc({...boat,x:boat.xCenter,y:boat.yCenter,a:boat.heading});Object.assign(boat,fresh);}}}
+export function stepLevelTraffic(sim,dt){const run=sim.levelRun;if(!run||run.complete)return;for(const boat of sim.movingBoats||[]){if(boat.finished||run.elapsed<(boat.startAt??9))continue;if(boat.dwell>0){boat.dwell=Math.max(0,boat.dwell-dt);continue;}let travel=(boat.speedKt??2.4)/.592484*dt;while(travel>0&&!boat.finished){const end=boat.route[boat.segment+1];if(!end){if(boat.loop){boat.route.reverse();boat.segment=0;boat.dwell=8;break;}boat.finished=true;sim.solids=sim.solids.filter(s=>s!==boat);sim.fenderShapes=sim.fenderShapes.filter(s=>s!==boat);break;}const dx=end.x-boat.xCenter,dy=end.y-boat.yCenter,dist=Math.hypot(dx,dy),move=Math.min(travel,dist);if(dist>1e-8){boat.xCenter+=dx/dist*move;boat.yCenter+=dy/dist*move;boat.heading=end.heading??Math.atan2(dy,dx)*180/Math.PI;}travel-=move;if(dist<=move+1e-8)boat.segment++;const fresh=npc({...boat,x:boat.xCenter,y:boat.yCenter,a:boat.heading});Object.assign(boat,fresh);}}}

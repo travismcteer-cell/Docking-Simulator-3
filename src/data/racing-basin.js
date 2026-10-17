@@ -10,12 +10,12 @@ export function buildRacingBasin({DOCKS,DOCK_POLYGONS,DOCK_CLEATS,SOLIDS,FENDER_
  dock({...south,w:width+wallWidth});dock({...east,x:right,h:depth});
  dock({id:'race-east-cap',x:right-16,y:y-24,w:32,h:24});
  const spectator={id:'race-spectator',x:x+115,y:bottom-60,w:150,h:60,surface:'concrete'};dock(spectator);
- const berths=[],pilings=[];
+ const berths=[],pilings=[],padding=[];
  function group(id,wallX,wallY,angle){const a=angle*Math.PI/180,fx=Math.cos(a),fy=Math.sin(a),tx=-fy,ty=fx;
   const point=(across,into)=>({x:wallX+tx*across+fx*into,y:wallY+ty*across+fy*into});
   for(let i=0;i<4;i++){const across=i*31,center=point(across,7.5);dock({id:id+'-finger-'+i,x:center.x-(Math.abs(fx)*15+Math.abs(tx)*6)/2,y:center.y-(Math.abs(fy)*15+Math.abs(ty)*6)/2,w:Math.abs(fx)*15+Math.abs(tx)*6,h:Math.abs(fy)*15+Math.abs(ty)*6},false);
    for(const [end,into]of [['wall',0],['mouth',40]]){const p=point(across,into),piling={id:id+'-piling-'+i+'-'+end,kind:'piling',racePiling:true,height:5.35,x:p.x,y:p.y};const points=Array.from({length:12},(_,j)=>({x:p.x+.75*Math.cos(j*Math.PI/6),y:p.y+.75*Math.sin(j*Math.PI/6)}));DOCK_POLYGONS.push({id:piling.id,kind:'piling',points});const solid={id:piling.id,kind:'piling',x:p.x-.75,y:p.y-.75,w:1.5,h:1.5,points};SOLIDS.push(solid);FENDER_SHAPES.push(solid);DOCK_CLEATS.push(piling);pilings.push(piling);}}
-  for(let i=0;i<3;i++){const p=point(i*31+15.5,20);berths.push({id:id+'-'+(i+1),x:p.x,y:p.y,a:angle,width:25,depth:40,pilingIds:[id+'-piling-'+i+'-wall',id+'-piling-'+i+'-mouth',id+'-piling-'+(i+1)+'-wall',id+'-piling-'+(i+1)+'-mouth']});}
+  for(let i=0;i<3;i++){const back=point(i*31+15.5,0);padding.push({id:id+'-padding-'+i,x:back.x,y:back.y,nx:fx,ny:fy,halfWidth:12.5,face:.6});const p=point(i*31+15.5,20);berths.push({id:id+'-'+(i+1),x:p.x,y:p.y,a:angle,width:25,depth:40,pilingIds:[id+'-piling-'+i+'-wall',id+'-piling-'+i+'-mouth',id+'-piling-'+(i+1)+'-wall',id+'-piling-'+(i+1)+'-mouth']});}
  }
  group('race-south-west',x+19,bottom,270);group('race-south-east',right-112,bottom,270);
  group('race-west',x,y+19,0);group('race-east',right,y+112,180);
@@ -25,5 +25,5 @@ export function buildRacingBasin({DOCKS,DOCK_POLYGONS,DOCK_CLEATS,SOLIDS,FENDER_
  SPAWNS.racingSouth={x:southStart.x,y:southStart.y-1.5,a:270,label:'R2 · Racing basin · south-east slips · stern-in'};
  const r3=berths.find(b=>b.id==='race-south-east-1');
  SPAWNS.racingBow={x:r3.x,y:r3.y-1.5,a:90,label:'R3 · Racing basin · near beer tent · bow-in'};
- return {basin:{x,y,w:width,h:depth,openRunFt:width-80,spectator,pilings},berths};
+ return {basin:{x,y,w:width,h:depth,openRunFt:width-80,spectator,pilings,padding},berths};
 }

@@ -1,8 +1,8 @@
 import {effectivePower} from './faults.js?v=progression-52';
-import {integrate} from './collisions.js?v=navigation-handling-30';
-import {applyLines} from './lines.js?v=navigation-handling-30';
-import {applyAnchor} from './anchor.js?v=navigation-handling-30';
-import {applyFenders} from './fenders.js?v=navigation-handling-30';
+import {integrate} from './collisions.js?v=traffic-padding-60';
+import {applyLines} from './lines.js?v=traffic-padding-60';
+import {applyAnchor} from './anchor.js?v=traffic-padding-60';
+import {applyFenders} from './fenders.js?v=traffic-padding-60';
 export const smoothstep=(lo,hi,x)=>{const t=Math.max(0,Math.min(1,(x-lo)/(hi-lo)));return t*t*(3-2*t);};
 // Aft-of-centre wetted-hull target during an unloaded planing spin only.
 export const WORKBOAT_SPIN_PIVOT=-.08;

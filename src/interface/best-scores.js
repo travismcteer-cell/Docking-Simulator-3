@@ -1,4 +1,4 @@
-import {SCORE_VERSION} from '../simulation/scoring.js?v=progression-52';
+import {SCORE_VERSION} from '../simulation/scoring.js?v=traffic-padding-60';
 const KEY='docking-trainer-best-scores-v1';
 export function scoreKey(definition){return `${definition.type==='race'?'race':'challenge'}:${definition.id}:r${definition.revision??1}:s${definition.type==='race'?0:SCORE_VERSION}`;}
 function valid(record,race){return record&&Number.isFinite(record.total)&&Number.isFinite(record.elapsed)&&record.elapsed>=0&&record.total>=0&&(race||record.total<=100);}
